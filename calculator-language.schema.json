@@ -1,203 +1,166 @@
 {
+  "$id": "uc://schemas/manual-seed-program@2",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "uc://schemas/calculator-language@1",
-  "title": "Calculator family seed",
-  "type": "object",
   "additionalProperties": false,
+  "properties": {
+    "acceptance": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "expected": {"type": "object"},
+          "id": {"minLength": 1, "type": "string"},
+          "input": {"type": "object"}
+        },
+        "required": ["id", "input", "expected"],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "boundaries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "direction": {
+            "enum": ["inward", "outward", "inward-outward"]
+          },
+          "effect": {"minLength": 1, "type": "string"},
+          "identity": {"minLength": 1, "type": "string"}
+        },
+        "required": ["identity", "direction", "effect"],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "format": {"const": "manual-seed-program-2"},
+    "identity": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical": {
+          "pattern": "^uc://manual/calculators/.+@[1-9][0-9]*$",
+          "type": "string"
+        },
+        "family": {"const": "calculator"},
+        "variation": {"minLength": 1, "type": "string"},
+        "version": {"minimum": 1, "type": "integer"}
+      },
+      "required": ["canonical", "family", "variation", "version"],
+      "type": "object"
+    },
+    "presentation": {
+      "additionalProperties": false,
+      "properties": {
+        "controls": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "action": {"minLength": 1, "type": "string"},
+              "column": {"minimum": 0, "type": "integer"},
+              "id": {"minLength": 1, "type": "string"},
+              "label": {"type": "string"},
+              "row": {"minimum": 0, "type": "integer"}
+            },
+            "required": ["id", "label", "action", "row", "column"],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "geometry": {"minLength": 1, "type": "string"},
+        "layout": {"type": "object"},
+        "mode_label": {"type": "string"},
+        "theme": {"type": "object"},
+        "title": {"minLength": 1, "type": "string"}
+      },
+      "required": [
+        "title",
+        "geometry",
+        "mode_label",
+        "layout",
+        "theme",
+        "controls"
+      ],
+      "type": "object"
+    },
+    "program": {
+      "additionalProperties": false,
+      "properties": {
+        "ast": {
+          "properties": {
+            "_type": {"const": "Module"},
+            "body": {"type": "array"}
+          },
+          "required": ["_type", "body"],
+          "type": "object"
+        },
+        "case_entrypoint": {"minLength": 1, "type": "string"},
+        "language": {"const": "python-ast-3"},
+        "launch_entrypoint": {"minLength": 1, "type": "string"}
+      },
+      "required": [
+        "language",
+        "case_entrypoint",
+        "launch_entrypoint",
+        "ast"
+      ],
+      "type": "object"
+    },
+    "semantics": {
+      "additionalProperties": false,
+      "properties": {
+        "numeric_laws": {"type": "object"},
+        "operations": {
+          "additionalProperties": {
+            "items": {"type": "object"},
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "validation": {"type": "object"}
+      },
+      "required": ["numeric_laws", "operations", "validation"],
+      "type": "object"
+    },
+    "state": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {"const": "program.ast"},
+        "fields": {
+          "items": {"type": "string"},
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": ["authority", "fields"],
+      "type": "object"
+    },
+    "transitions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "argument": {},
+          "event": {"minLength": 1, "type": "string"},
+          "route": {"minLength": 1, "type": "string"}
+        },
+        "required": ["event", "route"],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
   "required": [
     "format",
     "identity",
     "semantics",
-    "expression",
     "state",
-    "interface",
+    "transitions",
+    "presentation",
     "boundaries",
+    "program",
     "acceptance"
   ],
-  "properties": {
-    "format": {"const": "UC-CALCULATOR-LANGUAGE-1"},
-    "identity": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["family", "variation", "version"],
-      "properties": {
-        "family": {"const": "calculator"},
-        "variation": {"type": "string", "minLength": 1},
-        "version": {"type": "integer", "minimum": 1},
-        "extends": {"type": "string", "pattern": "^uc://calculator-profiles/"}
-      }
-    },
-    "semantics": {
-      "type": "object",
-      "required": [
-        "numeric_domain",
-        "notation",
-        "precision",
-        "operators",
-        "functions",
-        "constants",
-        "errors"
-      ],
-      "properties": {
-        "numeric_domain": {
-          "enum": [
-            "bounded-integer",
-            "arbitrary-integer",
-            "rational",
-            "decimal-real",
-            "binary-real",
-            "complex",
-            "symbolic",
-            "quantity",
-            "matrix"
-          ]
-        },
-        "notation": {
-          "enum": ["infix", "rpn", "prefix", "textbook", "structured"]
-        },
-        "precision": {"type": "object"},
-        "operators": {"type": "array", "items": {"$ref": "#/$defs/capability"}},
-        "functions": {"type": "array", "items": {"$ref": "#/$defs/capability"}},
-        "constants": {"type": "array", "items": {"$ref": "#/$defs/capability"}},
-        "errors": {"type": "array", "items": {"type": "string"}}
-      }
-    },
-    "expression": {
-      "type": "object",
-      "required": ["editable", "grammar", "maximum_characters"],
-      "properties": {
-        "editable": {"type": "boolean"},
-        "grammar": {"type": "string", "minLength": 1},
-        "maximum_characters": {"type": "integer", "minimum": 1},
-        "implicit_multiplication": {"type": "boolean"}
-      }
-    },
-    "state": {
-      "type": "object",
-      "required": ["memory", "history", "variables", "modes"],
-      "properties": {
-        "memory": {"type": "array", "items": {"type": "string"}},
-        "history": {"type": "boolean"},
-        "variables": {"type": "array", "items": {"type": "string"}},
-        "modes": {"type": "array", "items": {"type": "object"}}
-      }
-    },
-    "interface": {
-      "type": "object",
-      "required": ["display", "layout", "controls", "theme"],
-      "properties": {
-        "display": {"type": "object"},
-        "layout": {
-          "type": "object",
-          "required": ["kind", "rows", "columns"],
-          "properties": {
-            "kind": {"const": "grid"},
-            "rows": {"type": "integer", "minimum": 1},
-            "columns": {"type": "integer", "minimum": 1}
-          }
-        },
-        "controls": {
-          "type": "array",
-          "items": {"$ref": "#/$defs/control"}
-        },
-        "theme": {
-          "type": "object",
-          "required": ["identity", "provenance", "license"],
-          "properties": {
-            "identity": {"type": "string"},
-            "provenance": {"type": "string"},
-            "license": {"type": "string"}
-          }
-        }
-      }
-    },
-    "boundaries": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["identity", "direction", "contract"],
-        "properties": {
-          "identity": {"type": "string"},
-          "direction": {"enum": ["inward", "outward"]},
-          "contract": {"type": "string"}
-        }
-      }
-    },
-    "acceptance": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "required": ["id", "events", "expected"],
-        "properties": {
-          "id": {"type": "string"},
-          "events": {"type": "array"},
-          "expected": {"type": "object"}
-        }
-      }
-    }
-  },
-  "$defs": {
-    "capability": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["identity", "symbol", "backend_requirement"],
-      "properties": {
-        "identity": {"type": "string", "minLength": 1},
-        "symbol": {"type": "string"},
-        "backend_requirement": {"type": "string", "minLength": 1}
-      }
-    },
-    "control": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "identity",
-        "label",
-        "accessible_name",
-        "position",
-        "function",
-        "requires"
-      ],
-      "properties": {
-        "id": {"type": "string", "minLength": 1},
-        "identity": {"type": "string", "minLength": 1},
-        "label": {"type": "string"},
-        "accessible_name": {"type": "string", "minLength": 1},
-        "position": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["row", "column", "row_span", "column_span"],
-          "properties": {
-            "row": {"type": "integer", "minimum": 0},
-            "column": {"type": "integer", "minimum": 0},
-            "row_span": {"type": "integer", "minimum": 1},
-            "column_span": {"type": "integer", "minimum": 1}
-          }
-        },
-        "function": {
-          "type": "object",
-          "required": ["kind"],
-          "properties": {
-            "kind": {
-              "enum": [
-                "expression-token",
-                "evaluate",
-                "edit",
-                "memory",
-                "mode",
-                "navigation"
-              ]
-            },
-            "token": {"type": "string"},
-            "action": {"type": "string"}
-          }
-        },
-        "requires": {"type": "array", "items": {"type": "string"}},
-        "visible_when": {"type": "string"},
-        "enabled_when": {"type": "string"}
-      }
-    }
-  }
+  "title": "Complete manual seed program",
+  "type": "object"
 }

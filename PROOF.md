@@ -1,48 +1,51 @@
 # Reproducible proof
 
-This repository is an experimental, handwritten companion to
-[Unified Code](https://github.com/adico1/unified-code). It does not claim full
-Standard Ten, UEM, self-hosting, or arbitrary-program conformance.
-
 ## Claim under test
 
 ```text
-semantic calculator seed
-→ build-time specialization
-→ exact standalone calculator source
+complete seed program
+→ generic build-time compilation
+→ exact standalone application and generated tests
 ```
 
-The seed declares calculator identities, selected operators, mathematical
-equations as expression trees, constants, controls, layout, presentation, and
-acceptance cases. The generated application does not load the seed or a shared
-all-calculators runtime.
+Application meaning is represented by each seed's structured program, semantic
+contract, transitions, interface, boundaries, and acceptance cases. The
+compiler owns only parsing, validation, generic AST construction, rendering,
+emission, hashing, traceability, verification, and atomic installation.
 
-## Run
+## Reproduce
 
 ```bash
 python3 run_all.py --generate-only
 ```
 
-The command:
+The operation requires:
 
-1. compiles the handwritten normal reference and nine seed-programmed
-   variations;
-2. runs all declared acceptance cases;
-3. requires each specialization to contain only `main.py` and `manifest.json`;
-4. generates every calculator a second time;
-5. requires byte-identical outputs;
-6. rejects runtime seed/profile loading.
+1. exactly ten independent seed files;
+2. ten distinct generated application sources;
+3. all seed-declared acceptance cases to pass;
+4. generated tests for every application;
+5. copied execution without seed, compiler, or repository access;
+6. byte-identical second builds in independent directories;
+7. no seed or compiler loading path in generated runtime source;
+8. zero selected application vocabulary in the compiler;
+9. exact seed, compiler, file, and tree hashes;
+10. top-level seed-AST to generated-source line traceability.
 
-Expected summary:
+Current measured result:
 
 ```text
+applications = 10
 acceptance = 19/19
-exact-output = PASS
+isolated copied applications = 10/10
 deterministic = PASS
-runtime-authority-leak = 0
+runtime seed access = 0
+manual application code = 0
+manual application tests = 0
+compiler application-vocabulary hits = 0
 ```
 
-Open all ten Tk applications:
+Open all ten generated Tk applications:
 
 ```bash
 python3 run_all.py
@@ -50,12 +53,15 @@ python3 run_all.py
 
 ## Honest boundary
 
-- `main.py` is the author's live handwritten work in progress.
-- `normal/reference.py` is the frozen runnable normal reference.
-- The other nine applications are specialized from
-  `calculator_suite.seed.json`.
-- New behavior expressible through the registered semantic nodes requires only
-  a seed change.
-- A genuinely new semantic node or target projection still requires a generic
-  language/compiler extension.
-- This does not prove all possible calculators or all possible GUI behavior.
+- The original `main.py` and `normal/reference.py` remain handwritten learning
+  artifacts, but neither is an input to generation.
+- `program.ast` is intentionally a low-level structured language. It proves
+  complete seed authority more strongly than the earlier profile selector, but
+  it is more verbose.
+- The semantic and presentation summaries currently coexist with the
+  authoritative structured program. Traceability hashes both; a future
+  higher-level compiler can derive the AST from those summaries.
+- Adding behavior expressible with Python AST requires only a seed change.
+- A new target language requires a generic compiler projection.
+- This does not prove every possible calculator, every GUI toolkit, full
+  Standard Ten conformance, or root-seed self-hosting.

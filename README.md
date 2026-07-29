@@ -1,90 +1,52 @@
-# Handwritten and seed-generated calculator
+# From Seeds to Apps — Ten Calculators
 
-This folder is the handwritten learning track beside Unified Code. It is
-published independently from the Unified Code repository and root bootstrap:
+This repository is the handwritten learning track beside
+[Unified Code](https://github.com/adico1/unified-code). It is an experimental
+proof of one precise boundary:
 
-<https://github.com/adico1/unified-code-manual>
-
-> **Status: experimental proof, not full Unified Code conformance.**
-
-- `main.py` — your live handwritten Tkinter calculator; the generator never edits it.
-- `normal/reference.py` — last verified normal-case snapshot used by the showcase.
-- `seed.json` — selects the handwritten normal case and names its flow and boundaries.
-- `generator.py` — a small deterministic generator.
-- `generated/main.py` — byte-identical manifestation of the normal case.
-- `generated/manifest.json` — seed and generated-source hashes.
-- `variations/safe-expression.seed.json` — a safer semantic variation.
-- `MODEL.md` — precise definitions of normal case, seed, flow, and boundaries.
-- `CALCULATOR_LANGUAGE.md` — calculator-family language and GUI/backend law.
-- `calculator-language.schema.json` — machine-readable target seed contract.
-- `universal_generator.py` — build-time compiler for calculator-family seeds.
-- `calculator_suite.seed.json` — nine calculator variations.
-- `showcase.json` / `run_all.py` — generate, verify, and open all ten models.
-
-Generate and verify:
-
-```bash
-/usr/local/bin/python3 generator.py seed.json --output generated
+```text
+ten complete seed programs
+→ one generic build-time assembly compiler
+→ ten exact specialized applications
 ```
 
-Run the generated GUI:
+It does not claim full Standard Ten, UEM, self-hosting, or representation of
+every possible calculator.
+
+## One operation
+
+Generate and verify all ten applications:
 
 ```bash
-/usr/local/bin/python3 generated/main.py
+python3 run_all.py --generate-only
 ```
 
-Exercise its non-GUI boundary:
+Generate, verify, and open all ten GUIs:
 
 ```bash
-/usr/local/bin/python3 generated/main.py --evaluate "(2+3)*4"
+python3 run_all.py
 ```
 
-The safer variation uses Python's parsed arithmetic syntax but does not use
-`eval`, so names, calls, imports, and attribute access are rejected. The normal
-case intentionally preserves the original `eval` boundary unchanged.
-
-Generate the safer variation separately:
+List the registered seed programs:
 
 ```bash
-/usr/local/bin/python3 generator.py \
-  variations/safe-expression.seed.json \
-  --output generated-safe
-/usr/local/bin/python3 generated-safe/main.py
+python3 run_all.py --list
 ```
 
-Generate, verify, and open every registered calculator:
+## Source boundary
 
-```bash
-/usr/local/bin/python3 run_all.py
-```
+- `main.py` is the author's original handwritten work and remains available
+  for comparison. The compiler never reads or edits it.
+- `normal/reference.py` is the frozen handwritten reference.
+- `seeds/*.seed.json` are ten independent and complete application programs.
+- `universal_generator.py` is the generic structured-program compiler.
+- `calculator_suite.seed.json` lists the ten seed paths and output paths; it
+  contains no application behavior.
+- `run_all.py` performs generation, acceptance, isolation, deterministic
+  rebuilding, source-separation checks, and optional launch.
+- `generated*/` contains disposable specialized applications.
 
-Useful non-GUI checks:
-
-```bash
-/usr/local/bin/python3 run_all.py --list
-/usr/local/bin/python3 run_all.py --generate-only
-```
-
-The same command also performs a second byte-identical build and rejects
-runtime seed/profile loading. See [PROOF.md](PROOF.md) for the exact claim and
-limitations.
-
-Add future calculators to `showcase.json`; the runner needs no code change.
-
-For the nine variations, `calculator_suite.seed.json` is an executable semantic
-program rather than a configuration switchboard. It declares the operator
-language, function equations, external mathematical boundaries, selected state,
-controls, layout, and acceptance behavior. The domain-blind compiler specializes
-those declarations at build time.
-
-Each output contains exactly one specialized `main.py` and its build manifest.
-The runtime does not contain or load a profile, seed, common calculator engine,
-or capabilities belonging only to another calculator. Adding an equation,
-operator mapping, calculator, control, layout, or theme changes the seed—not the
-compiler. Compiler changes are reserved for a genuinely new semantic node or
-target projection.
-
-The current showcase contains ten functional models:
+The ten applications are:
 
 ```text
 normal
@@ -98,3 +60,60 @@ matrix-vector
 engineering-units
 rpn
 ```
+
+## Seed authority
+
+Each seed declares:
+
+```text
+canonical identity and calculator variation
+numeric laws and operations
+validation and deterministic errors
+state fields and state-transition routes
+GUI title, theme, layout, controls, identities and arguments
+physical boundaries and effects
+complete structured program
+acceptance cases
+```
+
+`program.ast` is executable structured data, not the name of behavior hidden in
+the compiler. It contains the exact program to compile. The compiler translates
+generic Python AST nodes, writes the specialized application and generated
+tests, records seed-to-source line traceability, verifies acceptance, and
+installs the result atomically.
+
+The generated runtime does not load its seed, import the compiler, or require
+the repository. Each output contains only:
+
+```text
+main.py
+test_generated.py
+traceability.json
+manifest.json
+```
+
+No shared all-calculators engine is copied into an application.
+
+## Generated evidence
+
+Every `manifest.json` records:
+
+```text
+seed SHA-256
+compiler SHA-256
+specialized source and test hashes
+traceability hash
+complete artifact-tree hash
+acceptance totals
+manual application code = 0
+manual application tests = 0
+runtime seed files = 0
+runtime shared-engine files = 0
+```
+
+The aggregate operation independently rebuilds every seed in a second temporary
+tree and requires byte-identical outputs. It then copies each generated
+application without the repository or seed and runs its generated tests again.
+
+See [PROOF.md](PROOF.md) for measured evidence and
+[CALCULATOR_LANGUAGE.md](CALCULATOR_LANGUAGE.md) for the language boundary.

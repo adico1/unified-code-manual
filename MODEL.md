@@ -1,78 +1,81 @@
-# Normal case, seed, flow, and boundaries
+# Seed, flow, boundaries, and manifestation
 
 ## Normal case
 
-`main.py` is the handwritten normal case: the first concrete example from
-which variations can be understood.
+`main.py` is the original handwritten learning artifact.
+`normal/reference.py` is its frozen reference snapshot. They help compare human
+construction with seed construction, but they are not generator inputs.
+
+The generated normal calculator is authoritative from:
 
 ```text
-normal case + no variation → byte-identical normal manifestation
-normal case + variation seed → deliberately changed manifestation
+seeds/normal.seed.json
 ```
-
-The normal case is not automatically a universal law. It may contain mistakes,
-unsafe choices, or accidental details. Those remain visible so each later
-variation can state exactly what it changes.
 
 ## Seed
 
-A seed is the smallest declarative statement that selects a known normal case
-and records meaningful differences.
+A seed is the complete application program in structured data:
 
-The normal seed records:
+```text
+identity
++ semantic contract
++ state and transitions
++ presentation and controls
++ boundaries and effects
++ structured executable program
++ acceptance cases
+```
 
-- the archetype identity and source hash;
-- the named flow;
-- the named physical boundaries;
-- available variation seeds.
-
-The safe-expression variation contains a fuller semantic declaration because
-it changes evaluation, controls, validation, and acceptance behavior.
+A seed does not select hidden calculator implementations in the compiler.
 
 ## Flow
 
-Flow is the ordered movement of meaning through the application:
+Flow is behavior over time:
 
 ```text
-button press
-→ callback
-→ expression state changes
-→ display changes
+control event
+→ named route
+→ generated state transition
+→ generated result or error
+→ generated presentation
 ```
 
-```text
-equals press
-→ expression crosses evaluation boundary
-→ result or error
-→ display changes
-```
-
-```text
-clear press
-→ expression becomes empty
-→ display becomes empty
-```
-
-Flow is behavior over time. It is not the button, function, or state by itself.
+The exact physical functions implementing that flow are present in
+`program.ast` and become specialized source before runtime.
 
 ## Boundaries
 
-A boundary is where the calculator crosses between authorities:
+Each seed names its authority crossings:
 
 | Boundary | Direction | Meaning |
 | --- | --- | --- |
-| `tk.input` | inward | Tk button callback enters the program |
-| `python.eval` | outward | expression is delegated to Python evaluation |
-| `tk.display` | outward | program state becomes visible text |
-| `tk.window` | outward | Tk owns the window and event loop |
+| `tk.input` | inward | A control event enters the generated program |
+| `tk.display` | outward | Generated state becomes visible |
+| `tk.window` | outward | Tk owns the physical window and event loop |
+| `process.case` | inward-outward | Canonical JSON enters and leaves the acceptance interface |
 
-The original `eval` call is therefore not merely an implementation line. It is
-an unsafe outward authority boundary. A safer variation replaces that boundary
-with a restricted arithmetic parser.
+Additional boundaries must be declared by the seed that uses them.
 
-## Current truth
+## Build time and runtime
 
-The normal generator uses `main.py` as an explicitly hashed archetype and
-therefore reproduces it byte-for-byte. This is an archetype-plus-seed model,
-not yet a seed-only proof. A future step can move every normal-case meaning
-into declarative vocabulary, after which `main.py` becomes entirely disposable.
+```text
+build time:
+seed → validate → decode structured program → specialize → test → hash → install
+
+runtime:
+generated main.py + user events → results and GUI effects
+```
+
+The runtime does not parse or interpret the seed. It contains only the selected
+program.
+
+## Authority law
+
+```text
+seed describes and programs the application
+compiler translates generic structure
+generated application executes
+```
+
+If changing application behavior requires adding calculator vocabulary to the
+compiler, the boundary has regressed.

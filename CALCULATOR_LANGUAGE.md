@@ -198,14 +198,14 @@ sin button
 ## Seed layers
 
 ```text
-L0 — primitive language
-     numbers, tokens, functions, actions, state transitions
+L0 — structured program language
+     generic syntax nodes, values, names, calls, state and effects
 
 L1 — expression language
      grammar, notation, precedence, evaluation semantics
 
 L2 — calculator-family language
-     regular/scientific/RPN/graphing/financial profiles
+     regular/scientific/RPN/graphing/financial semantic contracts
 
 L3 — interface language
      grid, display, controls, identity, accessibility, theme
@@ -222,7 +222,7 @@ This is the “language of languages of languages”:
 
 ```text
 human intent
-→ profile language
+→ semantic-contract language
 → calculator semantic language
 → interface language
 → target language
@@ -234,37 +234,37 @@ Each layer translates meaning; no layer is allowed to silently invent meaning.
 ## Normal cases and variations
 
 ```text
-normal calculator profile
+normal calculator seed program
 + semantic variation
 + interface variation
 + target projection
 = manifested calculator
 ```
 
-Variations must name differences, not duplicate the whole normal profile:
+The current proof intentionally uses ten independent complete seeds rather than
+inheritance. This makes every application's authority inspectable in one file
+and avoids a hidden normal-case dependency:
 
-```json
-{
-  "extends": "uc://calculator-profiles/regular@1",
-  "changes": [
-    {"operation": "add-capability", "identity": "backend.function.square-root"},
-    {"operation": "add-control", "control": "control.square-root"},
-    {"operation": "set-theme", "identity": "uc://themes/high-contrast@1"}
-  ]
-}
+```text
+seeds/normal.seed.json
+seeds/regular.seed.json
+seeds/scientific.seed.json
+seeds/programmer.seed.json
+seeds/financial.seed.json
+seeds/statistical.seed.json
+seeds/graphing.seed.json
+seeds/matrix-vector.seed.json
+seeds/engineering-units.seed.json
+seeds/rpn.seed.json
 ```
 
-The current handwritten exercise has two proofs:
+The seeds contain complete structured programs. `universal_generator.py`
+translates only generic AST structure and contains no calculator-specific
+equation, layout, event route, or product identity.
 
-- `seed.json` selects the byte-identical handwritten normal case.
-- `variations/safe-expression.seed.json` demonstrates a safer semantic
-  variation.
+## Suite operation
 
-It does not yet implement the complete family vocabulary described here.
-
-## Showcase operation
-
-`run_all.py` reads `showcase.json`, regenerates every enabled calculator, checks
-its generated evidence, and opens all resulting GUIs. Future implemented
-profiles join the showcase by adding a catalog record; the runner itself does
-not acquire calculator-specific branches.
+`run_all.py` reads `calculator_suite.seed.json`, regenerates every enabled seed,
+runs generated acceptance tests in isolation, performs a second independent
+build, checks compiler/application vocabulary separation, and optionally opens
+all ten GUIs.

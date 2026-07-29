@@ -51,8 +51,9 @@ generator: application meaning
 
 ## The correction
 
-The calculator seed now contains structured semantic declarations. For
-example, a two-by-two determinant is represented as an expression tree:
+The calculator seed now contains both a readable semantic contract and its
+complete executable structured program. For example, the contract describes a
+two-by-two determinant as an expression tree:
 
 ```json
 {
@@ -77,9 +78,10 @@ example, a two-by-two determinant is represented as an expression tree:
 }
 ```
 
-The build-time compiler does not contain the determinant formula. It resolves
-generic semantic nodes such as parameter, literal, multiplication, subtraction,
-call, comparison, and choice, and emits only the selected program.
+The build-time compiler does not contain the determinant formula. The complete
+program is represented as generic Python AST data under `program.ast`; the
+compiler validates and translates those generic syntax nodes without knowing
+which calculator, equation, control, or layout they implement.
 
 This produces a different boundary:
 
@@ -99,14 +101,14 @@ shared engine containing every calculator.
 
 ## The extension test
 
-The decisive experiment was to introduce an unseen function:
+An earlier decisive experiment introduced an unseen function:
 
 ```text
 triple(x) = x × 3
 ```
 
-It was expressed only through the semantic seed vocabulary. The unchanged
-compiler generated it, and:
+It was expressed only through seed vocabulary. The compiler generated it
+without receiving a new named implementation, and:
 
 ```text
 triple(7) = 21
@@ -123,9 +125,10 @@ It proves something narrower and useful:
 
 ## Current evidence
 
-The public experiment contains one handwritten normal reference and nine
-seed-programmed calculator variations:
+The public experiment now contains ten independent seed-programmed calculator
+applications:
 
+- normal;
 - regular;
 - scientific;
 - programmer;
@@ -145,11 +148,15 @@ python3 run_all.py --generate-only
 Measured locally:
 
 ```text
-10 applications generated
+10 seed programs compiled into 10 applications
 19/19 acceptance cases passed
 byte-identical repeated generation
-runtime seed/profile access = 0
+isolated copied execution = 10/10
+runtime seed access = 0
 shared all-calculators runtime = 0
+manual application code = 0
+manual application tests = 0
+compiler application-vocabulary hits = 0
 ```
 
 The runnable experiment is available at:
@@ -167,9 +174,11 @@ This experiment does not prove:
 - root-seed self-hosting;
 - that compilers never require extension.
 
-A new application composed from registered semantic nodes changes only the
-seed. A genuinely new semantic node or physical target still requires a
-generic language or compiler extension.
+A new Python application expressible through the structured seed language
+changes only the seed. A new physical target still requires a generic compiler
+projection. The complete AST representation is deliberately low-level and
+verbose; a future higher-level language may compile into it without changing
+the seed/runtime authority law.
 
 That boundary is not a weakness to hide. It is the measurement that keeps the
 claim honest.

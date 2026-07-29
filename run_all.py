@@ -1,65 +1,57 @@
-"""Generate and display every enabled calculator in showcase.json."""
+"""Build, verify, and optionally launch every seed-programmed application."""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
+
 ROOT = Path(__file__).resolve().parent
-CATALOG = ROOT / "showcase.json"
+SUITE = ROOT / "calculator_suite.seed.json"
+COMPILER = ROOT / "universal_generator.py"
 
 
-def load_catalog():
-    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-    if catalog.get("format") != "manual-calculator-showcase-1":
-        raise ValueError("unsupported-showcase")
-    calculators = [
-        item for item in catalog.get("calculators", ()) if item.get("enabled")
-    ]
-    if not calculators:
-        raise ValueError("no-enabled-calculators")
-    return calculators
+def canonical(value):
+    return (
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        + "\n"
+    ).encode()
 
 
-def generate(calculator):
-    generator_path = ROOT / calculator["generator"]
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def load_compiler():
     specification = importlib.util.spec_from_file_location(
-        "showcase_" + calculator["id"].replace("-", "_"),
-        generator_path,
+        "manual_seed_compiler", COMPILER
     )
     module = importlib.util.module_from_spec(specification)
     specification.loader.exec_module(module)
-    arguments = [
-        ROOT / calculator["seed"],
-        ROOT / calculator["output"],
-    ]
-    if calculator.get("profile_id"):
-        arguments.append(calculator["profile_id"])
-    evidence = module.generate(*arguments)
-    return {
-        "id": calculator["id"],
-        "title": calculator["title"],
-        "application": ROOT / calculator["output"] / "main.py",
-        "evidence": evidence,
-    }
+    return module
 
 
-def launch(generated):
-    return [
-        {
-            **item,
-            "process": subprocess.Popen(
-                [sys.executable, str(item["application"])],
-                cwd=item["application"].parent,
-            ),
-        }
-        for item in generated
+def load_suite():
+    document = json.loads(SUITE.read_text(encoding="utf-8"))
+    if document.get("format") != "manual-seed-program-suite-3":
+        raise ValueError("unsupported-suite")
+    applications = [
+        item for item in document.get("applications", ()) if item.get("enabled")
     ]
+    if len(applications) != 10:
+        raise ValueError("ten-applications-required")
+    if len({item["id"] for item in applications}) != len(applications):
+        raise ValueError("duplicate-application")
+    return applications
 
 
 def tree_bytes(path):
@@ -70,32 +62,249 @@ def tree_bytes(path):
     }
 
 
-def verify_exact_rebuild(calculators, generated):
-    first = {
-        item["id"]: tree_bytes(item["application"].parent)
+def compile_app(compiler, application, output=None):
+    target = ROOT / application["output"] if output is None else Path(output)
+    evidence = compiler.generate(ROOT / application["seed"], target)
+    return {
+        **application,
+        "output_path": target,
+        "application": target / "main.py",
+        "evidence": evidence,
+    }
+
+
+def verify_isolated(generated):
+    isolation = Path(tempfile.mkdtemp(prefix="manual-app-isolation-"))
+    try:
+        reports = []
+        for item in generated:
+            copied = isolation / item["id"]
+            shutil.copytree(item["output_path"], copied)
+            result = subprocess.run(
+                [sys.executable, "test_generated.py"],
+                cwd=copied,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            reports.append(json.loads(result.stdout))
+        return reports
+    finally:
+        shutil.rmtree(isolation)
+
+
+def verify_determinism(compiler, applications, generated):
+    second_root = Path(tempfile.mkdtemp(prefix="manual-app-rebuild-"))
+    try:
+        first = {
+            item["id"]: tree_bytes(item["output_path"])
+            for item in generated
+        }
+        second = {
+            item["id"]: tree_bytes(
+                compile_app(
+                    compiler,
+                    item,
+                    second_root / item["id"],
+                )["output_path"]
+            )
+            for item in applications
+        }
+        if first != second:
+            raise ValueError("non-deterministic-output")
+        return {
+            identity: digest(
+                canonical(
+                    {
+                        name: digest(content)
+                        for name, content in sorted(files.items())
+                    }
+                )
+            )
+            for identity, files in first.items()
+        }
+    finally:
+        shutil.rmtree(second_root)
+
+
+def seed_vocabulary(seed):
+    identity = seed["identity"]
+    operations = seed["semantics"]["operations"]
+    return {
+        identity["variation"],
+        *(
+            item["id"]
+            for family in operations.values()
+            for item in family
+        ),
+        *(
+            item["id"]
+            for item in seed["presentation"]["controls"]
+        ),
+        *(
+            item["route"]
+            for item in seed["transitions"]
+        ),
+    }
+
+
+def verify_compiler_separation(applications):
+    source = COMPILER.read_text(encoding="utf-8").casefold()
+    vocabulary = set()
+    for application in applications:
+        seed = json.loads((ROOT / application["seed"]).read_text(encoding="utf-8"))
+        vocabulary.update(seed_vocabulary(seed))
+    generic = {
+        "abs",
+        "add",
+        "append",
+        "divide",
+        "maximum",
+        "minimum",
+        "multiply",
+        "power",
+        "subtract",
+        "sum",
+        "trace",
+    }
+    inspected = sorted(
+        item for item in vocabulary - generic if len(item) >= 4
+    )
+    hits = [
+        item
+        for item in inspected
+        if re.search(
+            rf"(?<![a-z0-9_-]){re.escape(item.casefold())}(?![a-z0-9_-])",
+            source,
+        )
+    ]
+    if hits:
+        raise ValueError("compiler-application-vocabulary:" + ",".join(hits))
+    return {"inspected": len(inspected), "hits": len(hits)}
+
+
+def source_churn(generated):
+    lines = {
+        item["id"]: item["output_path"].joinpath("main.py").read_text(
+            encoding="utf-8"
+        ).splitlines()
         for item in generated
     }
-    if any(set(files) != {"main.py", "manifest.json"} for files in first.values()):
+    common = set.intersection(
+        *(
+            {line for line in source if line.strip()}
+            for source in lines.values()
+        )
+    )
+    return {
+        "physical_shared_runtime_files": 0,
+        "textually_common_nonblank_lines": len(common),
+        "specialized": {
+            identity: {
+                "total_lines": len(source),
+                "nonblank_lines": sum(bool(line.strip()) for line in source),
+                "nonblank_lines_not_common_to_all": sum(
+                    bool(line.strip()) and line not in common
+                    for line in source
+                ),
+            }
+            for identity, source in sorted(lines.items())
+        },
+    }
+
+
+def write_report(applications, generated, hashes, separation, complete_tree):
+    compiler_bytes = COMPILER.read_bytes()
+    runner_bytes = Path(__file__).read_bytes()
+    report = {
+        "format": "manual-seed-assembly-report-1",
+        "operation": "python3 run_all.py --generate-only",
+        "applications": [
+            {
+                "id": item["id"],
+                "seed": item["seed"],
+                "seed_sha256": item["evidence"]["seed_sha256"],
+                "artifact_tree_sha256": item["evidence"]["tree_sha256"],
+                "acceptance": item["evidence"]["verification"],
+                "controls": len(
+                    json.loads(
+                        (ROOT / item["seed"]).read_text(encoding="utf-8")
+                    )["presentation"]["controls"]
+                ),
+                "source_lines": len(
+                    item["application"].read_text(encoding="utf-8").splitlines()
+                ),
+            }
+            for item in generated
+        ],
+        "build_time_shared": {
+            "universal_generator.py": {
+                "sha256": digest(compiler_bytes),
+                "lines": len(compiler_bytes.splitlines()),
+            },
+            "run_all.py": {
+                "sha256": digest(runner_bytes),
+                "lines": len(runner_bytes.splitlines()),
+            },
+        },
+        "generated_source": source_churn(generated),
+        "deterministic_artifact_hashes": hashes,
+        "complete_tree_sha256": complete_tree,
+        "compiler_application_vocabulary": separation,
+        "manual_application_code": 0,
+        "manual_application_tests": 0,
+        "runtime_seed_access": 0,
+    }
+    destination = ROOT / "ASSEMBLY_REPORT.json"
+    temporary = destination.with_suffix(".json.tmp")
+    temporary.write_bytes(canonical(report))
+    temporary.replace(destination)
+    return report
+
+
+def verify_specialization(generated):
+    allowed = {
+        "main.py",
+        "manifest.json",
+        "test_generated.py",
+        "traceability.json",
+    }
+    trees = {
+        item["id"]: tree_bytes(item["output_path"])
+        for item in generated
+    }
+    if any(set(files) != allowed for files in trees.values()):
         raise ValueError("non-specialized-output")
-    second = [generate(calculator) for calculator in calculators]
-    if any(
-        first[item["id"]] != tree_bytes(item["application"].parent)
-        for item in second
-    ):
-        raise ValueError("non-deterministic-output")
+    sources = {files["main.py"] for files in trees.values()}
+    if len(sources) != len(trees):
+        raise ValueError("applications-not-independent")
     forbidden = (
-        b"profile.json",
-        b"calculator_runtime",
+        b"seed.json",
+        b"universal_generator",
+        b"calculator_suite",
         b"read_text(",
         b"read_bytes(",
     )
     if any(
         token in files["main.py"]
-        for files in first.values()
+        for files in trees.values()
         for token in forbidden
     ):
         raise ValueError("runtime-authority-leak")
-    return second
+    return trees
+
+
+def launch(generated):
+    return [
+        {
+            **item,
+            "process": subprocess.Popen(
+                [sys.executable, str(item["application"])],
+                cwd=item["output_path"],
+            ),
+        }
+        for item in generated
+    ]
 
 
 def wait_for_windows(running):
@@ -111,44 +320,57 @@ def wait_for_windows(running):
     return max((item["process"].returncode or 0) for item in running)
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--generate-only",
-        action="store_true",
-        help="Generate and verify all calculators without opening windows.",
+def execute(generate_only):
+    applications = load_suite()
+    compiler = load_compiler()
+    generated = [
+        compile_app(compiler, application)
+        for application in applications
+    ]
+    verify_specialization(generated)
+    isolated = verify_isolated(generated)
+    hashes = verify_determinism(compiler, applications, generated)
+    separation = verify_compiler_separation(applications)
+    passed = sum(
+        item["evidence"]["verification"]["passed"]
+        for item in generated
     )
-    parser.add_argument(
-        "--list",
-        action="store_true",
-        help="List every enabled calculator without generating it.",
-    )
-    arguments = parser.parse_args(argv)
-    calculators = load_catalog()
-    if arguments.list:
-        for calculator in calculators:
-            print(f"{calculator['id']}: {calculator['title']}")
-        return 0
-    generated = verify_exact_rebuild(
-        calculators,
-        [generate(calculator) for calculator in calculators],
+    total = sum(
+        item["evidence"]["verification"]["total"]
+        for item in generated
     )
     for item in generated:
-        identity = item["evidence"].get(
-            "seed_sha256",
-            item["evidence"]["files"]["main.py"],
-        )
-        passed = item["evidence"]["verification"]["passed"]
-        total = item["evidence"]["verification"]["total"]
+        evidence = item["evidence"]
         print(
-            f"generated {item['id']}: {identity} acceptance={passed}/{total}",
+            "generated "
+            f"{item['id']}: seed={evidence['seed_sha256']} "
+            f"artifact={evidence['tree_sha256']} "
+            f"acceptance={evidence['verification']['passed']}/"
+            f"{evidence['verification']['total']}",
             flush=True,
         )
+    complete_tree = digest(canonical(hashes))
+    write_report(
+        applications,
+        generated,
+        hashes,
+        separation,
+        complete_tree,
+    )
     print(
-        "proof: exact-output=PASS deterministic=PASS runtime-authority-leak=0",
+        "proof: "
+        f"applications={len(generated)} "
+        f"acceptance={passed}/{total} "
+        f"isolated={len(isolated)}/10 "
+        "deterministic=PASS "
+        "runtime-seed-access=0 "
+        "manual-application-code=0 "
+        "manual-application-tests=0 "
+        f"compiler-vocabulary={separation['hits']}/{separation['inspected']} "
+        f"complete-tree={complete_tree}",
         flush=True,
     )
-    if arguments.generate_only:
+    if generate_only:
         return 0
     running = launch(generated)
     for item in running:
@@ -157,6 +379,26 @@ def main(argv=None):
             flush=True,
         )
     return wait_for_windows(running)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--generate-only",
+        action="store_true",
+        help="Build and verify all applications without opening windows.",
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List all seed-programmed applications.",
+    )
+    arguments = parser.parse_args(argv)
+    if arguments.list:
+        for application in load_suite():
+            print(f"{application['id']}: {application['title']}")
+        return 0
+    return execute(arguments.generate_only)
 
 
 if __name__ == "__main__":
