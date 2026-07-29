@@ -13,6 +13,8 @@ from pathlib import Path
 
 
 FORMAT = "manual-seed-program-2"
+LEAF_FORMAT = "manual-what-seed-3"
+BASE_FORMAT = "manual-seed-base-1"
 REQUIRED_CONTRACT = frozenset(
     {
         "identity",
@@ -36,6 +38,108 @@ def canonical(value):
 
 def digest(raw):
     return hashlib.sha256(raw).hexdigest()
+
+
+def document_digest(value):
+    return digest(canonical(value))
+
+
+def load_document(path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def resolve_reference(owner, reference, ancestry):
+    if set(reference) != {"identity", "path", "sha256"}:
+        raise ValueError("unpinned-base")
+    relative = Path(reference["path"])
+    if relative.is_absolute():
+        raise ValueError("base-path-not-relative")
+    target = (owner.parent / relative).resolve(strict=True)
+    document = load_document(target)
+    if document.get("identity") != reference["identity"]:
+        raise ValueError("base-identity-mismatch")
+    if document_digest(document) != reference["sha256"]:
+        raise ValueError("base-hash-mismatch")
+    return resolve_base(target, document, ancestry)
+
+
+def resolve_base(path, document, ancestry=()):
+    canonical_path = path.resolve(strict=True)
+    if canonical_path in ancestry:
+        raise ValueError("seed-cycle")
+    if document.get("format") != BASE_FORMAT:
+        raise ValueError("base-format")
+    references = document.get("bases", ())
+    identities = [reference.get("identity") for reference in references]
+    if len(identities) != len(set(identities)):
+        raise ValueError("duplicate-base")
+    provisions = {}
+    authorities = []
+    next_ancestry = (*ancestry, canonical_path)
+    for reference in references:
+        inherited, inherited_authorities = resolve_reference(
+            canonical_path,
+            reference,
+            next_ancestry,
+        )
+        for name, value in inherited.items():
+            if name in provisions and provisions[name] != value:
+                raise ValueError("base-conflict")
+            provisions[name] = value
+        authorities.extend(inherited_authorities)
+    for name, value in document.get("provides", {}).items():
+        if name in provisions and provisions[name] != value:
+            raise ValueError("base-conflict")
+        provisions[name] = value
+    authorities.append(
+        {
+            "identity": document["identity"],
+            "sha256": document_digest(document),
+        }
+    )
+    return provisions, authorities
+
+
+def load_seed(path):
+    path = Path(path).resolve(strict=True)
+    document = load_document(path)
+    if document.get("format") == FORMAT:
+        return document, [
+            {
+                "identity": document["identity"]["canonical"],
+                "kind": "legacy-complete-seed",
+                "sha256": document_digest(document),
+            }
+        ]
+    if document.get("format") != LEAF_FORMAT:
+        raise ValueError("leaf-format")
+    references = document.get("bases", ())
+    if not references:
+        raise ValueError("leaf-without-base")
+    provisions = {}
+    authorities = []
+    for reference in references:
+        inherited, inherited_authorities = resolve_reference(path, reference, ())
+        for name, value in inherited.items():
+            if name in provisions and provisions[name] != value:
+                raise ValueError("base-conflict")
+            provisions[name] = value
+        authorities.extend(inherited_authorities)
+    what = document.get("what", {})
+    if what.get("identity", {}).get("family") != provisions.get("family"):
+        raise ValueError("family-authority-mismatch")
+    required = set(provisions.get("required_meaning", ()))
+    if required - what.keys():
+        raise ValueError("incomplete-what")
+    resolved = {"format": FORMAT, **what}
+    authorities.append(
+        {
+            "identity": what["identity"]["canonical"],
+            "kind": "what-authority",
+            "sha256": document_digest(document),
+        }
+    )
+    return resolved, authorities
 
 
 def decode_node(value):
@@ -182,7 +286,7 @@ def render_program(seed):
     return source
 
 
-def trace_program(seed, source):
+def trace_program(seed, source, authorities):
     rendered = ast.parse(source)
     original = seed["program"]["ast"].get("body", ())
     functions = {
@@ -194,6 +298,7 @@ def trace_program(seed, source):
         "format": "manual-seed-trace-1",
         "seed_sha256": digest(canonical(seed)),
         "source_sha256": digest(source),
+        "authorities": authorities,
         "top_level": [
             {
                 "seed_path": f"/program/ast/body/{index}",
@@ -324,7 +429,7 @@ def install(stage, output):
 def generate(seed_path, output):
     seed_path = Path(seed_path).resolve(strict=True)
     output = Path(output).resolve(strict=False)
-    seed = json.loads(seed_path.read_text(encoding="utf-8"))
+    seed, authorities = load_seed(seed_path)
     errors = validate(seed)
     if errors:
         raise ValueError(",".join(errors))
@@ -332,7 +437,7 @@ def generate(seed_path, output):
     verify_runtime_source(source)
     verification = acceptance_result(seed, source)
     tests = render_tests(seed)
-    trace = canonical(trace_program(seed, source))
+    trace = canonical(trace_program(seed, source, authorities))
     files = {
         "main.py": source,
         "test_generated.py": tests,
@@ -347,6 +452,7 @@ def generate(seed_path, output):
         "format": "manual-seed-application-2",
         "identity": seed["identity"],
         "seed_sha256": digest(canonical(seed)),
+        "authorities": authorities,
         "compiler_sha256": digest(Path(__file__).read_bytes()),
         "files": file_hashes,
         "tree_sha256": tree_hash,

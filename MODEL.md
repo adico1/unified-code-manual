@@ -12,9 +12,19 @@ The generated normal calculator is authoritative from:
 seeds/normal.seed.json
 ```
 
-## Seed
+## Recursive seeds
 
-A seed is the complete application program in structured data:
+A seed may be the base authority of another seed:
+
+```text
+בלי_מה
+→ calculator-family seed
+→ application מה seed
+→ generated application
+```
+
+`בלי_מה` contains invariant construction laws. The calculator-family seed adds
+family invariants. The leaf מה seed contains the complete selected application:
 
 ```text
 identity
@@ -26,7 +36,9 @@ identity
 + acceptance cases
 ```
 
-A seed does not select hidden calculator implementations in the compiler.
+A base reference contains exact identity, relative path and content hash. A
+child cannot silently select a floating version or override a conflicting
+truth.
 
 ## Flow
 
@@ -60,7 +72,8 @@ Additional boundaries must be declared by the seed that uses them.
 
 ```text
 build time:
-seed → validate → decode structured program → specialize → test → hash → install
+resolve pinned bases → validate מה → decode program → specialize
+→ test → hash → install
 
 runtime:
 generated main.py + user events → results and GUI effects
@@ -72,7 +85,9 @@ program.
 ## Authority law
 
 ```text
-seed describes and programs the application
+בלי_מה defines invariant construction authority
+base seeds specialize lawful potential
+מה describes and programs the selected application
 compiler translates generic structure
 generated application executes
 ```

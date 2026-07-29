@@ -148,11 +148,11 @@ def seed_vocabulary(seed):
     }
 
 
-def verify_compiler_separation(applications):
+def verify_compiler_separation(applications, compiler):
     source = COMPILER.read_text(encoding="utf-8").casefold()
     vocabulary = set()
     for application in applications:
-        seed = json.loads((ROOT / application["seed"]).read_text(encoding="utf-8"))
+        seed, _ = compiler.load_seed(ROOT / application["seed"])
         vocabulary.update(seed_vocabulary(seed))
     generic = {
         "abs",
@@ -213,7 +213,15 @@ def source_churn(generated):
     }
 
 
-def write_report(applications, generated, hashes, separation, complete_tree):
+def write_report(
+    applications,
+    generated,
+    hashes,
+    separation,
+    complete_tree,
+    compiler,
+    seed_graph,
+):
     compiler_bytes = COMPILER.read_bytes()
     runner_bytes = Path(__file__).read_bytes()
     report = {
@@ -227,9 +235,9 @@ def write_report(applications, generated, hashes, separation, complete_tree):
                 "artifact_tree_sha256": item["evidence"]["tree_sha256"],
                 "acceptance": item["evidence"]["verification"],
                 "controls": len(
-                    json.loads(
-                        (ROOT / item["seed"]).read_text(encoding="utf-8")
-                    )["presentation"]["controls"]
+                    compiler.load_seed(ROOT / item["seed"])[0][
+                        "presentation"
+                    ]["controls"]
                 ),
                 "source_lines": len(
                     item["application"].read_text(encoding="utf-8").splitlines()
@@ -254,6 +262,7 @@ def write_report(applications, generated, hashes, separation, complete_tree):
         "manual_application_code": 0,
         "manual_application_tests": 0,
         "runtime_seed_access": 0,
+        "seed_graph": seed_graph,
     }
     destination = ROOT / "ASSEMBLY_REPORT.json"
     temporary = destination.with_suffix(".json.tmp")
@@ -294,6 +303,92 @@ def verify_specialization(generated):
     return trees
 
 
+def expect_error(operation, identity):
+    try:
+        operation()
+    except ValueError as error:
+        if str(error) != identity:
+            raise
+        return identity
+    raise ValueError("missing-rejection:" + identity)
+
+
+def verify_seed_graph(compiler):
+    temporary = Path(tempfile.mkdtemp(prefix="manual-seed-graph-"))
+    try:
+        copied = temporary / "seeds"
+        shutil.copytree(ROOT / "seeds", copied)
+        leaf = copied / "normal.seed.json"
+        family = copied / "bases" / "calculator-family.seed.json"
+
+        tampered = json.loads(family.read_text(encoding="utf-8"))
+        tampered["provides"]["family"] = "tampered"
+        family.write_bytes(canonical(tampered))
+        tamper = expect_error(
+            lambda: compiler.load_seed(leaf),
+            "base-hash-mismatch",
+        )
+
+        shutil.rmtree(copied)
+        shutil.copytree(ROOT / "seeds", copied)
+        leaf = copied / "normal.seed.json"
+        unpinned = json.loads(leaf.read_text(encoding="utf-8"))
+        del unpinned["bases"][0]["sha256"]
+        leaf.write_bytes(canonical(unpinned))
+        floating = expect_error(
+            lambda: compiler.load_seed(leaf),
+            "unpinned-base",
+        )
+
+        root_path = ROOT / "seeds" / "bases" / "בלי_מה.seed.json"
+        root_document = json.loads(root_path.read_text(encoding="utf-8"))
+        cycle = expect_error(
+            lambda: compiler.resolve_base(
+                root_path,
+                root_document,
+                (root_path.resolve(),),
+            ),
+            "seed-cycle",
+        )
+
+        conflict_root = temporary / "conflict-root.seed.json"
+        conflict_root.write_bytes(canonical(root_document))
+        conflict_document = {
+            "format": compiler.BASE_FORMAT,
+            "identity": "uc://manual/seeds/conflict-proof@1",
+            "kind": "mutation",
+            "bases": [
+                {
+                    "identity": root_document["identity"],
+                    "path": conflict_root.name,
+                    "sha256": compiler.document_digest(root_document),
+                }
+            ],
+            "provides": {
+                "canonical_encoding": "conflicting-encoding",
+            },
+        }
+        conflict_path = temporary / "conflict.seed.json"
+        conflict_path.write_bytes(canonical(conflict_document))
+        conflict = expect_error(
+            lambda: compiler.resolve_base(
+                conflict_path,
+                conflict_document,
+            ),
+            "base-conflict",
+        )
+        return {
+            "tamper": tamper,
+            "floating": floating,
+            "cycle": cycle,
+            "conflict": conflict,
+            "passed": 4,
+            "total": 4,
+        }
+    finally:
+        shutil.rmtree(temporary)
+
+
 def launch(generated):
     return [
         {
@@ -330,7 +425,8 @@ def execute(generate_only):
     verify_specialization(generated)
     isolated = verify_isolated(generated)
     hashes = verify_determinism(compiler, applications, generated)
-    separation = verify_compiler_separation(applications)
+    separation = verify_compiler_separation(applications, compiler)
+    seed_graph = verify_seed_graph(compiler)
     passed = sum(
         item["evidence"]["verification"]["passed"]
         for item in generated
@@ -356,6 +452,8 @@ def execute(generate_only):
         hashes,
         separation,
         complete_tree,
+        compiler,
+        seed_graph,
     )
     print(
         "proof: "
@@ -367,6 +465,7 @@ def execute(generate_only):
         "manual-application-code=0 "
         "manual-application-tests=0 "
         f"compiler-vocabulary={separation['hits']}/{separation['inspected']} "
+        f"seed-graph={seed_graph['passed']}/{seed_graph['total']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )

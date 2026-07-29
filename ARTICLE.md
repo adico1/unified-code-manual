@@ -125,8 +125,8 @@ It proves something narrower and useful:
 
 ## Current evidence
 
-The public experiment now contains ten independent seed-programmed calculator
-applications:
+The public experiment now contains ten seed-programmed calculator applications
+derived through one content-addressed seed ancestry:
 
 - normal;
 - regular;
@@ -157,6 +157,7 @@ shared all-calculators runtime = 0
 manual application code = 0
 manual application tests = 0
 compiler application-vocabulary hits = 0
+altered/floating/cyclic/conflicting base rejection = 4/4
 ```
 
 The runnable experiment is available at:
@@ -179,6 +180,10 @@ changes only the seed. A new physical target still requires a generic compiler
 projection. The complete AST representation is deliberately low-level and
 verbose; a future higher-level language may compile into it without changing
 the seed/runtime authority law.
+
+The current seed graph separates invariant `בלי_מה` authority, calculator-family
+authority and application-specific `מה`. This removes silent base selection,
+but it does not yet remove the verbose AST duplication inside each leaf.
 
 That boundary is not a weakness to hide. It is the measurement that keeps the
 claim honest.

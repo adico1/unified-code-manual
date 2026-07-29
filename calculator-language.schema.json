@@ -1,166 +1,367 @@
 {
-  "$id": "uc://schemas/manual-seed-program@2",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "additionalProperties": false,
-  "properties": {
-    "acceptance": {
-      "items": {
-        "additionalProperties": false,
-        "properties": {
-          "expected": {"type": "object"},
-          "id": {"minLength": 1, "type": "string"},
-          "input": {"type": "object"}
-        },
-        "required": ["id", "input", "expected"],
-        "type": "object"
-      },
-      "minItems": 1,
-      "type": "array"
+  "$id": "uc://schemas/manual-seed-graph@3",
+  "title": "Recursive manual seed graph",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/base"
     },
-    "boundaries": {
-      "items": {
-        "additionalProperties": false,
-        "properties": {
-          "direction": {
-            "enum": ["inward", "outward", "inward-outward"]
-          },
-          "effect": {"minLength": 1, "type": "string"},
-          "identity": {"minLength": 1, "type": "string"}
-        },
-        "required": ["identity", "direction", "effect"],
-        "type": "object"
-      },
-      "minItems": 1,
-      "type": "array"
-    },
-    "format": {"const": "manual-seed-program-2"},
-    "identity": {
+    {
+      "$ref": "#/$defs/leaf"
+    }
+  ],
+  "$defs": {
+    "reference": {
+      "type": "object",
       "additionalProperties": false,
+      "required": [
+        "identity",
+        "path",
+        "sha256"
+      ],
       "properties": {
-        "canonical": {
-          "pattern": "^uc://manual/calculators/.+@[1-9][0-9]*$",
-          "type": "string"
+        "identity": {
+          "type": "string",
+          "pattern": "^uc://"
         },
-        "family": {"const": "calculator"},
-        "variation": {"minLength": 1, "type": "string"},
-        "version": {"minimum": 1, "type": "integer"}
-      },
-      "required": ["canonical", "family", "variation", "version"],
-      "type": "object"
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
     },
-    "presentation": {
+    "base": {
+      "type": "object",
       "additionalProperties": false,
+      "required": [
+        "format",
+        "identity",
+        "kind",
+        "bases",
+        "provides"
+      ],
       "properties": {
-        "controls": {
+        "format": {
+          "const": "manual-seed-base-1"
+        },
+        "identity": {
+          "type": "string",
+          "pattern": "^uc://"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bases": {
+          "type": "array",
           "items": {
-            "additionalProperties": true,
+            "$ref": "#/$defs/reference"
+          }
+        },
+        "provides": {
+          "type": "object"
+        }
+      }
+    },
+    "leaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "bases",
+        "what"
+      ],
+      "properties": {
+        "format": {
+          "const": "manual-what-seed-3"
+        },
+        "bases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/reference"
+          }
+        },
+        "what": {
+          "$ref": "#/$defs/what"
+        }
+      }
+    },
+    "what": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "semantics",
+        "state",
+        "transitions",
+        "presentation",
+        "boundaries",
+        "program",
+        "acceptance"
+      ],
+      "properties": {
+        "acceptance": {
+          "items": {
+            "additionalProperties": false,
             "properties": {
-              "action": {"minLength": 1, "type": "string"},
-              "column": {"minimum": 0, "type": "integer"},
-              "id": {"minLength": 1, "type": "string"},
-              "label": {"type": "string"},
-              "row": {"minimum": 0, "type": "integer"}
+              "expected": {
+                "type": "object"
+              },
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "input": {
+                "type": "object"
+              }
             },
-            "required": ["id", "label", "action", "row", "column"],
+            "required": [
+              "id",
+              "input",
+              "expected"
+            ],
             "type": "object"
           },
           "minItems": 1,
           "type": "array"
         },
-        "geometry": {"minLength": 1, "type": "string"},
-        "layout": {"type": "object"},
-        "mode_label": {"type": "string"},
-        "theme": {"type": "object"},
-        "title": {"minLength": 1, "type": "string"}
-      },
-      "required": [
-        "title",
-        "geometry",
-        "mode_label",
-        "layout",
-        "theme",
-        "controls"
-      ],
-      "type": "object"
-    },
-    "program": {
-      "additionalProperties": false,
-      "properties": {
-        "ast": {
+        "boundaries": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "direction": {
+                "enum": [
+                  "inward",
+                  "outward",
+                  "inward-outward"
+                ]
+              },
+              "effect": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "identity": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "identity",
+              "direction",
+              "effect"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "identity": {
+          "additionalProperties": false,
           "properties": {
-            "_type": {"const": "Module"},
-            "body": {"type": "array"}
+            "canonical": {
+              "pattern": "^uc://manual/calculators/.+@[1-9][0-9]*$",
+              "type": "string"
+            },
+            "family": {
+              "const": "calculator"
+            },
+            "variation": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "version": {
+              "minimum": 1,
+              "type": "integer"
+            }
           },
-          "required": ["_type", "body"],
+          "required": [
+            "canonical",
+            "family",
+            "variation",
+            "version"
+          ],
           "type": "object"
         },
-        "case_entrypoint": {"minLength": 1, "type": "string"},
-        "language": {"const": "python-ast-3"},
-        "launch_entrypoint": {"minLength": 1, "type": "string"}
-      },
-      "required": [
-        "language",
-        "case_entrypoint",
-        "launch_entrypoint",
-        "ast"
-      ],
-      "type": "object"
-    },
-    "semantics": {
-      "additionalProperties": false,
-      "properties": {
-        "numeric_laws": {"type": "object"},
-        "operations": {
-          "additionalProperties": {
-            "items": {"type": "object"},
-            "type": "array"
+        "presentation": {
+          "additionalProperties": false,
+          "properties": {
+            "controls": {
+              "items": {
+                "additionalProperties": true,
+                "properties": {
+                  "action": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "column": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "id": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "row": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "action",
+                  "row",
+                  "column"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "geometry": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "layout": {
+              "type": "object"
+            },
+            "mode_label": {
+              "type": "string"
+            },
+            "theme": {
+              "type": "object"
+            },
+            "title": {
+              "minLength": 1,
+              "type": "string"
+            }
           },
+          "required": [
+            "title",
+            "geometry",
+            "mode_label",
+            "layout",
+            "theme",
+            "controls"
+          ],
           "type": "object"
         },
-        "validation": {"type": "object"}
-      },
-      "required": ["numeric_laws", "operations", "validation"],
-      "type": "object"
-    },
-    "state": {
-      "additionalProperties": false,
-      "properties": {
-        "authority": {"const": "program.ast"},
-        "fields": {
-          "items": {"type": "string"},
-          "type": "array",
-          "uniqueItems": true
+        "program": {
+          "additionalProperties": false,
+          "properties": {
+            "ast": {
+              "properties": {
+                "_type": {
+                  "const": "Module"
+                },
+                "body": {
+                  "type": "array"
+                }
+              },
+              "required": [
+                "_type",
+                "body"
+              ],
+              "type": "object"
+            },
+            "case_entrypoint": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "language": {
+              "const": "python-ast-3"
+            },
+            "launch_entrypoint": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "language",
+            "case_entrypoint",
+            "launch_entrypoint",
+            "ast"
+          ],
+          "type": "object"
+        },
+        "semantics": {
+          "additionalProperties": false,
+          "properties": {
+            "numeric_laws": {
+              "type": "object"
+            },
+            "operations": {
+              "additionalProperties": {
+                "items": {
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "type": "object"
+            },
+            "validation": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "numeric_laws",
+            "operations",
+            "validation"
+          ],
+          "type": "object"
+        },
+        "state": {
+          "additionalProperties": false,
+          "properties": {
+            "authority": {
+              "const": "program.ast"
+            },
+            "fields": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "authority",
+            "fields"
+          ],
+          "type": "object"
+        },
+        "transitions": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "argument": {},
+              "event": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "route": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "event",
+              "route"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
         }
-      },
-      "required": ["authority", "fields"],
-      "type": "object"
-    },
-    "transitions": {
-      "items": {
-        "additionalProperties": false,
-        "properties": {
-          "argument": {},
-          "event": {"minLength": 1, "type": "string"},
-          "route": {"minLength": 1, "type": "string"}
-        },
-        "required": ["event", "route"],
-        "type": "object"
-      },
-      "minItems": 1,
-      "type": "array"
+      }
     }
-  },
-  "required": [
-    "format",
-    "identity",
-    "semantics",
-    "state",
-    "transitions",
-    "presentation",
-    "boundaries",
-    "program",
-    "acceptance"
-  ],
-  "title": "Complete manual seed program",
-  "type": "object"
+  }
 }

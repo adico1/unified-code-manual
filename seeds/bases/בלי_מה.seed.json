@@ -1,0 +1,30 @@
+{
+  "bases": [],
+  "format": "manual-seed-base-1",
+  "identity": "uc://manual/seeds/בלי_מה@1",
+  "kind": "invariant-authority",
+  "provides": {
+    "canonical_encoding": "json-sort-keys-utf8-v1",
+    "composition_law": {
+      "base_order_is_semantic": true,
+      "conflicts": "invalid",
+      "cycles": "invalid",
+      "floating_versions": "invalid",
+      "silent_overrides": "invalid"
+    },
+    "identity_law": "exact-content-addressed",
+    "manifestation_law": {
+      "atomic_installation": true,
+      "runtime_seed_interpretation": false,
+      "same_authorities_same_artifact": true
+    },
+    "program_language": "python-ast-3",
+    "target": "python-tk",
+    "verification": {
+      "acceptance_generated": true,
+      "independent_rebuild": true,
+      "isolated_execution": true,
+      "traceability": true
+    }
+  }
+}

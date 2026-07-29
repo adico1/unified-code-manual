@@ -3,7 +3,7 @@
 ## Claim under test
 
 ```text
-complete seed program
+pinned recursive seed graph
 → generic build-time compilation
 → exact standalone application and generated tests
 ```
@@ -21,7 +21,7 @@ python3 run_all.py --generate-only
 
 The operation requires:
 
-1. exactly ten independent seed files;
+1. exactly one pinned בלי_מה root, one family base and ten leaf מה seeds;
 2. ten distinct generated application sources;
 3. all seed-declared acceptance cases to pass;
 4. generated tests for every application;
@@ -31,6 +31,7 @@ The operation requires:
 8. zero selected application vocabulary in the compiler;
 9. exact seed, compiler, file, and tree hashes;
 10. top-level seed-AST to generated-source line traceability.
+11. rejection of altered, floating, cyclic and conflicting base authority.
 
 Current measured result:
 
@@ -43,6 +44,7 @@ runtime seed access = 0
 manual application code = 0
 manual application tests = 0
 compiler application-vocabulary hits = 0
+seed-graph rejection proofs = 4/4
 ```
 
 Open all ten generated Tk applications:
@@ -61,6 +63,8 @@ python3 run_all.py
 - The semantic and presentation summaries currently coexist with the
   authoritative structured program. Traceability hashes both; a future
   higher-level compiler can derive the AST from those summaries.
+- Recursive seed ancestry is now implemented and content-addressed, but the
+  leaf AST remains verbose and duplicated with its readable semantic summary.
 - Adding behavior expressible with Python AST requires only a seed change.
 - A new target language requires a generic compiler projection.
 - This does not prove every possible calculator, every GUI toolkit, full

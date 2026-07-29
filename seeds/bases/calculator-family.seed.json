@@ -1,0 +1,34 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/בלי_מה@1",
+      "path": "בלי_מה.seed.json",
+      "sha256": "5cc849ee1b6ee924b44710a321933d837b7354b6389097975bd7197cb1aed2b7"
+    }
+  ],
+  "format": "manual-seed-base-1",
+  "identity": "uc://manual/seeds/calculator-family@1",
+  "kind": "family-authority",
+  "provides": {
+    "family": "calculator",
+    "interface_law": {
+      "control_event_routed": true,
+      "control_identity_unique": true,
+      "grid_position_unique": true
+    },
+    "required_meaning": [
+      "identity",
+      "semantics",
+      "state",
+      "transitions",
+      "presentation",
+      "boundaries",
+      "program",
+      "acceptance"
+    ],
+    "runtime_contract": {
+      "case_entrypoint": "run_case",
+      "launch_entrypoint": "launch"
+    }
+  }
+}
