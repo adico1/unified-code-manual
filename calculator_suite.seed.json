@@ -1,0 +1,281 @@
+{
+  "format": "manual-calculator-program-suite-2",
+  "language": {
+    "binary": [
+      {"id":"add","syntax":"ast.Add","target":"operator.add","emit":"+","token":"+"},
+      {"id":"subtract","syntax":"ast.Sub","target":"operator.sub","emit":"-","token":"-"},
+      {"id":"multiply","syntax":"ast.Mult","target":"operator.mul","emit":"*","token":"*"},
+      {"id":"divide","syntax":"ast.Div","target":"operator.truediv","emit":"/","token":"/"},
+      {"id":"floor-divide","syntax":"ast.FloorDiv","target":"operator.floordiv","emit":"//","token":"//"},
+      {"id":"modulo","syntax":"ast.Mod","target":"operator.mod","emit":"%","token":"%"},
+      {"id":"power","syntax":"ast.Pow","target":"operator.pow","emit":"**","token":"^"},
+      {"id":"bit-and","syntax":"ast.BitAnd","target":"operator.and_","emit":"&","token":"&"},
+      {"id":"bit-or","syntax":"ast.BitOr","target":"operator.or_","emit":"|","token":"|"},
+      {"id":"bit-xor","syntax":"ast.BitXor","target":"operator.xor","emit":"^","token":"xor"},
+      {"id":"shift-left","syntax":"ast.LShift","target":"operator.lshift","emit":"<<","token":"<<"},
+      {"id":"shift-right","syntax":"ast.RShift","target":"operator.rshift","emit":">>","token":">>"}
+    ],
+    "unary": [
+      {"id":"positive","syntax":"ast.UAdd","target":"operator.pos","emit":"+"},
+      {"id":"negative","syntax":"ast.USub","target":"operator.neg","emit":"-"},
+      {"id":"bit-not","syntax":"ast.Invert","target":"operator.invert","emit":"~"}
+    ],
+    "functions": [
+      {"id":"abs","parameters":["value"],"body":{"call":"abs","arguments":[{"parameter":"value"}]}},
+      {"id":"sqrt","parameters":["value"],"body":{"call":"math.sqrt","arguments":[{"parameter":"value"}]}},
+      {"id":"sin","parameters":["value"],"body":{"call":"math.sin","arguments":[{"parameter":"value"}]}},
+      {"id":"cos","parameters":["value"],"body":{"call":"math.cos","arguments":[{"parameter":"value"}]}},
+      {"id":"tan","parameters":["value"],"body":{"call":"math.tan","arguments":[{"parameter":"value"}]}},
+      {"id":"asin","parameters":["value"],"body":{"call":"math.asin","arguments":[{"parameter":"value"}]}},
+      {"id":"acos","parameters":["value"],"body":{"call":"math.acos","arguments":[{"parameter":"value"}]}},
+      {"id":"atan","parameters":["value"],"body":{"call":"math.atan","arguments":[{"parameter":"value"}]}},
+      {"id":"ln","parameters":["value"],"body":{"call":"math.log","arguments":[{"parameter":"value"}]}},
+      {"id":"log10","parameters":["value"],"body":{"call":"math.log10","arguments":[{"parameter":"value"}]}},
+      {"id":"exp","parameters":["value"],"body":{"call":"math.exp","arguments":[{"parameter":"value"}]}},
+      {"id":"factorial","parameters":["value"],"body":{"call":"math.factorial","arguments":[{"parameter":"value"}]}},
+      {"id":"mean","variadic":"values","body":{"call":"statistics.mean","arguments":[{"list":{"variadic":"values"}}]}},
+      {"id":"median","variadic":"values","body":{"call":"statistics.median","arguments":[{"list":{"variadic":"values"}}]}},
+      {"id":"pstdev","variadic":"values","body":{"call":"statistics.pstdev","arguments":[{"list":{"variadic":"values"}}]}},
+      {"id":"sum","variadic":"values","body":{"call":"sum","arguments":[{"spread":"values"}]}},
+      {"id":"minimum","variadic":"values","body":{"call":"min","arguments":[{"spread":"values"}]}},
+      {"id":"maximum","variadic":"values","body":{"call":"max","arguments":[{"spread":"values"}]}},
+      {
+        "id":"payment",
+        "parameters":["rate","periods","present"],
+        "body":{"choose":{
+          "when":{"equal":[{"parameter":"rate"},{"literal":0}]},
+          "then":{"negate":{"divide":[{"parameter":"present"},{"parameter":"periods"}]}},
+          "otherwise":{"negate":{"divide":[
+            {"multiply":[{"parameter":"rate"},{"parameter":"present"}]},
+            {"subtract":[{"literal":1},{"power":[{"add":[{"literal":1},{"parameter":"rate"}]},{"negate":{"parameter":"periods"}}]}]}
+          ]}}
+        }}
+      },
+      {
+        "id":"future_value",
+        "parameters":["rate","periods","periodic_payment","present"],
+        "body":{"choose":{
+          "when":{"equal":[{"parameter":"rate"},{"literal":0}]},
+          "then":{"negate":{"add":[{"parameter":"present"},{"multiply":[{"parameter":"periodic_payment"},{"parameter":"periods"}]}]}},
+          "otherwise":{"negate":{"add":[
+            {"multiply":[{"parameter":"present"},{"power":[{"add":[{"literal":1},{"parameter":"rate"}]},{"parameter":"periods"}]}]},
+            {"multiply":[{"parameter":"periodic_payment"},{"divide":[{"subtract":[{"power":[{"add":[{"literal":1},{"parameter":"rate"}]},{"parameter":"periods"}]},{"literal":1}]},{"parameter":"rate"}]}]}
+          ]}}
+        }}
+      },
+      {
+        "id":"present_value",
+        "parameters":["rate","periods","periodic_payment"],
+        "body":{"choose":{
+          "when":{"equal":[{"parameter":"rate"},{"literal":0}]},
+          "then":{"negate":{"multiply":[{"parameter":"periodic_payment"},{"parameter":"periods"}]}},
+          "otherwise":{"negate":{"divide":[
+            {"multiply":[{"parameter":"periodic_payment"},{"subtract":[{"literal":1},{"power":[{"add":[{"literal":1},{"parameter":"rate"}]},{"negate":{"parameter":"periods"}}]}]}]},
+            {"parameter":"rate"}
+          ]}}
+        }}
+      },
+      {"id":"determinant2","parameters":["a","b","c","d"],"body":{"subtract":[{"multiply":[{"parameter":"a"},{"parameter":"d"}]},{"multiply":[{"parameter":"b"},{"parameter":"c"}]}]}},
+      {"id":"trace2","parameters":["a","b","c","d"],"body":{"add":[{"parameter":"a"},{"parameter":"d"}]}},
+      {"id":"dot2","parameters":["a","b","c","d"],"body":{"add":[{"multiply":[{"parameter":"a"},{"parameter":"c"}]},{"multiply":[{"parameter":"b"},{"parameter":"d"}]}]}},
+      {"id":"c_to_f","parameters":["value"],"body":{"add":[{"divide":[{"multiply":[{"parameter":"value"},{"literal":9}]},{"literal":5}]},{"literal":32}]}},
+      {"id":"f_to_c","parameters":["value"],"body":{"divide":[{"multiply":[{"subtract":[{"parameter":"value"},{"literal":32}]},{"literal":5}]},{"literal":9}]}},
+      {"id":"km_to_mi","parameters":["value"],"body":{"multiply":[{"parameter":"value"},{"literal":0.621371192237334}]}},
+      {"id":"mi_to_km","parameters":["value"],"body":{"divide":[{"parameter":"value"},{"literal":0.621371192237334}]}},
+      {"id":"kg_to_lb","parameters":["value"],"body":{"multiply":[{"parameter":"value"},{"literal":2.20462262184878}]}},
+      {"id":"lb_to_kg","parameters":["value"],"body":{"divide":[{"parameter":"value"},{"literal":2.20462262184878}]}}
+    ],
+    "constants": [
+      {"id":"pi","target":"math.pi"},
+      {"id":"e","target":"math.e"}
+    ]
+  },
+  "profiles": [
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "regular",
+      "title": "Regular Calculator",
+      "geometry": "360x330+330+80",
+      "mode_label": "decimal real · infix",
+      "theme": {"background": "#e8edf2", "foreground": "#17202a", "button_background": "#ffffff", "button_foreground": "#17202a", "accent": "#246bfd"},
+      "layout": {"columns": 4},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 12, "operators": ["add", "subtract", "multiply", "divide", "modulo", "power"], "unary": ["positive", "negative"], "functions": ["sqrt"], "constants": [], "maximum_characters": 256},
+      "keypad": [
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"divide","label":"÷","action":"append","value":"/"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"multiply","label":"×","action":"append","value":"*"}],
+        [{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"},{"id":"subtract","label":"−","action":"append","value":"-"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"evaluate","label":"=","action":"evaluate"},{"id":"add","label":"+","action":"append","value":"+"}],
+        [{"id":"left","label":"(","action":"append","value":"("},{"id":"right","label":")","action":"append","value":")"},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"clear","label":"Clear","action":"clear"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"2+3*4"},"expected":{"result":"14","error":null}},
+        {"input":{"expression":"7/2"},"expected":{"result":"3.5","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "scientific",
+      "title": "Scientific Calculator",
+      "geometry": "520x390+700+80",
+      "mode_label": "scientific · radians · real",
+      "theme": {"background": "#17202a", "foreground": "#f8f9f9", "button_background": "#34495e", "button_foreground": "#ffffff", "accent": "#2ecc71"},
+      "layout": {"columns": 6},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 12, "operators": ["add", "subtract", "multiply", "divide", "modulo", "power"], "unary": ["positive", "negative"], "functions": ["sqrt","sin","cos","tan","asin","acos","atan","ln","log10","exp","factorial","abs"], "constants": ["pi","e"], "maximum_characters": 512},
+      "keypad": [
+        [{"id":"sin","label":"sin","action":"append","value":"sin("},{"id":"cos","label":"cos","action":"append","value":"cos("},{"id":"tan","label":"tan","action":"append","value":"tan("},{"id":"sqrt","label":"√","action":"append","value":"sqrt("},{"id":"ln","label":"ln","action":"append","value":"ln("},{"id":"log","label":"log₁₀","action":"append","value":"log10("}],
+        [{"id":"pi","label":"π","action":"append","value":"pi"},{"id":"e","label":"e","action":"append","value":"e"},{"id":"power","label":"xʸ","action":"append","value":"**"},{"id":"left","label":"(","action":"append","value":"("},{"id":"right","label":")","action":"append","value":")"},{"id":"comma","label":",","action":"append","value":","}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"divide","label":"÷","action":"append","value":"/"},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"multiply","label":"×","action":"append","value":"*"},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"add","label":"+","action":"append","value":"+"}],
+        [{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"},{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"evaluate","label":"=","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"sin(pi/2)"},"expected":{"result":"1","error":null}},
+        {"input":{"expression":"sqrt(81)+2**3"},"expected":{"result":"17","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "programmer",
+      "title": "Programmer Calculator",
+      "geometry": "520x340+70+470",
+      "mode_label": "integer · base 10 · bitwise",
+      "theme": {"background": "#101820", "foreground": "#f2aa4c", "button_background": "#23313f", "button_foreground": "#f2aa4c", "accent": "#f2aa4c"},
+      "layout": {"columns": 6},
+      "backend": {"kind": "expression", "numeric_domain": "integer", "operators": ["add","subtract","multiply","floor-divide","modulo","power","bit-and","bit-or","bit-xor","shift-left","shift-right"], "unary": ["positive","negative","bit-not"], "functions": [], "constants": [], "maximum_characters": 256},
+      "keypad": [
+        [{"id":"hex","label":"HEX","action":"base","value":"16"},{"id":"dec","label":"DEC","action":"base","value":"10"},{"id":"oct","label":"OCT","action":"base","value":"8"},{"id":"bin","label":"BIN","action":"base","value":"2"},{"id":"left-shift","label":"<<","action":"append","value":"<<"},{"id":"right-shift","label":">>","action":"append","value":">>"}],
+        [{"id":"and","label":"AND","action":"append","value":"&"},{"id":"or","label":"OR","action":"append","value":"|"},{"id":"xor","label":"XOR","action":"append","value":"^"},{"id":"not","label":"NOT","action":"append","value":"~"},{"id":"mod","label":"MOD","action":"append","value":"%"},{"id":"floor","label":"DIV","action":"append","value":"//"}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"add","label":"+","action":"append","value":"+"},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"left","label":"(","action":"append","value":"("},{"id":"right","label":")","action":"append","value":")"},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"multiply","label":"×","action":"append","value":"*"},{"id":"evaluate","label":"=","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"12&10"},"expected":{"result":"8","error":null}},
+        {"input":{"expression":"1<<8","base":16},"expected":{"result":"100","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "financial",
+      "title": "Financial Calculator",
+      "geometry": "520x330+610+470",
+      "mode_label": "cash-flow functions · decimal real",
+      "theme": {"background": "#edf6f9", "foreground": "#003049", "button_background": "#ffffff", "button_foreground": "#003049", "accent": "#d62828"},
+      "layout": {"columns": 5},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 8, "operators": ["add","subtract","multiply","divide","power"], "unary": ["positive","negative"], "functions": ["payment","future_value","present_value"], "constants": [], "maximum_characters": 512},
+      "keypad": [
+        [{"id":"pmt","label":"PMT","action":"append","value":"payment("},{"id":"fv","label":"FV","action":"append","value":"future_value("},{"id":"pv","label":"PV","action":"append","value":"present_value("},{"id":"comma","label":",","action":"append","value":","},{"id":"right","label":")","action":"append","value":")"}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"divide","label":"÷","action":"append","value":"/"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"multiply","label":"×","action":"append","value":"*"},{"id":"backspace","label":"⌫","action":"backspace"}],
+        [{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"add","label":"+","action":"append","value":"+"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"left","label":"(","action":"append","value":"("},{"id":"power","label":"xʸ","action":"append","value":"**"},{"id":"evaluate","label":"=","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"payment(0,10,1000)"},"expected":{"result":"-100","error":null}},
+        {"input":{"expression":"payment(0.01,12,1000)"},"expected":{"result":"-88.84878868","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "statistical",
+      "title": "Statistical Calculator",
+      "geometry": "560x350+1150+470",
+      "mode_label": "descriptive statistics · comma-separated samples",
+      "theme": {"background": "#f4f1de", "foreground": "#3d405b", "button_background": "#ffffff", "button_foreground": "#3d405b", "accent": "#e07a5f"},
+      "layout": {"columns": 6},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 10, "operators": ["add","subtract","multiply","divide","power"], "unary": ["positive","negative"], "functions": ["mean","median","pstdev","sum","minimum","maximum"], "constants": [], "maximum_characters": 1024},
+      "keypad": [
+        [{"id":"mean","label":"mean","action":"append","value":"mean("},{"id":"median","label":"median","action":"append","value":"median("},{"id":"stdev","label":"σ","action":"append","value":"pstdev("},{"id":"sum","label":"Σ","action":"append","value":"sum("},{"id":"min","label":"min","action":"append","value":"minimum("},{"id":"max","label":"max","action":"append","value":"maximum("}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"comma","label":",","action":"append","value":","},{"id":"right","label":")","action":"append","value":")"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"left","label":"(","action":"append","value":"("},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"evaluate","label":"=","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"mean(1,2,3,4,5)"},"expected":{"result":"3","error":null}},
+        {"input":{"expression":"pstdev(2,4,4,4,5,5,7,9)"},"expected":{"result":"2","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "graphing",
+      "title": "Graphing Calculator",
+      "geometry": "430x530+70+850",
+      "mode_label": "y = f(x) · viewport x ∈ [−9.75, 9.75]",
+      "theme": {"background": "#e9ecef", "foreground": "#212529", "button_background": "#ffffff", "button_foreground": "#212529", "accent": "#e63946"},
+      "layout": {"columns": 5, "series_row": 7},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 10, "variables": ["x"], "series": {"variable":"x","samples":390,"scale":20}, "operators": ["add","subtract","multiply","divide","power"], "unary": ["positive","negative"], "functions": ["sin","cos","tan","sqrt","abs"], "constants": ["pi","e"], "maximum_characters": 512},
+      "keypad": [
+        [{"id":"x","label":"x","action":"append","value":"x"},{"id":"sin","label":"sin","action":"append","value":"sin("},{"id":"cos","label":"cos","action":"append","value":"cos("},{"id":"power","label":"xʸ","action":"append","value":"**"},{"id":"plot","label":"PLOT","action":"plot"}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"divide","label":"÷","action":"append","value":"/"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"multiply","label":"×","action":"append","value":"*"},{"id":"backspace","label":"⌫","action":"backspace"}],
+        [{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"add","label":"+","action":"append","value":"+"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"left","label":"(","action":"append","value":"("},{"id":"right","label":")","action":"append","value":")"},{"id":"evaluate","label":"f(x)","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"x**2","x":3},"expected":{"result":"9","error":null}},
+        {"input":{"expression":"sin(pi/2)","x":0},"expected":{"result":"1","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "matrix-vector",
+      "title": "Matrix and Vector Calculator",
+      "geometry": "520x340+530+850",
+      "mode_label": "2×2 matrices and 2D vectors",
+      "theme": {"background": "#e0fbfc", "foreground": "#293241", "button_background": "#ffffff", "button_foreground": "#293241", "accent": "#ee6c4d"},
+      "layout": {"columns": 5},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 10, "operators": ["add","subtract","multiply","divide"], "unary": ["positive","negative"], "functions": ["determinant2","trace2","dot2"], "constants": [], "maximum_characters": 512},
+      "keypad": [
+        [{"id":"det","label":"det₂","action":"append","value":"determinant2("},{"id":"trace","label":"trace₂","action":"append","value":"trace2("},{"id":"dot","label":"dot₂","action":"append","value":"dot2("},{"id":"comma","label":",","action":"append","value":","},{"id":"right","label":")","action":"append","value":")"}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"}],
+        [{"id":"three","label":"3","action":"append","value":"3"},{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"evaluate","label":"=","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"determinant2(1,2,3,4)"},"expected":{"result":"-2","error":null}},
+        {"input":{"expression":"dot2(1,2,3,4)"},"expected":{"result":"11","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "engineering-units",
+      "title": "Engineering Unit Calculator",
+      "geometry": "600x350+1080+850",
+      "mode_label": "temperature · distance · mass conversions",
+      "theme": {"background": "#fefae0", "foreground": "#283618", "button_background": "#ffffff", "button_foreground": "#283618", "accent": "#bc6c25"},
+      "layout": {"columns": 6},
+      "backend": {"kind": "expression", "numeric_domain": "real", "precision": 8, "operators": ["add","subtract","multiply","divide","power"], "unary": ["positive","negative"], "functions": ["c_to_f","f_to_c","km_to_mi","mi_to_km","kg_to_lb","lb_to_kg"], "constants": [], "maximum_characters": 512},
+      "keypad": [
+        [{"id":"ctof","label":"°C→°F","action":"append","value":"c_to_f("},{"id":"ftoc","label":"°F→°C","action":"append","value":"f_to_c("},{"id":"kmtomi","label":"km→mi","action":"append","value":"km_to_mi("},{"id":"mitokm","label":"mi→km","action":"append","value":"mi_to_km("},{"id":"kgtolb","label":"kg→lb","action":"append","value":"kg_to_lb("},{"id":"lbtokg","label":"lb→kg","action":"append","value":"lb_to_kg("}],
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"right","label":")","action":"append","value":")"},{"id":"subtract","label":"−","action":"append","value":"-"},{"id":"clear","label":"C","action":"clear"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"left","label":"(","action":"append","value":"("},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"add","label":"+","action":"append","value":"+"},{"id":"evaluate","label":"=","action":"evaluate"}]
+      ],
+      "acceptance": [
+        {"input":{"expression":"c_to_f(100)"},"expected":{"result":"212","error":null}},
+        {"input":{"expression":"f_to_c(32)"},"expected":{"result":"0","error":null}}
+      ]
+    },
+    {
+      "format": "manual-calculator-profile-1",
+      "identity": "rpn",
+      "title": "RPN Stack Calculator",
+      "geometry": "390x360+1470+80",
+      "mode_label": "reverse Polish notation · visible stack",
+      "theme": {"background": "#1b263b", "foreground": "#e0e1dd", "button_background": "#415a77", "button_foreground": "#ffffff", "accent": "#778da9"},
+      "layout": {"columns": 4},
+      "backend": {"kind": "stack", "numeric_domain": "real", "precision": 12, "operators": ["add","subtract","multiply","divide","power"], "unary": ["negative"], "functions": [], "constants": [], "maximum_characters": 128},
+      "keypad": [
+        [{"id":"seven","label":"7","action":"append","value":"7"},{"id":"eight","label":"8","action":"append","value":"8"},{"id":"nine","label":"9","action":"append","value":"9"},{"id":"divide","label":"÷","action":"apply","value":"/"}],
+        [{"id":"four","label":"4","action":"append","value":"4"},{"id":"five","label":"5","action":"append","value":"5"},{"id":"six","label":"6","action":"append","value":"6"},{"id":"multiply","label":"×","action":"apply","value":"*"}],
+        [{"id":"one","label":"1","action":"append","value":"1"},{"id":"two","label":"2","action":"append","value":"2"},{"id":"three","label":"3","action":"append","value":"3"},{"id":"subtract","label":"−","action":"apply","value":"-"}],
+        [{"id":"zero","label":"0","action":"append","value":"0"},{"id":"decimal","label":".","action":"append","value":"."},{"id":"enter","label":"ENTER","action":"push"},{"id":"add","label":"+","action":"apply","value":"+"}],
+        [{"id":"power","label":"xʸ","action":"apply","value":"^"},{"id":"backspace","label":"⌫","action":"backspace"},{"id":"clear","label":"CLEAR","action":"clear"},{"id":"enter2","label":"PUSH","action":"push"}]
+      ],
+      "acceptance": [
+        {"input":{"tokens":["3","4","+","2","*"]},"expected":{"result":"14","error":null}},
+        {"input":{"tokens":["9","2","/"]},"expected":{"result":"4.5","error":null}}
+      ]
+    }
+  ]
+}

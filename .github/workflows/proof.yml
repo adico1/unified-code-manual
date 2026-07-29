@@ -1,0 +1,16 @@
+name: proof
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  calculator-seed-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tk boundary
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq python3-tk
+      - name: Generate and verify all calculators
+        run: python3 run_all.py --generate-only
