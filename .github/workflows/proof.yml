@@ -10,5 +10,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@v5
+      - name: Resolve the Tk runtime boundary
+        run: brew install python-tk@3.14
       - name: Run the one self-verifying seed operation
         run: python3 tools/single_api.py
