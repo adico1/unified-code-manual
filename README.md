@@ -45,9 +45,10 @@ python3 tools/publish.py \
 
 The operation verifies everything before its first external write, pushes the
 exact verified commit to GitHub `main`, and idempotently creates or updates the
-canonical adico.tech article through WordPress REST. WordPress authority is
-read from `ADICO_WORDPRESS_USER` and `ADICO_WORDPRESS_APP_PASSWORD`; credentials
-are never stored in the repository.
+canonical adico.tech article through WordPress REST. It uses
+`ADICO_WORDPRESS_USER` and `ADICO_WORDPRESS_APP_PASSWORD` when supplied;
+otherwise it uses the authenticated WordPress session in Brave as the REST
+authorization boundary. Credentials are never stored in the repository.
 
 ## Source boundary
 

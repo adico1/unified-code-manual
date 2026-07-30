@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -144,12 +145,90 @@ def wordpress_authority():
     user = os.environ.get("ADICO_WORDPRESS_USER")
     password = os.environ.get("ADICO_WORDPRESS_APP_PASSWORD")
     if not user or not password:
-        raise ValueError(
-            "wordpress-authority:"
-            "ADICO_WORDPRESS_USER+ADICO_WORDPRESS_APP_PASSWORD"
-        )
+        return None
     token = base64.b64encode(f"{user}:{password}".encode()).decode()
     return "Basic " + token
+
+
+def apple_script(source):
+    return subprocess.run(
+        ["osascript", "-e", source],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+
+def browser_javascript(source):
+    return apple_script(
+        "tell application \"Brave Browser\" to execute active tab of "
+        "front window javascript "
+        + json.dumps(source)
+    )
+
+
+def browser_wordpress_preflight(site):
+    admin = site.rstrip("/") + "/wp-admin/edit.php"
+    apple_script(
+        "tell application \"Brave Browser\"\n"
+        "activate\n"
+        f"make new tab at end of tabs of front window with properties "
+        f"{{URL:{json.dumps(admin)}}}\n"
+        "end tell"
+    )
+    status = None
+    for _ in range(30):
+        time.sleep(0.25)
+        raw = browser_javascript(
+            "(()=>{const s=Array.from(document.scripts).map(x=>x.textContent)"
+            ".find(t=>t.includes('var wpApiSettings'));"
+            "const m=s&&s.match(/var wpApiSettings = (\\{.*?\\});/s);"
+            "return JSON.stringify({url:location.href,"
+            "ready:document.readyState,nonce:Boolean(m&&JSON.parse(m[1]).nonce)})"
+            "})()"
+        )
+        status = json.loads(raw) if raw else {}
+        if "wp-login" in status.get("url", ""):
+            raise ValueError("wordpress-browser-not-authenticated")
+        if status.get("ready") == "complete" and status.get("nonce"):
+            return {"mode": "logged-in-browser", "admin": admin}
+    raise ValueError("wordpress-browser-boundary:" + repr(status))
+
+
+def publish_wordpress_browser(bundle, site):
+    encoded = base64.b64encode(
+        json.dumps(
+            {
+                "title": bundle["metadata"]["title"],
+                "slug": bundle["metadata"]["slug"],
+                "content": bundle["html"],
+            },
+            ensure_ascii=False,
+        ).encode()
+    ).decode()
+    javascript = (
+        "(()=>{"
+        f"const p=JSON.parse(atob('{encoded}'));"
+        "const s=Array.from(document.scripts).map(x=>x.textContent)"
+        ".find(t=>t.includes('var wpApiSettings'));"
+        "const m=s&&s.match(/var wpApiSettings = (\\{.*?\\});/s);"
+        "if(!m)throw new Error('wordpress-rest-bootstrap');"
+        "const n=JSON.parse(m[1]).nonce;"
+        "const q=(m,u,b)=>{const x=new XMLHttpRequest();"
+        "x.open(m,u,false);x.setRequestHeader('X-WP-Nonce',n);"
+        "if(b)x.setRequestHeader('Content-Type','application/json');"
+        "x.send(b?JSON.stringify(b):null);"
+        "if(x.status<200||x.status>=300)throw new Error(x.status+':'+x.responseText);"
+        "return JSON.parse(x.responseText)};"
+        "const base=location.origin+'/wp-json/wp/v2/posts';"
+        "const found=q('GET',base+'?context=edit&status=any&slug='"
+        "+encodeURIComponent(p.slug));"
+        "const body={title:p.title,slug:p.slug,content:p.content,status:'publish'};"
+        "const out=q('POST',found.length?base+'/'+found[0].id:base,body);"
+        "return JSON.stringify({id:out.id,link:out.link,status:out.status})"
+        "})()"
+    )
+    return json.loads(browser_javascript(javascript))
 
 
 def verify(query):
@@ -232,21 +311,38 @@ def main(argv=None):
     }
     if arguments.execute:
         authorization = wordpress_authority()
-        request(
-            arguments.site.rstrip("/")
-            + "/wp-json/wp/v2/users/me?context=edit",
-            authorization,
-        )
+        browser = None
+        if authorization:
+            request(
+                arguments.site.rstrip("/")
+                + "/wp-json/wp/v2/users/me?context=edit",
+                authorization,
+            )
+        else:
+            browser = browser_wordpress_preflight(arguments.site)
         run(["git", "push", "origin", "HEAD:main"])
+        wordpress = (
+            publish_wordpress(
+                bundle,
+                arguments.site,
+                authorization,
+            )
+            if authorization
+            else publish_wordpress_browser(
+                bundle,
+                arguments.site,
+            )
+        )
         result.update(
             {
                 "event": "publication.completed",
                 "github": "https://github.com/adico1/unified-code-manual",
-                "wordpress": publish_wordpress(
-                    bundle,
-                    arguments.site,
-                    authorization,
+                "wordpress_authority": (
+                    {"mode": "official-rest-api"}
+                    if authorization
+                    else browser
                 ),
+                "wordpress": wordpress,
             }
         )
     sys.stdout.write(
