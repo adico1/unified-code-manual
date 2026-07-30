@@ -1,8 +1,8 @@
 ---
 title: "A Seed Must Describe Meaning, Not Select Hidden Code"
 slug: "a-seed-must-describe-meaning-not-select-hidden-code"
-status: draft
-date: 2026-07-29
+status: ready
+date: 2026-07-30
 ---
 
 # A Seed Must Describe Meaning, Not Select Hidden Code
@@ -51,9 +51,13 @@ generator: application meaning
 
 ## The correction
 
-The calculator seed now contains its complete concise semantic program. For
-example, the contract describes a
-two-by-two determinant as an expression tree:
+The calculator seed graph now contains the complete concise semantic program.
+Application-specific meaning lives in each leaf seed. Unchanging calculator
+family law—boundaries, rendering defaults, control routes, error derivation,
+and negative verification vectors—lives once in its pinned family seed.
+
+For example, the application contract describes a two-by-two determinant as an
+expression tree:
 
 ```json
 {
@@ -78,9 +82,10 @@ two-by-two determinant as an expression tree:
 }
 ```
 
-The build-time compiler does not contain the determinant formula. It generates
-a Python AST from the declared formula, operations, routes, state and controls.
-No application seed stores an AST or source blob.
+The build-time compiler does not contain the determinant formula. It resolves
+the family authority, derives transitions and reachable errors, and generates a
+Python AST from the selected formula, operations, state and controls. No
+application seed stores an AST or source blob.
 
 This produces a different boundary:
 
@@ -148,7 +153,7 @@ Measured locally:
 
 ```text
 10 seed programs compiled into 10 applications
-19/19 acceptance cases passed
+40/40 positive and derived negative acceptance cases passed
 byte-identical repeated generation
 isolated copied execution = 10/10
 runtime seed access = 0
@@ -156,7 +161,13 @@ shared all-calculators runtime = 0
 manual application code = 0
 manual application tests = 0
 compiler application-vocabulary hits = 0
-altered/floating/cyclic/conflicting base rejection = 4/4
+altered/floating/cyclic/conflicting/escaping base rejection = 5/5
+six registered build-time stampers
+238 control transitions derived
+21 reachable errors derived
+complete-tree SHA-256 =
+a32ab7ed59713152dc9ab70c5dd29fb65d031ad158e98bb27a98e74a1c5ecb62
+complete local verification = 1.82 seconds
 ```
 
 The runnable experiment is available at:
@@ -169,6 +180,7 @@ This experiment does not prove:
 
 - every possible calculator;
 - every possible GUI interaction;
+- parallel `צבאות` execution;
 - full Standard Ten conformance;
 - UEM Python/C equivalence;
 - root-seed self-hosting;
@@ -184,6 +196,47 @@ and the former AST duplication inside each leaf.
 
 That boundary is not a weakness to hide. It is the measurement that keeps the
 claim honest.
+
+## One infrastructure, many products
+
+The ten calculators also expose an economic question. Today, companies often
+rebuild equivalent foundations while competing through relatively small
+product differences.
+
+This experiment demonstrates a different technical arrangement:
+
+```text
+one shared compiler
++ one shared family authority
++ ten independent product seeds
+= ten independently presented products
+```
+
+This does not mean one company, one interface, or one commercial product.
+Companies can retain their own product identity, interface, distribution,
+support, services, and specialized behavior. The shared layer is repeated
+construction infrastructure: validation, generation, tests, deterministic
+installation, traceability, and family-wide corrections.
+
+The experiment proves technical reuse at calculator scale. It does **not**
+prove a monetary saving.
+
+Claims that this approach could save billions or trillions across industries
+remain hypotheses until measured through a transparent model:
+
+```text
+duplicated engineering hours
+× fully loaded cost
+× maintenance years
+× equivalent implementations
+− necessary diversity, governance, and migration costs
+```
+
+A trustworthy conclusion is:
+
+> Shared deterministic infrastructure could redirect duplicated engineering
+> effort toward meaningful product differentiation. The scale of that benefit
+> is an open economic research question.
 
 ## The larger lesson
 

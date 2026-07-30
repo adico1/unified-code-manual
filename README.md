@@ -144,3 +144,5 @@ application without the repository or seed and runs its generated tests again.
 
 See [the proof](docs/PROOF.md) for measured evidence and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
+Publication-ready article and announcement copy are collected in
+[the publication package](docs/PUBLICATION.md).
