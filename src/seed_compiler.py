@@ -403,6 +403,16 @@ def trace_program(seed, source, authorities):
 
 def render_tests(seed):
     entrypoint = seed["program"]["case_entrypoint"]
+    transition_by_event = {
+        item["event"]: item["route"]
+        for item in seed["transitions"]
+    }
+    actions = {
+        control["action"]: transition_by_event[
+            f"control.{control['id']}.pressed"
+        ]
+        for control in seed["presentation"]["controls"]
+    }
     cases = [
         {
             "id": case["id"],
@@ -411,11 +421,48 @@ def render_tests(seed):
         }
         for case in seed["acceptance"]
     ]
+    editable_lines = [
+        "    display_value = ['']",
+        "    def display_get():",
+        "        return display_value[0]",
+        "    def display_set(value):",
+        "        display_value[0] = value",
+        "    module.display = SimpleNamespace(get=display_get, set=display_set)",
+        "    editable = []",
+        "    display_set('12')",
+        "    module.state['expression'] = ''",
+        f"    module.{actions['append']}('3')",
+        "    editable.append(display_get() == '123' and module.state['expression'] == '123')",
+        "    display_set('456')",
+        "    module.state['expression'] = ''",
+        f"    module.{actions['backspace']}()",
+        "    editable.append(display_get() == '45' and module.state['expression'] == '45')",
+    ]
+    if "evaluate" in actions:
+        editable_lines.extend(
+            [
+                "    display_set('7')",
+                "    module.state['expression'] = ''",
+                f"    module.{actions['evaluate']}()",
+                "    editable.append(display_get() == '7' and module.state['expression'] == '7')",
+            ]
+        )
+    if "push" in actions:
+        editable_lines.extend(
+            [
+                "    display_set('8')",
+                "    module.state['expression'] = ''",
+                "    module.state['stack'] = []",
+                f"    module.{actions['push']}()",
+                "    editable.append(display_get() == '8' and module.state['stack'] == [8])",
+            ]
+        )
     lines = [
         '"""Generated acceptance tests. Do not edit."""',
         "import importlib.util",
         "import json",
         "from pathlib import Path",
+        "from types import SimpleNamespace",
         "",
         f"CASES = {cases!r}",
         "",
@@ -425,9 +472,10 @@ def render_tests(seed):
         "    module = importlib.util.module_from_spec(specification)",
         "    specification.loader.exec_module(module)",
         f"    results = [module.{entrypoint}(case['input']) == case['expected'] for case in CASES]",
-        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES]}",
+        *editable_lines,
+        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': sum(editable), 'total': len(editable)}}",
         "    print(json.dumps(report, sort_keys=True))",
-        "    return 0 if all(results) else 1",
+        "    return 0 if all((*results, *editable)) else 1",
         "",
         "if __name__ == '__main__':",
         "    raise SystemExit(run())",
