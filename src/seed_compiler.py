@@ -45,11 +45,98 @@ def deep_merge(defaults, selected):
     }
 
 
-def materialize(what, assembly):
+def materialize(what, assembly, key_registry):
     result = {**what}
+    if any(
+        not isinstance(item, dict)
+        or not {"identity", "label", "action"} <= set(item)
+        or set(item) - {"identity", "label", "action", "value", "requires"}
+        or not isinstance(item["identity"], str)
+        or not item["identity"]
+        or not isinstance(item["label"], str)
+        or item["action"] not in assembly["routes"]
+        or (
+            "requires" in item
+            and (
+                not isinstance(item["requires"], str)
+                or not item["requires"]
+            )
+        )
+        for item in key_registry
+    ):
+        raise ValueError("invalid-key-definition")
+    key_identities = [item["identity"] for item in key_registry]
+    if len(key_identities) != len(set(key_identities)):
+        raise ValueError("duplicate-key-identity")
+    key_definitions = {
+        item["identity"]: {
+            name: value
+            for name, value in item.items()
+            if name != "identity"
+        }
+        for item in key_registry
+    }
+    placements = what["presentation"]["keys"]
+    if any(
+        set(item) != {"key", "row", "column"}
+        or not isinstance(item["key"], str)
+        or not isinstance(item["row"], int)
+        or not isinstance(item["column"], int)
+        or item["row"] < 0
+        or item["column"] < 0
+        for item in placements
+    ):
+        raise ValueError("invalid-key-placement")
+    unknown = sorted(
+        {item["key"] for item in placements} - key_definitions.keys()
+    )
+    if unknown:
+        raise ValueError("unknown-key:" + ",".join(unknown))
+    operation_ids = {
+        item["id"]
+        for group in what["semantics"]["operations"].values()
+        for item in group
+    }
+    capabilities = {
+        *(f"operation.{identity}" for identity in operation_ids),
+        *(
+            f"variable.{identity}"
+            for identity in what["semantics"]["numeric_laws"].get(
+                "variables", ()
+            )
+        ),
+    }
+    missing_requirements = sorted(
+        {
+            key_definitions[item["key"]]["requires"]
+            for item in placements
+            if "requires" in key_definitions[item["key"]]
+        }
+        - capabilities
+    )
+    if missing_requirements:
+        raise ValueError(
+            "key-requirement-missing:" + ",".join(missing_requirements)
+        )
+    controls = [
+        {
+            "id": placement["key"],
+            **key_definitions[placement["key"]],
+            "row": placement["row"],
+            "column": placement["column"],
+        }
+        for placement in placements
+    ]
     presentation = deep_merge(
         {"rendering": assembly["gui_defaults"]},
-        what["presentation"],
+        {
+            **{
+                name: value
+                for name, value in what["presentation"].items()
+                if name != "keys"
+            },
+            "controls": controls,
+        },
     )
     transitions = [
         {
@@ -237,7 +324,11 @@ def load_seed(path):
         raise ValueError("program-language-authority-mismatch")
     resolved = {
         "format": FORMAT,
-        **materialize(what, provisions["assembly"]),
+        **materialize(
+            what,
+            provisions["assembly"],
+            provisions["key_registry"],
+        ),
     }
     authorities.append(
         {
@@ -390,7 +481,7 @@ def trace_program(seed, source, authorities):
         ],
         "controls": [
             {
-                "seed_path": f"/presentation/controls/{index}",
+                "seed_path": f"/presentation/keys/{index}",
                 "identity": control["id"],
                 "generated_lines": [button.lineno, button.end_lineno],
             }

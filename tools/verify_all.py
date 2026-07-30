@@ -228,6 +228,10 @@ def verify_concise_declarations(applications, compiler):
         what = document["what"]
         if "ast" in what["program"]:
             raise ValueError("leaf-ast-present")
+        if "controls" in what["presentation"]:
+            raise ValueError("leaf-expanded-controls")
+        if not what["presentation"].get("keys"):
+            raise ValueError("leaf-keys-absent")
         if what["state"].get("authority") != "declarations":
             raise ValueError("state-not-declared")
         forbidden_derived = {"transitions", "boundaries"} & what.keys()
@@ -259,6 +263,14 @@ def verify_concise_declarations(applications, compiler):
             len(compiler.load_seed(ROOT / item["seed"])[0]["transitions"])
             for item in applications
         ),
+        "selected_keys": sum(
+            len(
+                json.loads((ROOT / item["seed"]).read_text(encoding="utf-8"))[
+                    "what"
+                ]["presentation"]["keys"]
+            )
+            for item in applications
+        ),
         "derived_reachable_errors": sum(
             len(
                 compiler.load_seed(ROOT / item["seed"])[0]["semantics"][
@@ -279,6 +291,7 @@ def write_report(
     complete_tree,
     compiler,
     seed_graph,
+    key_registry,
     declarations,
 ):
     runner_bytes = Path(__file__).read_bytes()
@@ -324,6 +337,7 @@ def write_report(
         "manual_application_tests": 0,
         "runtime_seed_access": 0,
         "seed_graph": seed_graph,
+        "key_registry": key_registry,
         "concise_declarations": declarations,
     }
     destination = ROOT / "build" / "assembly-report.json"
@@ -466,6 +480,109 @@ def verify_seed_graph(compiler):
         shutil.rmtree(temporary)
 
 
+def verify_key_registry(applications, compiler):
+    selected = set()
+    resolved = set()
+    for application in applications:
+        path = ROOT / application["seed"]
+        document = json.loads(path.read_text(encoding="utf-8"))
+        placements = document["what"]["presentation"]["keys"]
+        seed, _ = compiler.load_seed(path)
+        selected.update(item["key"] for item in placements)
+        resolved.update(item["id"] for item in seed["presentation"]["controls"])
+        if [item["key"] for item in placements] != [
+            item["id"] for item in seed["presentation"]["controls"]
+        ]:
+            raise ValueError("key-resolution-order")
+
+    family_path = ROOT / "seed" / "families" / "calculator.seed.json"
+    family_document = json.loads(family_path.read_text(encoding="utf-8"))
+    inherited, _ = compiler.resolve_base(family_path, family_document)
+    registry = inherited["key_registry"]
+    required_key = next(
+        item
+        for item in registry
+        if item.get("requires", "").startswith("operation.")
+    )
+    proof_application = next(
+        application
+        for application in applications
+        if required_key["identity"]
+        in {
+            item["key"]
+            for item in json.loads(
+                (ROOT / application["seed"]).read_text(encoding="utf-8")
+            )["what"]["presentation"]["keys"]
+        }
+    )
+    proof_path = ROOT / proof_application["seed"]
+    proof_document = json.loads(proof_path.read_text(encoding="utf-8"))
+    _, authorities = compiler.load_seed(proof_path)
+    what = proof_document["what"]
+
+    unknown_what = json.loads(json.dumps(what))
+    unknown_what["presentation"]["keys"][0]["key"] = "key.unknown"
+    unknown = expect_error(
+        lambda: compiler.materialize(
+            unknown_what,
+            inherited["assembly"],
+            registry,
+        ),
+        "unknown-key:key.unknown",
+    )
+    duplicate = expect_error(
+        lambda: compiler.materialize(
+            what,
+            inherited["assembly"],
+            [*registry, registry[0]],
+        ),
+        "duplicate-key-identity",
+    )
+    invalid_registry = json.loads(json.dumps(registry))
+    invalid_registry[0]["action"] = "unregistered"
+    invalid = expect_error(
+        lambda: compiler.materialize(
+            what,
+            inherited["assembly"],
+            invalid_registry,
+        ),
+        "invalid-key-definition",
+    )
+    missing_what = json.loads(json.dumps(what))
+    missing_identity = required_key["requires"].split(".", 1)[1]
+    missing_what["semantics"]["operations"] = {
+        group: [
+            item
+            for item in definitions
+            if item["id"] != missing_identity
+        ]
+        for group, definitions in missing_what["semantics"]["operations"].items()
+    }
+    missing = expect_error(
+        lambda: compiler.materialize(
+            missing_what,
+            inherited["assembly"],
+            registry,
+        ),
+        "key-requirement-missing:" + required_key["requires"],
+    )
+    return {
+        "registry_identity": next(
+            item["identity"]
+            for item in authorities
+            if item["identity"].endswith("calculator-keys@1")
+        ),
+        "definitions": len(registry),
+        "selected_identities": len(selected),
+        "resolved_identities": len(resolved),
+        "unknown": unknown,
+        "duplicate": duplicate,
+        "invalid": invalid,
+        "missing_requirement": missing,
+        "runtime_registry_access": 0,
+    }
+
+
 def launch(generated):
     return [
         {
@@ -504,6 +621,7 @@ def execute(generate_only):
     hashes = verify_determinism(compiler, applications, generated)
     separation = verify_compiler_separation(applications, compiler)
     seed_graph = verify_seed_graph(compiler)
+    key_registry = verify_key_registry(applications, compiler)
     declarations = verify_concise_declarations(applications, compiler)
     passed = sum(
         item["evidence"]["verification"]["passed"]
@@ -532,6 +650,7 @@ def execute(generate_only):
         complete_tree,
         compiler,
         seed_graph,
+        key_registry,
         declarations,
     )
     print(
@@ -545,6 +664,8 @@ def execute(generate_only):
         "manual-application-tests=0 "
         f"compiler-vocabulary={separation['hits']}/{separation['inspected']} "
         f"seed-graph={seed_graph['passed']}/{seed_graph['total']} "
+        f"key-registry={key_registry['definitions']}/"
+        f"{key_registry['selected_identities']} "
         f"generated-ast={declarations['generated_ast']}/{len(generated)} "
         f"leaf-ast-files={declarations['leaf_ast_files']} "
         f"complete-tree={complete_tree}",

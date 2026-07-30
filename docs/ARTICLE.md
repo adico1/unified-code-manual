@@ -55,6 +55,8 @@ The calculator seed graph now contains the complete concise semantic program.
 Application-specific meaning lives in each leaf seed. Unchanging calculator
 family law—boundaries, rendering defaults, control routes, error derivation,
 and negative verification vectors—lives once in its pinned family seed.
+Reusable Key meaning lives once in a pinned canonical registry; each leaf
+selects only globally unique Key identities and positions.
 
 For example, the application contract describes a two-by-two determinant as an
 expression tree:
@@ -84,7 +86,7 @@ expression tree:
 
 The build-time compiler does not contain the determinant formula. It resolves
 the family authority, derives transitions and reachable errors, and generates a
-Python AST from the selected formula, operations, state and controls. No
+Python AST from the selected formula, operations, state and selected Keys. No
 application seed stores an AST or source blob.
 
 This produces a different boundary:
@@ -162,14 +164,14 @@ runtime seed access = 0
 shared all-calculators runtime = 0
 manual application code = 0
 manual application tests = 0
-compiler application-vocabulary hits = 0/71
+compiler application-vocabulary hits = 0/128
 altered/floating/cyclic/conflicting/escaping base rejection = 5/5
 six registered build-time stampers
 287 control transitions derived
 25 reachable errors derived
 generated editable-input checks = 3 per application
 complete-tree SHA-256 =
-371f159f7a724fcf10b965adac06fd9d17bfdf3e6f5dd600b8acfeed95cab73d
+41e71e7ea99f49135eba87fc28c23c11da52bf3be22fcafd7f6b9c493d653392
 ```
 
 The runnable experiment is available at:

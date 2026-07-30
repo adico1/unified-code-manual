@@ -6,6 +6,7 @@ proof of one precise boundary:
 
 ```text
 one pinned בלי_מה authority
+→ one canonical Key registry
 → one calculator-family base seed
 → twelve application מה seeds
 → one generic build-time assembly compiler
@@ -55,6 +56,8 @@ authorization boundary. Credentials are never stored in the repository.
 - `examples/original_handwritten_calculator.py` is the author's original
   handwritten work. The compiler never reads or edits it.
 - `seed/bases/בלי_מה.seed.json` contains invariant construction authority.
+- `seed/registries/calculator-keys.seed.json` defines every reusable Key once
+  under a globally unique identity.
 - `seed/families/calculator.seed.json` specializes that authority for the
   calculator family.
 - `seed/applications/*.seed.json` are twelve application-specific מה seeds.
@@ -92,15 +95,16 @@ Each application מה seed declares:
 canonical identity and calculator variation
 numeric laws and operations
 state fields
-GUI title, theme, layout, controls, identities and arguments
+GUI title, theme, layout, Key identities and positions
 acceptance cases
 ```
 
-The family base supplies the six ordered build-time stampers for one body,
-registered
-control routes, physical boundaries, rendering defaults, and error rules.
+The canonical Key registry supplies each selected key's label, action and
+emitted value exactly once. The family base supplies the six ordered build-time
+stampers for one body, registered control routes, physical boundaries,
+rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
-selected controls and operations, so those truths are not repeated in every
+selected Keys and operations, so those truths are not repeated in every
 application seed.
 
 The resolved declarations are the complete application program. At build time

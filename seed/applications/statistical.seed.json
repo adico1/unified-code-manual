@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/calculator-family@1",
       "path": "../families/calculator.seed.json",
-      "sha256": "f38983c36297c1ac143168890eace87fd382f65110e51360bec84a35faf20a0b"
+      "sha256": "5e0a13311176d23c82bfdceb8878cb1bb22da49dd2c3e916ef2d94d73c79f698"
     }
   ],
   "format": "manual-what-seed-4",
@@ -37,198 +37,129 @@
       "version": 1
     },
     "presentation": {
-      "controls": [
+      "geometry": "560x350+1150+470",
+      "keys": [
         {
-          "action": "append",
           "column": 0,
-          "id": "mean",
-          "label": "mean",
-          "row": 2,
-          "value": "mean("
+          "key": "function.mean",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "median",
-          "label": "median",
-          "row": 2,
-          "value": "median("
+          "key": "function.median",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "stdev",
-          "label": "σ",
-          "row": 2,
-          "value": "pstdev("
+          "key": "function.stdev",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "sum",
-          "label": "Σ",
-          "row": 2,
-          "value": "sum("
+          "key": "function.sum",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "min",
-          "label": "min",
-          "row": 2,
-          "value": "minimum("
+          "key": "function.min",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 5,
-          "id": "max",
-          "label": "max",
-          "row": 2,
-          "value": "maximum("
+          "key": "function.max",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "seven",
-          "label": "7",
-          "row": 3,
-          "value": "7"
-        },
-        {
-          "action": "append",
-          "column": 1,
-          "id": "eight",
-          "label": "8",
-          "row": 3,
-          "value": "8"
-        },
-        {
-          "action": "append",
-          "column": 2,
-          "id": "nine",
-          "label": "9",
-          "row": 3,
-          "value": "9"
-        },
-        {
-          "action": "append",
-          "column": 3,
-          "id": "comma",
-          "label": ",",
-          "row": 3,
-          "value": ","
-        },
-        {
-          "action": "append",
-          "column": 4,
-          "id": "right",
-          "label": ")",
-          "row": 3,
-          "value": ")"
-        },
-        {
-          "action": "clear",
-          "column": 5,
-          "id": "clear",
-          "label": "C",
+          "key": "digit.7",
           "row": 3
         },
         {
-          "action": "append",
-          "column": 0,
-          "id": "four",
-          "label": "4",
-          "row": 4,
-          "value": "4"
-        },
-        {
-          "action": "append",
           "column": 1,
-          "id": "five",
-          "label": "5",
-          "row": 4,
-          "value": "5"
+          "key": "digit.8",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "six",
-          "label": "6",
-          "row": 4,
-          "value": "6"
+          "key": "digit.9",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "one",
-          "label": "1",
-          "row": 4,
-          "value": "1"
+          "key": "syntax.comma",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "two",
-          "label": "2",
-          "row": 4,
-          "value": "2"
+          "key": "syntax.right",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 5,
-          "id": "three",
-          "label": "3",
-          "row": 4,
-          "value": "3"
+          "key": "command.clear.compact",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "zero",
-          "label": "0",
-          "row": 5,
-          "value": "0"
+          "key": "digit.4",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "decimal",
-          "label": ".",
-          "row": 5,
-          "value": "."
+          "key": "digit.5",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "subtract",
-          "label": "−",
-          "row": 5,
-          "value": "-"
+          "key": "digit.6",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "left",
-          "label": "(",
-          "row": 5,
-          "value": "("
+          "key": "digit.1",
+          "row": 4
         },
         {
-          "action": "backspace",
           "column": 4,
-          "id": "backspace",
-          "label": "⌫",
+          "key": "digit.2",
+          "row": 4
+        },
+        {
+          "column": 5,
+          "key": "digit.3",
+          "row": 4
+        },
+        {
+          "column": 0,
+          "key": "digit.0",
           "row": 5
         },
         {
-          "action": "evaluate",
+          "column": 1,
+          "key": "syntax.decimal",
+          "row": 5
+        },
+        {
+          "column": 2,
+          "key": "operator.expression.subtract",
+          "row": 5
+        },
+        {
+          "column": 3,
+          "key": "syntax.left",
+          "row": 5
+        },
+        {
+          "column": 4,
+          "key": "command.backspace",
+          "row": 5
+        },
+        {
           "column": 5,
-          "id": "evaluate",
-          "label": "=",
+          "key": "command.evaluate",
           "row": 5
         }
       ],
-      "geometry": "560x350+1150+470",
       "layout": {
         "columns": 6
       },

@@ -23,14 +23,14 @@ registered stampers                       6
 derived control transitions               287
 derived reachable errors                  25
 seed-graph rejection proofs               5/5
-compiler application-vocabulary hits      0/71
+compiler application-vocabulary hits      0/128
 generated editable-input checks           3 per application
 runtime seed access                       0
 manual application code                   0
 manual application tests                  0
 deterministic rebuild                     PASS
 complete tree SHA-256
-371f159f7a724fcf10b965adac06fd9d17bfdf3e6f5dd600b8acfeed95cab73d
+41e71e7ea99f49135eba87fc28c23c11da52bf3be22fcafd7f6b9c493d653392
 ```
 
 Reproduce:
@@ -52,11 +52,12 @@ python3 tools/verify_all.py
 I built twelve different calculator products from one shared construction
 infrastructure.
 
-Not twelve templates selecting hidden handwritten behavior. Each application seed
-declares its own identity, mathematical operations, formulas, state, controls,
-layout, and acceptance behavior. A pinned calculator-family seed supplies the
-unchanging family law once. One build-time compiler specializes the selected
-meaning into twelve exact standalone Python applications.
+Not twelve templates selecting hidden handwritten behavior. Each application
+seed declares its own identity, mathematical operations, formulas, state,
+selected Key identities, layout, and acceptance behavior. A pinned canonical
+registry defines reusable Key meaning once, and a pinned calculator-family seed
+supplies the unchanging family law once. One build-time compiler specializes
+the selected meaning into twelve exact standalone Python applications.
 
 Measured proof:
 

@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/calculator-family@1",
       "path": "../families/calculator.seed.json",
-      "sha256": "f38983c36297c1ac143168890eace87fd382f65110e51360bec84a35faf20a0b"
+      "sha256": "5e0a13311176d23c82bfdceb8878cb1bb22da49dd2c3e916ef2d94d73c79f698"
     }
   ],
   "format": "manual-what-seed-4",
@@ -37,206 +37,134 @@
       "version": 1
     },
     "presentation": {
-      "controls": [
+      "geometry": "520x330+610+470",
+      "keys": [
         {
-          "action": "append",
           "column": 0,
-          "id": "pmt",
-          "label": "PMT",
-          "row": 2,
-          "value": "payment("
+          "key": "function.pmt",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "fv",
-          "label": "FV",
-          "row": 2,
-          "value": "future_value("
+          "key": "function.fv",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "pv",
-          "label": "PV",
-          "row": 2,
-          "value": "present_value("
+          "key": "function.pv",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "comma",
-          "label": ",",
-          "row": 2,
-          "value": ","
+          "key": "syntax.comma",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "right",
-          "label": ")",
-          "row": 2,
-          "value": ")"
+          "key": "syntax.right",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "seven",
-          "label": "7",
-          "row": 3,
-          "value": "7"
-        },
-        {
-          "action": "append",
-          "column": 1,
-          "id": "eight",
-          "label": "8",
-          "row": 3,
-          "value": "8"
-        },
-        {
-          "action": "append",
-          "column": 2,
-          "id": "nine",
-          "label": "9",
-          "row": 3,
-          "value": "9"
-        },
-        {
-          "action": "append",
-          "column": 3,
-          "id": "divide",
-          "label": "÷",
-          "row": 3,
-          "value": "/"
-        },
-        {
-          "action": "clear",
-          "column": 4,
-          "id": "clear",
-          "label": "C",
+          "key": "digit.7",
           "row": 3
         },
         {
-          "action": "append",
-          "column": 0,
-          "id": "four",
-          "label": "4",
-          "row": 4,
-          "value": "4"
-        },
-        {
-          "action": "append",
           "column": 1,
-          "id": "five",
-          "label": "5",
-          "row": 4,
-          "value": "5"
+          "key": "digit.8",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "six",
-          "label": "6",
-          "row": 4,
-          "value": "6"
+          "key": "digit.9",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "multiply",
-          "label": "×",
-          "row": 4,
-          "value": "*"
+          "key": "operator.expression.divide",
+          "row": 3
         },
         {
-          "action": "backspace",
           "column": 4,
-          "id": "backspace",
-          "label": "⌫",
+          "key": "command.clear.compact",
+          "row": 3
+        },
+        {
+          "column": 0,
+          "key": "digit.4",
           "row": 4
         },
         {
-          "action": "append",
-          "column": 0,
-          "id": "one",
-          "label": "1",
-          "row": 5,
-          "value": "1"
-        },
-        {
-          "action": "append",
           "column": 1,
-          "id": "two",
-          "label": "2",
-          "row": 5,
-          "value": "2"
+          "key": "digit.5",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "three",
-          "label": "3",
-          "row": 5,
-          "value": "3"
+          "key": "digit.6",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "subtract",
-          "label": "−",
-          "row": 5,
-          "value": "-"
+          "key": "operator.expression.multiply",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "add",
-          "label": "+",
-          "row": 5,
-          "value": "+"
+          "key": "command.backspace",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "zero",
-          "label": "0",
-          "row": 6,
-          "value": "0"
+          "key": "digit.1",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "decimal",
-          "label": ".",
-          "row": 6,
-          "value": "."
+          "key": "digit.2",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "left",
-          "label": "(",
-          "row": 6,
-          "value": "("
+          "key": "digit.3",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "power",
-          "label": "xʸ",
-          "row": 6,
-          "value": "**"
+          "key": "operator.expression.subtract",
+          "row": 5
         },
         {
-          "action": "evaluate",
           "column": 4,
-          "id": "evaluate",
-          "label": "=",
+          "key": "operator.expression.add",
+          "row": 5
+        },
+        {
+          "column": 0,
+          "key": "digit.0",
+          "row": 6
+        },
+        {
+          "column": 1,
+          "key": "syntax.decimal",
+          "row": 6
+        },
+        {
+          "column": 2,
+          "key": "syntax.left",
+          "row": 6
+        },
+        {
+          "column": 3,
+          "key": "operator.expression.power",
+          "row": 6
+        },
+        {
+          "column": 4,
+          "key": "command.evaluate",
           "row": 6
         }
       ],
-      "geometry": "520x330+610+470",
       "layout": {
         "columns": 5
       },

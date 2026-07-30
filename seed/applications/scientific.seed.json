@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/calculator-family@1",
       "path": "../families/calculator.seed.json",
-      "sha256": "f38983c36297c1ac143168890eace87fd382f65110e51360bec84a35faf20a0b"
+      "sha256": "5e0a13311176d23c82bfdceb8878cb1bb22da49dd2c3e916ef2d94d73c79f698"
     }
   ],
   "format": "manual-what-seed-4",
@@ -37,246 +37,159 @@
       "version": 1
     },
     "presentation": {
-      "controls": [
+      "geometry": "520x390+700+80",
+      "keys": [
         {
-          "action": "append",
           "column": 0,
-          "id": "sin",
-          "label": "sin",
-          "row": 2,
-          "value": "sin("
+          "key": "function.sin",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "cos",
-          "label": "cos",
-          "row": 2,
-          "value": "cos("
+          "key": "function.cos",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "tan",
-          "label": "tan",
-          "row": 2,
-          "value": "tan("
+          "key": "function.tan",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "sqrt",
-          "label": "√",
-          "row": 2,
-          "value": "sqrt("
+          "key": "function.sqrt",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "ln",
-          "label": "ln",
-          "row": 2,
-          "value": "ln("
+          "key": "function.ln",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 5,
-          "id": "log",
-          "label": "log₁₀",
-          "row": 2,
-          "value": "log10("
+          "key": "function.log",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "pi",
-          "label": "π",
-          "row": 3,
-          "value": "pi"
+          "key": "constant.pi",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "e",
-          "label": "e",
-          "row": 3,
-          "value": "e"
+          "key": "constant.e",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "power",
-          "label": "xʸ",
-          "row": 3,
-          "value": "**"
+          "key": "operator.expression.power",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "left",
-          "label": "(",
-          "row": 3,
-          "value": "("
+          "key": "syntax.left",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "right",
-          "label": ")",
-          "row": 3,
-          "value": ")"
+          "key": "syntax.right",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 5,
-          "id": "comma",
-          "label": ",",
-          "row": 3,
-          "value": ","
+          "key": "syntax.comma",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "seven",
-          "label": "7",
-          "row": 4,
-          "value": "7"
-        },
-        {
-          "action": "append",
-          "column": 1,
-          "id": "eight",
-          "label": "8",
-          "row": 4,
-          "value": "8"
-        },
-        {
-          "action": "append",
-          "column": 2,
-          "id": "nine",
-          "label": "9",
-          "row": 4,
-          "value": "9"
-        },
-        {
-          "action": "append",
-          "column": 3,
-          "id": "divide",
-          "label": "÷",
-          "row": 4,
-          "value": "/"
-        },
-        {
-          "action": "backspace",
-          "column": 4,
-          "id": "backspace",
-          "label": "⌫",
+          "key": "digit.7",
           "row": 4
         },
         {
-          "action": "clear",
-          "column": 5,
-          "id": "clear",
-          "label": "C",
+          "column": 1,
+          "key": "digit.8",
           "row": 4
         },
         {
-          "action": "append",
-          "column": 0,
-          "id": "four",
-          "label": "4",
-          "row": 5,
-          "value": "4"
-        },
-        {
-          "action": "append",
-          "column": 1,
-          "id": "five",
-          "label": "5",
-          "row": 5,
-          "value": "5"
-        },
-        {
-          "action": "append",
           "column": 2,
-          "id": "six",
-          "label": "6",
-          "row": 5,
-          "value": "6"
+          "key": "digit.9",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "multiply",
-          "label": "×",
-          "row": 5,
-          "value": "*"
+          "key": "operator.expression.divide",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "subtract",
-          "label": "−",
-          "row": 5,
-          "value": "-"
+          "key": "command.backspace",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 5,
-          "id": "add",
-          "label": "+",
-          "row": 5,
-          "value": "+"
+          "key": "command.clear.compact",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "one",
-          "label": "1",
-          "row": 6,
-          "value": "1"
+          "key": "digit.4",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "two",
-          "label": "2",
-          "row": 6,
-          "value": "2"
+          "key": "digit.5",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "three",
-          "label": "3",
-          "row": 6,
-          "value": "3"
+          "key": "digit.6",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 3,
-          "id": "zero",
-          "label": "0",
-          "row": 6,
-          "value": "0"
+          "key": "operator.expression.multiply",
+          "row": 5
         },
         {
-          "action": "append",
           "column": 4,
-          "id": "decimal",
-          "label": ".",
-          "row": 6,
-          "value": "."
+          "key": "operator.expression.subtract",
+          "row": 5
         },
         {
-          "action": "evaluate",
           "column": 5,
-          "id": "evaluate",
-          "label": "=",
+          "key": "operator.expression.add",
+          "row": 5
+        },
+        {
+          "column": 0,
+          "key": "digit.1",
+          "row": 6
+        },
+        {
+          "column": 1,
+          "key": "digit.2",
+          "row": 6
+        },
+        {
+          "column": 2,
+          "key": "digit.3",
+          "row": 6
+        },
+        {
+          "column": 3,
+          "key": "digit.0",
+          "row": 6
+        },
+        {
+          "column": 4,
+          "key": "syntax.decimal",
+          "row": 6
+        },
+        {
+          "column": 5,
+          "key": "command.evaluate",
           "row": 6
         }
       ],
-      "geometry": "520x390+700+80",
       "layout": {
         "columns": 6
       },
