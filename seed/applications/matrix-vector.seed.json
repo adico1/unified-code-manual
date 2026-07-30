@@ -2,8 +2,8 @@
   "bases": [
     {
       "identity": "uc://manual/seeds/calculator-family@1",
-      "path": "bases/calculator-family.seed.json",
-      "sha256": "6e07e05db0d6ec7ff97e7d4371554147239bfb9affd9c3db07b58d87e7f31724"
+      "path": "../families/calculator.seed.json",
+      "sha256": "ac82f62bbb4b029831b83be4e1a0157066c6cae85ab0cf9fd8a812718c2482b5"
     }
   ],
   "format": "manual-what-seed-3",
@@ -12,23 +12,21 @@
       {
         "expected": {
           "error": null,
-          "result": "9"
+          "result": "-2"
         },
-        "id": "graphing.1",
+        "id": "matrix-vector.1",
         "input": {
-          "expression": "x**2",
-          "x": 3
+          "expression": "determinant2(1,2,3,4)"
         }
       },
       {
         "expected": {
           "error": null,
-          "result": "1"
+          "result": "11"
         },
-        "id": "graphing.2",
+        "id": "matrix-vector.2",
         "input": {
-          "expression": "sin(pi/2)",
-          "x": 0
+          "expression": "dot2(1,2,3,4)"
         }
       }
     ],
@@ -55,9 +53,9 @@
       }
     ],
     "identity": {
-      "canonical": "uc://manual/calculators/graphing@1",
+      "canonical": "uc://manual/calculators/matrix-vector@1",
       "family": "calculator",
-      "variation": "graphing",
+      "variation": "matrix-vector",
       "version": 1
     },
     "presentation": {
@@ -65,41 +63,42 @@
         {
           "action": "append",
           "column": 0,
-          "id": "x",
-          "label": "x",
+          "id": "det",
+          "label": "det₂",
           "row": 2,
-          "value": "x"
+          "value": "determinant2("
         },
         {
           "action": "append",
           "column": 1,
-          "id": "sin",
-          "label": "sin",
+          "id": "trace",
+          "label": "trace₂",
           "row": 2,
-          "value": "sin("
+          "value": "trace2("
         },
         {
           "action": "append",
           "column": 2,
-          "id": "cos",
-          "label": "cos",
+          "id": "dot",
+          "label": "dot₂",
           "row": 2,
-          "value": "cos("
+          "value": "dot2("
         },
         {
           "action": "append",
           "column": 3,
-          "id": "power",
-          "label": "xʸ",
+          "id": "comma",
+          "label": ",",
           "row": 2,
-          "value": "**"
+          "value": ","
         },
         {
-          "action": "plot",
+          "action": "append",
           "column": 4,
-          "id": "plot",
-          "label": "PLOT",
-          "row": 2
+          "id": "right",
+          "label": ")",
+          "row": 2,
+          "value": ")"
         },
         {
           "action": "append",
@@ -128,10 +127,10 @@
         {
           "action": "append",
           "column": 3,
-          "id": "divide",
-          "label": "÷",
+          "id": "subtract",
+          "label": "−",
           "row": 3,
-          "value": "/"
+          "value": "-"
         },
         {
           "action": "clear",
@@ -167,37 +166,22 @@
         {
           "action": "append",
           "column": 3,
-          "id": "multiply",
-          "label": "×",
-          "row": 4,
-          "value": "*"
-        },
-        {
-          "action": "backspace",
-          "column": 4,
-          "id": "backspace",
-          "label": "⌫",
-          "row": 4
-        },
-        {
-          "action": "append",
-          "column": 0,
           "id": "one",
           "label": "1",
-          "row": 5,
+          "row": 4,
           "value": "1"
         },
         {
           "action": "append",
-          "column": 1,
+          "column": 4,
           "id": "two",
           "label": "2",
-          "row": 5,
+          "row": 4,
           "value": "2"
         },
         {
           "action": "append",
-          "column": 2,
+          "column": 0,
           "id": "three",
           "label": "3",
           "row": 5,
@@ -205,74 +189,47 @@
         },
         {
           "action": "append",
-          "column": 3,
-          "id": "subtract",
-          "label": "−",
-          "row": 5,
-          "value": "-"
-        },
-        {
-          "action": "append",
-          "column": 4,
-          "id": "add",
-          "label": "+",
-          "row": 5,
-          "value": "+"
-        },
-        {
-          "action": "append",
-          "column": 0,
+          "column": 1,
           "id": "zero",
           "label": "0",
-          "row": 6,
+          "row": 5,
           "value": "0"
         },
         {
           "action": "append",
-          "column": 1,
+          "column": 2,
           "id": "decimal",
           "label": ".",
-          "row": 6,
+          "row": 5,
           "value": "."
         },
         {
-          "action": "append",
-          "column": 2,
-          "id": "left",
-          "label": "(",
-          "row": 6,
-          "value": "("
-        },
-        {
-          "action": "append",
+          "action": "backspace",
           "column": 3,
-          "id": "right",
-          "label": ")",
-          "row": 6,
-          "value": ")"
+          "id": "backspace",
+          "label": "⌫",
+          "row": 5
         },
         {
           "action": "evaluate",
           "column": 4,
           "id": "evaluate",
-          "label": "f(x)",
-          "row": 6
+          "label": "=",
+          "row": 5
         }
       ],
-      "geometry": "430x530+70+850",
+      "geometry": "520x340+530+850",
       "layout": {
-        "columns": 5,
-        "series_row": 7
+        "columns": 5
       },
-      "mode_label": "y = f(x) · viewport x ∈ [−9.75, 9.75]",
+      "mode_label": "2×2 matrices and 2D vectors",
       "theme": {
-        "accent": "#e63946",
-        "background": "#e9ecef",
+        "background": "#e0fbfc",
         "button_background": "#ffffff",
-        "button_foreground": "#212529",
-        "foreground": "#212529"
+        "button_foreground": "#293241",
+        "foreground": "#293241"
       },
-      "title": "Graphing Calculator"
+      "title": "Matrix and Vector Calculator"
     },
     "program": {
       "ast": {
@@ -327,16 +284,6 @@
             ]
           },
           {
-            "_type": "Import",
-            "names": [
-              {
-                "_type": "alias",
-                "asname": null,
-                "name": "math"
-              }
-            ]
-          },
-          {
             "_type": "ImportFrom",
             "level": 0,
             "module": "tkinter",
@@ -365,11 +312,6 @@
                 "_type": "alias",
                 "asname": null,
                 "name": "Tk"
-              },
-              {
-                "_type": "alias",
-                "asname": null,
-                "name": "Canvas"
               }
             ]
           },
@@ -388,7 +330,7 @@
             "value": {
               "_type": "Constant",
               "kind": null,
-              "value": "graphing"
+              "value": "matrix-vector"
             }
           },
           {
@@ -399,7 +341,25 @@
                 {
                   "_type": "arg",
                   "annotation": null,
-                  "arg": "value",
+                  "arg": "a",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "b",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "c",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "d",
                   "type_comment": null
                 }
               ],
@@ -414,31 +374,50 @@
               {
                 "_type": "Return",
                 "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
+                  "_type": "BinOp",
+                  "left": {
+                    "_type": "BinOp",
+                    "left": {
                       "_type": "Name",
                       "ctx": {
                         "_type": "Load"
                       },
-                      "id": "value"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "sin",
-                    "ctx": {
-                      "_type": "Load"
+                      "id": "a"
                     },
-                    "value": {
+                    "op": {
+                      "_type": "Mult"
+                    },
+                    "right": {
                       "_type": "Name",
                       "ctx": {
                         "_type": "Load"
                       },
-                      "id": "math"
+                      "id": "d"
                     }
                   },
-                  "keywords": []
+                  "op": {
+                    "_type": "Sub"
+                  },
+                  "right": {
+                    "_type": "BinOp",
+                    "left": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "b"
+                    },
+                    "op": {
+                      "_type": "Mult"
+                    },
+                    "right": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "c"
+                    }
+                  }
                 }
               }
             ],
@@ -456,7 +435,25 @@
                 {
                   "_type": "arg",
                   "annotation": null,
-                  "arg": "value",
+                  "arg": "a",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "b",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "c",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "d",
                   "type_comment": null
                 }
               ],
@@ -471,31 +468,24 @@
               {
                 "_type": "Return",
                 "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "value"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "cos",
+                  "_type": "BinOp",
+                  "left": {
+                    "_type": "Name",
                     "ctx": {
                       "_type": "Load"
                     },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "math"
-                    }
+                    "id": "a"
                   },
-                  "keywords": []
+                  "op": {
+                    "_type": "Add"
+                  },
+                  "right": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "d"
+                  }
                 }
               }
             ],
@@ -513,7 +503,25 @@
                 {
                   "_type": "arg",
                   "annotation": null,
-                  "arg": "value",
+                  "arg": "a",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "b",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "c",
+                  "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "d",
                   "type_comment": null
                 }
               ],
@@ -528,143 +536,55 @@
               {
                 "_type": "Return",
                 "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
+                  "_type": "BinOp",
+                  "left": {
+                    "_type": "BinOp",
+                    "left": {
                       "_type": "Name",
                       "ctx": {
                         "_type": "Load"
                       },
-                      "id": "value"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "tan",
-                    "ctx": {
-                      "_type": "Load"
+                      "id": "a"
                     },
-                    "value": {
+                    "op": {
+                      "_type": "Mult"
+                    },
+                    "right": {
                       "_type": "Name",
                       "ctx": {
                         "_type": "Load"
                       },
-                      "id": "math"
+                      "id": "c"
                     }
                   },
-                  "keywords": []
+                  "op": {
+                    "_type": "Add"
+                  },
+                  "right": {
+                    "_type": "BinOp",
+                    "left": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "b"
+                    },
+                    "op": {
+                      "_type": "Mult"
+                    },
+                    "right": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "d"
+                    }
+                  }
                 }
               }
             ],
             "decorator_list": [],
             "name": "_semantic_2",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "value"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "sqrt",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "math"
-                    }
-                  },
-                  "keywords": []
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_3",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "value"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "abs"
-                  },
-                  "keywords": []
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_4",
             "returns": null,
             "type_comment": null,
             "type_params": []
@@ -739,20 +659,6 @@
                     },
                     "id": "ast"
                   }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "Pow",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "ast"
-                  }
                 }
               ],
               "values": [
@@ -801,20 +707,6 @@
                 {
                   "_type": "Attribute",
                   "attr": "truediv",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "operator"
-                  }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "pow",
                   "ctx": {
                     "_type": "Load"
                   },
@@ -923,27 +815,17 @@
                 {
                   "_type": "Constant",
                   "kind": null,
-                  "value": "sin"
+                  "value": "determinant2"
                 },
                 {
                   "_type": "Constant",
                   "kind": null,
-                  "value": "cos"
+                  "value": "trace2"
                 },
                 {
                   "_type": "Constant",
                   "kind": null,
-                  "value": "tan"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "sqrt"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "abs"
+                  "value": "dot2"
                 }
               ],
               "values": [
@@ -967,78 +849,6 @@
                     "_type": "Load"
                   },
                   "id": "_semantic_2"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_3"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_4"
-                }
-              ]
-            }
-          },
-          {
-            "_type": "Assign",
-            "targets": [
-              {
-                "_type": "Name",
-                "ctx": {
-                  "_type": "Store"
-                },
-                "id": "CONSTANTS"
-              }
-            ],
-            "type_comment": null,
-            "value": {
-              "_type": "Dict",
-              "keys": [
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "pi"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "e"
-                }
-              ],
-              "values": [
-                {
-                  "_type": "Attribute",
-                  "attr": "pi",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "math"
-                  }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "e",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "math"
-                  }
                 }
               ]
             }
@@ -1260,224 +1070,6 @@
                           "id": "type"
                         },
                         "keywords": []
-                      },
-                      "ops": [
-                        {
-                          "_type": "In"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "If",
-                "body": [
-                  {
-                    "_type": "Return",
-                    "value": {
-                      "_type": "Subscript",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "slice": {
-                        "_type": "Attribute",
-                        "attr": "id",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        }
-                      },
-                      "value": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "variables"
-                      }
-                    }
-                  }
-                ],
-                "orelse": [],
-                "test": {
-                  "_type": "BoolOp",
-                  "op": {
-                    "_type": "And"
-                  },
-                  "values": [
-                    {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        },
-                        {
-                          "_type": "Attribute",
-                          "attr": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "ast"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "isinstance"
-                      },
-                      "keywords": []
-                    },
-                    {
-                      "_type": "Compare",
-                      "comparators": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "variables"
-                        }
-                      ],
-                      "left": {
-                        "_type": "Attribute",
-                        "attr": "id",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        }
-                      },
-                      "ops": [
-                        {
-                          "_type": "In"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "If",
-                "body": [
-                  {
-                    "_type": "Return",
-                    "value": {
-                      "_type": "Subscript",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "slice": {
-                        "_type": "Attribute",
-                        "attr": "id",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        }
-                      },
-                      "value": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "CONSTANTS"
-                      }
-                    }
-                  }
-                ],
-                "orelse": [],
-                "test": {
-                  "_type": "BoolOp",
-                  "op": {
-                    "_type": "And"
-                  },
-                  "values": [
-                    {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        },
-                        {
-                          "_type": "Attribute",
-                          "attr": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "ast"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "isinstance"
-                      },
-                      "keywords": []
-                    },
-                    {
-                      "_type": "Compare",
-                      "comparators": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "CONSTANTS"
-                        }
-                      ],
-                      "left": {
-                        "_type": "Attribute",
-                        "attr": "id",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        }
                       },
                       "ops": [
                         {
@@ -2575,33 +2167,8 @@
                     },
                     {
                       "_type": "Dict",
-                      "keys": [
-                        {
-                          "_type": "Constant",
-                          "kind": null,
-                          "value": "x"
-                        }
-                      ],
-                      "values": [
-                        {
-                          "_type": "Subscript",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "slice": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "x"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "case"
-                          }
-                        }
-                      ]
+                      "keys": [],
+                      "values": []
                     }
                   ],
                   "func": {
@@ -2871,24 +2438,6 @@
                   "_type": "Store"
                 },
                 "id": "mode_text"
-              }
-            ],
-            "type_comment": null,
-            "value": {
-              "_type": "Constant",
-              "kind": null,
-              "value": null
-            }
-          },
-          {
-            "_type": "Assign",
-            "targets": [
-              {
-                "_type": "Name",
-                "ctx": {
-                  "_type": "Store"
-                },
-                "id": "canvas"
               }
             ],
             "type_comment": null,
@@ -3280,20 +2829,8 @@
                         },
                         {
                           "_type": "Dict",
-                          "keys": [
-                            {
-                              "_type": "Constant",
-                              "kind": null,
-                              "value": "x"
-                            }
-                          ],
-                          "values": [
-                            {
-                              "_type": "Constant",
-                              "kind": null,
-                              "value": 0
-                            }
-                          ]
+                          "keys": [],
+                          "values": []
                         }
                       ],
                       "func": {
@@ -3531,787 +3068,10 @@
             },
             "body": [
               {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": "all"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "delete",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "canvas"
-                    }
-                  },
-                  "keywords": []
-                }
-              },
-              {
-                "_type": "Assign",
-                "targets": [
-                  {
-                    "_type": "Tuple",
-                    "ctx": {
-                      "_type": "Store"
-                    },
-                    "elts": [
-                      {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Store"
-                        },
-                        "id": "width"
-                      },
-                      {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Store"
-                        },
-                        "id": "height"
-                      }
-                    ]
-                  }
-                ],
-                "type_comment": null,
-                "value": {
-                  "_type": "Tuple",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "elts": [
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 390
-                    },
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 180
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 0
-                    },
-                    {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "height"
-                      },
-                      "op": {
-                        "_type": "Div"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 2
-                      }
-                    },
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "width"
-                    },
-                    {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "height"
-                      },
-                      "op": {
-                        "_type": "Div"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 2
-                      }
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "create_line",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "canvas"
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "fill",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "#888"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "width"
-                      },
-                      "op": {
-                        "_type": "Div"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 2
-                      }
-                    },
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 0
-                    },
-                    {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "width"
-                      },
-                      "op": {
-                        "_type": "Div"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 2
-                      }
-                    },
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "height"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "create_line",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "canvas"
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "fill",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "#888"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Assign",
-                "targets": [
-                  {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Store"
-                    },
-                    "id": "points"
-                  }
-                ],
-                "type_comment": null,
-                "value": {
-                  "_type": "List",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "elts": []
-                }
-              },
-              {
-                "_type": "For",
-                "body": [
-                  {
-                    "_type": "Assign",
-                    "targets": [
-                      {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Store"
-                        },
-                        "id": "value"
-                      }
-                    ],
-                    "type_comment": null,
-                    "value": {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "BinOp",
-                        "left": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "pixel"
-                        },
-                        "op": {
-                          "_type": "Sub"
-                        },
-                        "right": {
-                          "_type": "BinOp",
-                          "left": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "width"
-                          },
-                          "op": {
-                            "_type": "Div"
-                          },
-                          "right": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 2
-                          }
-                        }
-                      },
-                      "op": {
-                        "_type": "Div"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 20
-                      }
-                    }
-                  },
-                  {
-                    "_type": "Try",
-                    "body": [
-                      {
-                        "_type": "Assign",
-                        "targets": [
-                          {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Store"
-                            },
-                            "id": "y"
-                          }
-                        ],
-                        "type_comment": null,
-                        "value": {
-                          "_type": "Call",
-                          "args": [
-                            {
-                              "_type": "Subscript",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "slice": {
-                                "_type": "Constant",
-                                "kind": null,
-                                "value": "expression"
-                              },
-                              "value": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "state"
-                              }
-                            },
-                            {
-                              "_type": "Dict",
-                              "keys": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": "x"
-                                }
-                              ],
-                              "values": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ]
-                            }
-                          ],
-                          "func": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "evaluate_expression"
-                          },
-                          "keywords": []
-                        }
-                      },
-                      {
-                        "_type": "Assign",
-                        "targets": [
-                          {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Store"
-                            },
-                            "id": "screen_y"
-                          }
-                        ],
-                        "type_comment": null,
-                        "value": {
-                          "_type": "BinOp",
-                          "left": {
-                            "_type": "BinOp",
-                            "left": {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "height"
-                            },
-                            "op": {
-                              "_type": "Div"
-                            },
-                            "right": {
-                              "_type": "Constant",
-                              "kind": null,
-                              "value": 2
-                            }
-                          },
-                          "op": {
-                            "_type": "Sub"
-                          },
-                          "right": {
-                            "_type": "BinOp",
-                            "left": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "y"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "float"
-                              },
-                              "keywords": []
-                            },
-                            "op": {
-                              "_type": "Mult"
-                            },
-                            "right": {
-                              "_type": "Constant",
-                              "kind": null,
-                              "value": 20
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "_type": "If",
-                        "body": [
-                          {
-                            "_type": "Expr",
-                            "value": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Tuple",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "elts": [
-                                    {
-                                      "_type": "Name",
-                                      "ctx": {
-                                        "_type": "Load"
-                                      },
-                                      "id": "pixel"
-                                    },
-                                    {
-                                      "_type": "Name",
-                                      "ctx": {
-                                        "_type": "Load"
-                                      },
-                                      "id": "screen_y"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "func": {
-                                "_type": "Attribute",
-                                "attr": "extend",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "value": {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "points"
-                                }
-                              },
-                              "keywords": []
-                            }
-                          }
-                        ],
-                        "orelse": [],
-                        "test": {
-                          "_type": "Compare",
-                          "comparators": [
-                            {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "screen_y"
-                            },
-                            {
-                              "_type": "BinOp",
-                              "left": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "height"
-                              },
-                              "op": {
-                                "_type": "Mult"
-                              },
-                              "right": {
-                                "_type": "Constant",
-                                "kind": null,
-                                "value": 2
-                              }
-                            }
-                          ],
-                          "left": {
-                            "_type": "UnaryOp",
-                            "op": {
-                              "_type": "USub"
-                            },
-                            "operand": {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "height"
-                            }
-                          },
-                          "ops": [
-                            {
-                              "_type": "LtE"
-                            },
-                            {
-                              "_type": "LtE"
-                            }
-                          ]
-                        }
-                      }
-                    ],
-                    "finalbody": [],
-                    "handlers": [
-                      {
-                        "_type": "ExceptHandler",
-                        "body": [
-                          {
-                            "_type": "Pass"
-                          }
-                        ],
-                        "name": null,
-                        "type": {
-                          "_type": "Tuple",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "elts": [
-                            {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "ArithmeticError"
-                            },
-                            {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "SyntaxError"
-                            },
-                            {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "TypeError"
-                            },
-                            {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "ValueError"
-                            }
-                          ]
-                        }
-                      }
-                    ],
-                    "orelse": []
-                  }
-                ],
-                "iter": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "width"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "range"
-                  },
-                  "keywords": []
-                },
-                "orelse": [],
-                "target": {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Store"
-                  },
-                  "id": "pixel"
-                },
-                "type_comment": null
-              },
-              {
-                "_type": "If",
-                "body": [
-                  {
-                    "_type": "Expr",
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Starred",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "points"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Attribute",
-                        "attr": "create_line",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "canvas"
-                        }
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "fill",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#e63946"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 2
-                          }
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "orelse": [],
-                "test": {
-                  "_type": "Compare",
-                  "comparators": [
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 4
-                    }
-                  ],
-                  "left": {
-                    "_type": "Call",
-                    "args": [
-                      {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "points"
-                      }
-                    ],
-                    "func": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "len"
-                    },
-                    "keywords": []
-                  },
-                  "ops": [
-                    {
-                      "_type": "GtE"
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": "series plotted"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "set",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "mode_text"
-                    }
-                  },
-                  "keywords": []
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "plot",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
                 "_type": "Global",
                 "names": [
                   "display",
-                  "mode_text",
-                  "canvas"
+                  "mode_text"
                 ]
               },
               {
@@ -4347,7 +3107,7 @@
                     {
                       "_type": "Constant",
                       "kind": null,
-                      "value": "Graphing Calculator"
+                      "value": "Matrix and Vector Calculator"
                     }
                   ],
                   "func": {
@@ -4375,7 +3135,7 @@
                     {
                       "_type": "Constant",
                       "kind": null,
-                      "value": "430x530+70+850"
+                      "value": "520x340+530+850"
                     }
                   ],
                   "func": {
@@ -4421,7 +3181,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": "#e9ecef"
+                        "value": "#e0fbfc"
                       }
                     }
                   ]
@@ -4481,7 +3241,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": "y = f(x) · viewport x ∈ [−9.75, 9.75]"
+                        "value": "2×2 matrices and 2D vectors"
                       }
                     }
                   ]
@@ -4649,7 +3409,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#e9ecef"
+                            "value": "#e0fbfc"
                           }
                         },
                         {
@@ -4658,7 +3418,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         }
                       ]
@@ -4705,117 +3465,6 @@
                 }
               },
               {
-                "_type": "Assign",
-                "targets": [
-                  {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Store"
-                    },
-                    "id": "canvas"
-                  }
-                ],
-                "type_comment": null,
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "root"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "Canvas"
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "width",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 390
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "height",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 180
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "bg",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "white"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "canvas"
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 7
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 0
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "columnspan",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 5
-                      }
-                    }
-                  ]
-                }
-              },
-              {
                 "_type": "Expr",
                 "value": {
                   "_type": "Call",
@@ -4851,7 +3500,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "x"
+                            "value": "det₂"
                           }
                         },
                         {
@@ -4873,7 +3522,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "x"
+                                  "value": "determinant2("
                                 }
                               ],
                               "kw_defaults": [],
@@ -4919,7 +3568,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5001,7 +3650,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "sin"
+                            "value": "trace₂"
                           }
                         },
                         {
@@ -5023,7 +3672,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "sin("
+                                  "value": "trace2("
                                 }
                               ],
                               "kw_defaults": [],
@@ -5069,7 +3718,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5151,7 +3800,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "cos"
+                            "value": "dot₂"
                           }
                         },
                         {
@@ -5173,7 +3822,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "cos("
+                                  "value": "dot2("
                                 }
                               ],
                               "kw_defaults": [],
@@ -5219,7 +3868,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5301,7 +3950,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "xʸ"
+                            "value": ","
                           }
                         },
                         {
@@ -5323,7 +3972,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "**"
+                                  "value": ","
                                 }
                               ],
                               "kw_defaults": [],
@@ -5369,7 +4018,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5451,18 +4100,57 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "PLOT"
+                            "value": ")"
                           }
                         },
                         {
                           "_type": "keyword",
                           "arg": "command",
                           "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": ")"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
                             },
-                            "id": "plot"
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
                           }
                         },
                         {
@@ -5480,7 +4168,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5630,7 +4318,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5780,7 +4468,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -5930,7 +4618,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -6012,7 +4700,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "÷"
+                            "value": "−"
                           }
                         },
                         {
@@ -6034,7 +4722,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "/"
+                                  "value": "-"
                                 }
                               ],
                               "kw_defaults": [],
@@ -6080,7 +4768,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -6191,7 +4879,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -6341,7 +5029,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -6491,7 +5179,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -6641,7 +5329,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -6673,267 +5361,6 @@
                         "_type": "Constant",
                         "kind": null,
                         "value": 2
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "sticky",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "nsew"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "root"
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "Button"
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "text",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "×"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "command",
-                          "value": {
-                            "_type": "Lambda",
-                            "args": {
-                              "_type": "arguments",
-                              "args": [
-                                {
-                                  "_type": "arg",
-                                  "annotation": null,
-                                  "arg": "value",
-                                  "type_comment": null
-                                }
-                              ],
-                              "defaults": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": "*"
-                                }
-                              ],
-                              "kw_defaults": [],
-                              "kwarg": null,
-                              "kwonlyargs": [],
-                              "posonlyargs": [],
-                              "vararg": null
-                            },
-                            "body": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "append"
-                              },
-                              "keywords": []
-                            }
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "bg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#ffffff"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "fg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#212529"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 7
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 4
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 3
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "sticky",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "nsew"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "root"
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "Button"
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "text",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "⌫"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "command",
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "backspace"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "bg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#ffffff"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "fg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#212529"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 7
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 4
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 4
                       }
                     },
                     {
@@ -7052,7 +5479,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -7074,7 +5501,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 4
                       }
                     },
                     {
@@ -7083,7 +5510,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 0
+                        "value": 3
                       }
                     },
                     {
@@ -7202,7 +5629,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -7224,7 +5651,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 4
                       }
                     },
                     {
@@ -7233,7 +5660,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 1
+                        "value": 4
                       }
                     },
                     {
@@ -7352,7 +5779,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -7383,307 +5810,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 2
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "sticky",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "nsew"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "root"
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "Button"
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "text",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "−"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "command",
-                          "value": {
-                            "_type": "Lambda",
-                            "args": {
-                              "_type": "arguments",
-                              "args": [
-                                {
-                                  "_type": "arg",
-                                  "annotation": null,
-                                  "arg": "value",
-                                  "type_comment": null
-                                }
-                              ],
-                              "defaults": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": "-"
-                                }
-                              ],
-                              "kw_defaults": [],
-                              "kwarg": null,
-                              "kwonlyargs": [],
-                              "posonlyargs": [],
-                              "vararg": null
-                            },
-                            "body": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "append"
-                              },
-                              "keywords": []
-                            }
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "bg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#ffffff"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "fg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#212529"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 7
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 5
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 3
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "sticky",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "nsew"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "root"
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "Button"
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "text",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "+"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "command",
-                          "value": {
-                            "_type": "Lambda",
-                            "args": {
-                              "_type": "arguments",
-                              "args": [
-                                {
-                                  "_type": "arg",
-                                  "annotation": null,
-                                  "arg": "value",
-                                  "type_comment": null
-                                }
-                              ],
-                              "defaults": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": "+"
-                                }
-                              ],
-                              "kw_defaults": [],
-                              "kwarg": null,
-                              "kwonlyargs": [],
-                              "posonlyargs": [],
-                              "vararg": null
-                            },
-                            "body": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "append"
-                              },
-                              "keywords": []
-                            }
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "bg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#ffffff"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "fg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#212529"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 7
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 5
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 4
+                        "value": 0
                       }
                     },
                     {
@@ -7802,7 +5929,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -7824,7 +5951,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 6
+                        "value": 5
                       }
                     },
                     {
@@ -7833,7 +5960,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 0
+                        "value": 1
                       }
                     },
                     {
@@ -7952,7 +6079,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -7974,157 +6101,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 6
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 1
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "sticky",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "nsew"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "root"
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "Button"
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "text",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "("
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "command",
-                          "value": {
-                            "_type": "Lambda",
-                            "args": {
-                              "_type": "arguments",
-                              "args": [
-                                {
-                                  "_type": "arg",
-                                  "annotation": null,
-                                  "arg": "value",
-                                  "type_comment": null
-                                }
-                              ],
-                              "defaults": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": "("
-                                }
-                              ],
-                              "kw_defaults": [],
-                              "kwarg": null,
-                              "kwonlyargs": [],
-                              "posonlyargs": [],
-                              "vararg": null
-                            },
-                            "body": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "append"
-                              },
-                              "keywords": []
-                            }
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "bg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#ffffff"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "fg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#212529"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 7
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 6
+                        "value": 5
                       }
                     },
                     {
@@ -8184,57 +6161,18 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": ")"
+                            "value": "⌫"
                           }
                         },
                         {
                           "_type": "keyword",
                           "arg": "command",
                           "value": {
-                            "_type": "Lambda",
-                            "args": {
-                              "_type": "arguments",
-                              "args": [
-                                {
-                                  "_type": "arg",
-                                  "annotation": null,
-                                  "arg": "value",
-                                  "type_comment": null
-                                }
-                              ],
-                              "defaults": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": ")"
-                                }
-                              ],
-                              "kw_defaults": [],
-                              "kwarg": null,
-                              "kwonlyargs": [],
-                              "posonlyargs": [],
-                              "vararg": null
+                            "_type": "Name",
+                            "ctx": {
+                              "_type": "Load"
                             },
-                            "body": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "append"
-                              },
-                              "keywords": []
-                            }
+                            "id": "backspace"
                           }
                         },
                         {
@@ -8252,7 +6190,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -8274,7 +6212,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 6
+                        "value": 5
                       }
                     },
                     {
@@ -8334,7 +6272,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "f(x)"
+                            "value": "="
                           }
                         },
                         {
@@ -8363,7 +6301,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#212529"
+                            "value": "#293241"
                           }
                         },
                         {
@@ -8385,7 +6323,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 6
+                        "value": 5
                       }
                     },
                     {
@@ -9009,16 +6947,11 @@
     },
     "semantics": {
       "numeric_laws": {
-        "constants": [
-          "pi",
-          "e"
-        ],
+        "constants": [],
         "functions": [
-          "sin",
-          "cos",
-          "tan",
-          "sqrt",
-          "abs"
+          "determinant2",
+          "trace2",
+          "dot2"
         ],
         "kind": "expression",
         "maximum_characters": 512,
@@ -9027,21 +6960,12 @@
           "add",
           "subtract",
           "multiply",
-          "divide",
-          "power"
+          "divide"
         ],
         "precision": 10,
-        "series": {
-          "samples": 390,
-          "scale": 20,
-          "variable": "x"
-        },
         "unary": [
           "positive",
           "negative"
-        ],
-        "variables": [
-          "x"
         ]
       },
       "operations": {
@@ -9073,94 +6997,93 @@
             "syntax": "ast.Div",
             "target": "operator.truediv",
             "token": "/"
-          },
-          {
-            "emit": "**",
-            "id": "power",
-            "syntax": "ast.Pow",
-            "target": "operator.pow",
-            "token": "^"
           }
         ],
-        "constants": [
-          {
-            "id": "pi",
-            "target": "math.pi"
-          },
-          {
-            "id": "e",
-            "target": "math.e"
-          }
-        ],
+        "constants": [],
         "functions": [
           {
             "body": {
-              "arguments": [
+              "subtract": [
                 {
-                  "parameter": "value"
+                  "multiply": [
+                    {
+                      "parameter": "a"
+                    },
+                    {
+                      "parameter": "d"
+                    }
+                  ]
+                },
+                {
+                  "multiply": [
+                    {
+                      "parameter": "b"
+                    },
+                    {
+                      "parameter": "c"
+                    }
+                  ]
                 }
-              ],
-              "call": "abs"
+              ]
             },
-            "id": "abs",
+            "id": "determinant2",
             "parameters": [
-              "value"
+              "a",
+              "b",
+              "c",
+              "d"
             ]
           },
           {
             "body": {
-              "arguments": [
+              "add": [
                 {
-                  "parameter": "value"
+                  "parameter": "a"
+                },
+                {
+                  "parameter": "d"
                 }
-              ],
-              "call": "math.sqrt"
+              ]
             },
-            "id": "sqrt",
+            "id": "trace2",
             "parameters": [
-              "value"
+              "a",
+              "b",
+              "c",
+              "d"
             ]
           },
           {
             "body": {
-              "arguments": [
+              "add": [
                 {
-                  "parameter": "value"
-                }
-              ],
-              "call": "math.sin"
-            },
-            "id": "sin",
-            "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "arguments": [
+                  "multiply": [
+                    {
+                      "parameter": "a"
+                    },
+                    {
+                      "parameter": "c"
+                    }
+                  ]
+                },
                 {
-                  "parameter": "value"
+                  "multiply": [
+                    {
+                      "parameter": "b"
+                    },
+                    {
+                      "parameter": "d"
+                    }
+                  ]
                 }
-              ],
-              "call": "math.cos"
+              ]
             },
-            "id": "cos",
+            "id": "dot2",
             "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "arguments": [
-                {
-                  "parameter": "value"
-                }
-              ],
-              "call": "math.tan"
-            },
-            "id": "tan",
-            "parameters": [
-              "value"
+              "a",
+              "b",
+              "c",
+              "d"
             ]
           }
         ],
@@ -9197,29 +7120,29 @@
     },
     "transitions": [
       {
-        "argument": "x",
-        "event": "control.x.pressed",
+        "argument": "determinant2(",
+        "event": "control.det.pressed",
         "route": "append"
       },
       {
-        "argument": "sin(",
-        "event": "control.sin.pressed",
+        "argument": "trace2(",
+        "event": "control.trace.pressed",
         "route": "append"
       },
       {
-        "argument": "cos(",
-        "event": "control.cos.pressed",
+        "argument": "dot2(",
+        "event": "control.dot.pressed",
         "route": "append"
       },
       {
-        "argument": "**",
-        "event": "control.power.pressed",
+        "argument": ",",
+        "event": "control.comma.pressed",
         "route": "append"
       },
       {
-        "argument": null,
-        "event": "control.plot.pressed",
-        "route": "plot"
+        "argument": ")",
+        "event": "control.right.pressed",
+        "route": "append"
       },
       {
         "argument": "7",
@@ -9237,8 +7160,8 @@
         "route": "append"
       },
       {
-        "argument": "/",
-        "event": "control.divide.pressed",
+        "argument": "-",
+        "event": "control.subtract.pressed",
         "route": "append"
       },
       {
@@ -9262,16 +7185,6 @@
         "route": "append"
       },
       {
-        "argument": "*",
-        "event": "control.multiply.pressed",
-        "route": "append"
-      },
-      {
-        "argument": null,
-        "event": "control.backspace.pressed",
-        "route": "backspace"
-      },
-      {
         "argument": "1",
         "event": "control.one.pressed",
         "route": "append"
@@ -9287,16 +7200,6 @@
         "route": "append"
       },
       {
-        "argument": "-",
-        "event": "control.subtract.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "+",
-        "event": "control.add.pressed",
-        "route": "append"
-      },
-      {
         "argument": "0",
         "event": "control.zero.pressed",
         "route": "append"
@@ -9307,14 +7210,9 @@
         "route": "append"
       },
       {
-        "argument": "(",
-        "event": "control.left.pressed",
-        "route": "append"
-      },
-      {
-        "argument": ")",
-        "event": "control.right.pressed",
-        "route": "append"
+        "argument": null,
+        "event": "control.backspace.pressed",
+        "route": "backspace"
       },
       {
         "argument": null,

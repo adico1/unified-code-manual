@@ -2,8 +2,8 @@
   "bases": [
     {
       "identity": "uc://manual/seeds/calculator-family@1",
-      "path": "bases/calculator-family.seed.json",
-      "sha256": "6e07e05db0d6ec7ff97e7d4371554147239bfb9affd9c3db07b58d87e7f31724"
+      "path": "../families/calculator.seed.json",
+      "sha256": "ac82f62bbb4b029831b83be4e1a0157066c6cae85ab0cf9fd8a812718c2482b5"
     }
   ],
   "format": "manual-what-seed-3",
@@ -12,21 +12,22 @@
       {
         "expected": {
           "error": null,
-          "result": "212"
+          "result": "8"
         },
-        "id": "engineering-units.1",
+        "id": "programmer.1",
         "input": {
-          "expression": "c_to_f(100)"
+          "expression": "12&10"
         }
       },
       {
         "expected": {
           "error": null,
-          "result": "0"
+          "result": "100"
         },
-        "id": "engineering-units.2",
+        "id": "programmer.2",
         "input": {
-          "expression": "f_to_c(32)"
+          "base": 16,
+          "expression": "1<<8"
         }
       }
     ],
@@ -53,67 +54,115 @@
       }
     ],
     "identity": {
-      "canonical": "uc://manual/calculators/engineering-units@1",
+      "canonical": "uc://manual/calculators/programmer@1",
       "family": "calculator",
-      "variation": "engineering-units",
+      "variation": "programmer",
       "version": 1
     },
     "presentation": {
       "controls": [
         {
-          "action": "append",
+          "action": "base",
           "column": 0,
-          "id": "ctof",
-          "label": "°C→°F",
+          "id": "hex",
+          "label": "HEX",
           "row": 2,
-          "value": "c_to_f("
+          "value": "16"
         },
         {
-          "action": "append",
+          "action": "base",
           "column": 1,
-          "id": "ftoc",
-          "label": "°F→°C",
+          "id": "dec",
+          "label": "DEC",
           "row": 2,
-          "value": "f_to_c("
+          "value": "10"
         },
         {
-          "action": "append",
+          "action": "base",
           "column": 2,
-          "id": "kmtomi",
-          "label": "km→mi",
+          "id": "oct",
+          "label": "OCT",
           "row": 2,
-          "value": "km_to_mi("
+          "value": "8"
         },
         {
-          "action": "append",
+          "action": "base",
           "column": 3,
-          "id": "mitokm",
-          "label": "mi→km",
+          "id": "bin",
+          "label": "BIN",
           "row": 2,
-          "value": "mi_to_km("
+          "value": "2"
         },
         {
           "action": "append",
           "column": 4,
-          "id": "kgtolb",
-          "label": "kg→lb",
+          "id": "left-shift",
+          "label": "<<",
           "row": 2,
-          "value": "kg_to_lb("
+          "value": "<<"
         },
         {
           "action": "append",
           "column": 5,
-          "id": "lbtokg",
-          "label": "lb→kg",
+          "id": "right-shift",
+          "label": ">>",
           "row": 2,
-          "value": "lb_to_kg("
+          "value": ">>"
+        },
+        {
+          "action": "append",
+          "column": 0,
+          "id": "and",
+          "label": "AND",
+          "row": 3,
+          "value": "&"
+        },
+        {
+          "action": "append",
+          "column": 1,
+          "id": "or",
+          "label": "OR",
+          "row": 3,
+          "value": "|"
+        },
+        {
+          "action": "append",
+          "column": 2,
+          "id": "xor",
+          "label": "XOR",
+          "row": 3,
+          "value": "^"
+        },
+        {
+          "action": "append",
+          "column": 3,
+          "id": "not",
+          "label": "NOT",
+          "row": 3,
+          "value": "~"
+        },
+        {
+          "action": "append",
+          "column": 4,
+          "id": "mod",
+          "label": "MOD",
+          "row": 3,
+          "value": "%"
+        },
+        {
+          "action": "append",
+          "column": 5,
+          "id": "floor",
+          "label": "DIV",
+          "row": 3,
+          "value": "//"
         },
         {
           "action": "append",
           "column": 0,
           "id": "seven",
           "label": "7",
-          "row": 3,
+          "row": 4,
           "value": "7"
         },
         {
@@ -121,7 +170,7 @@
           "column": 1,
           "id": "eight",
           "label": "8",
-          "row": 3,
+          "row": 4,
           "value": "8"
         },
         {
@@ -129,23 +178,23 @@
           "column": 2,
           "id": "nine",
           "label": "9",
-          "row": 3,
+          "row": 4,
           "value": "9"
         },
         {
           "action": "append",
           "column": 3,
-          "id": "right",
-          "label": ")",
-          "row": 3,
-          "value": ")"
+          "id": "add",
+          "label": "+",
+          "row": 4,
+          "value": "+"
         },
         {
           "action": "append",
           "column": 4,
           "id": "subtract",
           "label": "−",
-          "row": 3,
+          "row": 4,
           "value": "-"
         },
         {
@@ -153,14 +202,14 @@
           "column": 5,
           "id": "clear",
           "label": "C",
-          "row": 3
+          "row": 4
         },
         {
           "action": "append",
           "column": 0,
           "id": "four",
           "label": "4",
-          "row": 4,
+          "row": 5,
           "value": "4"
         },
         {
@@ -168,7 +217,7 @@
           "column": 1,
           "id": "five",
           "label": "5",
-          "row": 4,
+          "row": 5,
           "value": "5"
         },
         {
@@ -176,7 +225,7 @@
           "column": 2,
           "id": "six",
           "label": "6",
-          "row": 4,
+          "row": 5,
           "value": "6"
         },
         {
@@ -184,7 +233,7 @@
           "column": 3,
           "id": "one",
           "label": "1",
-          "row": 4,
+          "row": 5,
           "value": "1"
         },
         {
@@ -192,7 +241,7 @@
           "column": 4,
           "id": "two",
           "label": "2",
-          "row": 4,
+          "row": 5,
           "value": "2"
         },
         {
@@ -200,7 +249,7 @@
           "column": 5,
           "id": "three",
           "label": "3",
-          "row": 4,
+          "row": 5,
           "value": "3"
         },
         {
@@ -208,60 +257,60 @@
           "column": 0,
           "id": "zero",
           "label": "0",
-          "row": 5,
+          "row": 6,
           "value": "0"
         },
         {
           "action": "append",
           "column": 1,
-          "id": "decimal",
-          "label": ".",
-          "row": 5,
-          "value": "."
+          "id": "left",
+          "label": "(",
+          "row": 6,
+          "value": "("
         },
         {
           "action": "append",
           "column": 2,
-          "id": "left",
-          "label": "(",
-          "row": 5,
-          "value": "("
+          "id": "right",
+          "label": ")",
+          "row": 6,
+          "value": ")"
         },
         {
           "action": "backspace",
           "column": 3,
           "id": "backspace",
           "label": "⌫",
-          "row": 5
+          "row": 6
         },
         {
           "action": "append",
           "column": 4,
-          "id": "add",
-          "label": "+",
-          "row": 5,
-          "value": "+"
+          "id": "multiply",
+          "label": "×",
+          "row": 6,
+          "value": "*"
         },
         {
           "action": "evaluate",
           "column": 5,
           "id": "evaluate",
           "label": "=",
-          "row": 5
+          "row": 6
         }
       ],
-      "geometry": "600x350+1080+850",
+      "geometry": "520x340+70+470",
       "layout": {
         "columns": 6
       },
-      "mode_label": "temperature · distance · mass conversions",
+      "mode_label": "integer · base 10 · bitwise",
       "theme": {
-        "background": "#fefae0",
-        "button_background": "#ffffff",
-        "button_foreground": "#283618",
-        "foreground": "#283618"
+        "background": "#101820",
+        "button_background": "#23313f",
+        "button_foreground": "#f2aa4c",
+        "foreground": "#f2aa4c"
       },
-      "title": "Engineering Unit Calculator"
+      "title": "Programmer Calculator"
     },
     "program": {
       "ast": {
@@ -362,340 +411,8 @@
             "value": {
               "_type": "Constant",
               "kind": null,
-              "value": "engineering-units"
+              "value": "programmer"
             }
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "BinOp",
-                  "left": {
-                    "_type": "BinOp",
-                    "left": {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "value"
-                      },
-                      "op": {
-                        "_type": "Mult"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 9
-                      }
-                    },
-                    "op": {
-                      "_type": "Div"
-                    },
-                    "right": {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 5
-                    }
-                  },
-                  "op": {
-                    "_type": "Add"
-                  },
-                  "right": {
-                    "_type": "Constant",
-                    "kind": null,
-                    "value": 32
-                  }
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_0",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "BinOp",
-                  "left": {
-                    "_type": "BinOp",
-                    "left": {
-                      "_type": "BinOp",
-                      "left": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "value"
-                      },
-                      "op": {
-                        "_type": "Sub"
-                      },
-                      "right": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 32
-                      }
-                    },
-                    "op": {
-                      "_type": "Mult"
-                    },
-                    "right": {
-                      "_type": "Constant",
-                      "kind": null,
-                      "value": 5
-                    }
-                  },
-                  "op": {
-                    "_type": "Div"
-                  },
-                  "right": {
-                    "_type": "Constant",
-                    "kind": null,
-                    "value": 9
-                  }
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_1",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "BinOp",
-                  "left": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "value"
-                  },
-                  "op": {
-                    "_type": "Mult"
-                  },
-                  "right": {
-                    "_type": "Constant",
-                    "kind": null,
-                    "value": 0.621371192237334
-                  }
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_2",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "BinOp",
-                  "left": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "value"
-                  },
-                  "op": {
-                    "_type": "Div"
-                  },
-                  "right": {
-                    "_type": "Constant",
-                    "kind": null,
-                    "value": 0.621371192237334
-                  }
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_3",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "BinOp",
-                  "left": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "value"
-                  },
-                  "op": {
-                    "_type": "Mult"
-                  },
-                  "right": {
-                    "_type": "Constant",
-                    "kind": null,
-                    "value": 2.20462262184878
-                  }
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_4",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "BinOp",
-                  "left": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "value"
-                  },
-                  "op": {
-                    "_type": "Div"
-                  },
-                  "right": {
-                    "_type": "Constant",
-                    "kind": null,
-                    "value": 2.20462262184878
-                  }
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_5",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
           },
           {
             "_type": "Assign",
@@ -756,7 +473,21 @@
                 },
                 {
                   "_type": "Attribute",
-                  "attr": "Div",
+                  "attr": "FloorDiv",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "Mod",
                   "ctx": {
                     "_type": "Load"
                   },
@@ -771,6 +502,76 @@
                 {
                   "_type": "Attribute",
                   "attr": "Pow",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "BitAnd",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "BitOr",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "BitXor",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "LShift",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "RShift",
                   "ctx": {
                     "_type": "Load"
                   },
@@ -828,7 +629,21 @@
                 },
                 {
                   "_type": "Attribute",
-                  "attr": "truediv",
+                  "attr": "floordiv",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "mod",
                   "ctx": {
                     "_type": "Load"
                   },
@@ -843,6 +658,76 @@
                 {
                   "_type": "Attribute",
                   "attr": "pow",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "and_",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "or_",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "xor",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "lshift",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "rshift",
                   "ctx": {
                     "_type": "Load"
                   },
@@ -899,6 +784,20 @@
                     },
                     "id": "ast"
                   }
+                },
+                {
+                  "_type": "Attribute",
+                  "attr": "Invert",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "ast"
+                  }
                 }
               ],
               "values": [
@@ -929,98 +828,20 @@
                     },
                     "id": "operator"
                   }
-                }
-              ]
-            }
-          },
-          {
-            "_type": "Assign",
-            "targets": [
-              {
-                "_type": "Name",
-                "ctx": {
-                  "_type": "Store"
-                },
-                "id": "FUNCTIONS"
-              }
-            ],
-            "type_comment": null,
-            "value": {
-              "_type": "Dict",
-              "keys": [
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "c_to_f"
                 },
                 {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "f_to_c"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "km_to_mi"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "mi_to_km"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "kg_to_lb"
-                },
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "lb_to_kg"
-                }
-              ],
-              "values": [
-                {
-                  "_type": "Name",
+                  "_type": "Attribute",
+                  "attr": "invert",
                   "ctx": {
                     "_type": "Load"
                   },
-                  "id": "_semantic_0"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_1"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_2"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_3"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_4"
-                },
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_5"
+                  "value": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "operator"
+                  }
                 }
               ]
             }
@@ -1637,240 +1458,6 @@
                 }
               },
               {
-                "_type": "If",
-                "body": [
-                  {
-                    "_type": "Return",
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Starred",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "GeneratorExp",
-                            "elt": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "item"
-                                },
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "variables"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "evaluate_node"
-                              },
-                              "keywords": []
-                            },
-                            "generators": [
-                              {
-                                "_type": "comprehension",
-                                "ifs": [],
-                                "is_async": 0,
-                                "iter": {
-                                  "_type": "Attribute",
-                                  "attr": "args",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "value": {
-                                    "_type": "Name",
-                                    "ctx": {
-                                      "_type": "Load"
-                                    },
-                                    "id": "node"
-                                  }
-                                },
-                                "target": {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Store"
-                                  },
-                                  "id": "item"
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Subscript",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "slice": {
-                          "_type": "Attribute",
-                          "attr": "id",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Attribute",
-                            "attr": "func",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "value": {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "node"
-                            }
-                          }
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "FUNCTIONS"
-                        }
-                      },
-                      "keywords": []
-                    }
-                  }
-                ],
-                "orelse": [],
-                "test": {
-                  "_type": "BoolOp",
-                  "op": {
-                    "_type": "And"
-                  },
-                  "values": [
-                    {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        },
-                        {
-                          "_type": "Attribute",
-                          "attr": "Call",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "ast"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "isinstance"
-                      },
-                      "keywords": []
-                    },
-                    {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Attribute",
-                          "attr": "func",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "node"
-                          }
-                        },
-                        {
-                          "_type": "Attribute",
-                          "attr": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "ast"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "isinstance"
-                      },
-                      "keywords": []
-                    },
-                    {
-                      "_type": "Compare",
-                      "comparators": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "FUNCTIONS"
-                        }
-                      ],
-                      "left": {
-                        "_type": "Attribute",
-                        "attr": "id",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Attribute",
-                          "attr": "func",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "node"
-                          }
-                        }
-                      },
-                      "ops": [
-                        {
-                          "_type": "In"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
                 "_type": "Raise",
                 "cause": null,
                 "exc": {
@@ -1983,7 +1570,7 @@
                         {
                           "_type": "Constant",
                           "kind": null,
-                          "value": 512
+                          "value": 256
                         }
                       ],
                       "left": {
@@ -2099,6 +1686,71 @@
                 }
               },
               {
+                "_type": "If",
+                "body": [
+                  {
+                    "_type": "Raise",
+                    "cause": null,
+                    "exc": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Constant",
+                          "kind": null,
+                          "value": "integer-required"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "ValueError"
+                      },
+                      "keywords": []
+                    }
+                  }
+                ],
+                "orelse": [],
+                "test": {
+                  "_type": "Compare",
+                  "comparators": [
+                    {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "int"
+                    }
+                  ],
+                  "left": {
+                    "_type": "Call",
+                    "args": [
+                      {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "value"
+                      }
+                    ],
+                    "func": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "type"
+                    },
+                    "keywords": []
+                  },
+                  "ops": [
+                    {
+                      "_type": "IsNot"
+                    }
+                  ]
+                }
+              },
+              {
                 "_type": "Return",
                 "value": {
                   "_type": "Name",
@@ -2125,6 +1777,12 @@
                   "annotation": null,
                   "arg": "value",
                   "type_comment": null
+                },
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "base",
+                  "type_comment": null
                 }
               ],
               "defaults": [],
@@ -2136,136 +1794,17 @@
             },
             "body": [
               {
-                "_type": "If",
-                "body": [
+                "_type": "Assign",
+                "targets": [
                   {
-                    "_type": "Assign",
-                    "targets": [
-                      {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Store"
-                        },
-                        "id": "value"
-                      }
-                    ],
-                    "type_comment": null,
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "value"
-                        },
-                        {
-                          "_type": "Constant",
-                          "kind": null,
-                          "value": 8
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "round"
-                      },
-                      "keywords": []
-                    }
-                  },
-                  {
-                    "_type": "If",
-                    "body": [
-                      {
-                        "_type": "Assign",
-                        "targets": [
-                          {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Store"
-                            },
-                            "id": "value"
-                          }
-                        ],
-                        "type_comment": null,
-                        "value": {
-                          "_type": "Call",
-                          "args": [
-                            {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "value"
-                            }
-                          ],
-                          "func": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "int"
-                          },
-                          "keywords": []
-                        }
-                      }
-                    ],
-                    "orelse": [],
-                    "test": {
-                      "_type": "Call",
-                      "args": [],
-                      "func": {
-                        "_type": "Attribute",
-                        "attr": "is_integer",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "value"
-                        }
-                      },
-                      "keywords": []
-                    }
-                  }
-                ],
-                "orelse": [],
-                "test": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "value"
-                    },
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "float"
-                    }
-                  ],
-                  "func": {
                     "_type": "Name",
                     "ctx": {
-                      "_type": "Load"
+                      "_type": "Store"
                     },
-                    "id": "isinstance"
-                  },
-                  "keywords": []
-                }
-              },
-              {
-                "_type": "Return",
+                    "id": "integer"
+                  }
+                ],
+                "type_comment": null,
                 "value": {
                   "_type": "Call",
                   "args": [
@@ -2282,9 +1821,354 @@
                     "ctx": {
                       "_type": "Load"
                     },
-                    "id": "str"
+                    "id": "int"
                   },
                   "keywords": []
+                }
+              },
+              {
+                "_type": "Return",
+                "value": {
+                  "_type": "Subscript",
+                  "ctx": {
+                    "_type": "Load"
+                  },
+                  "slice": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "base"
+                  },
+                  "value": {
+                    "_type": "Dict",
+                    "keys": [
+                      {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 2
+                      },
+                      {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 8
+                      },
+                      {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 10
+                      },
+                      {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 16
+                      }
+                    ],
+                    "values": [
+                      {
+                        "_type": "BinOp",
+                        "left": {
+                          "_type": "IfExp",
+                          "body": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "-"
+                          },
+                          "orelse": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": ""
+                          },
+                          "test": {
+                            "_type": "Compare",
+                            "comparators": [
+                              {
+                                "_type": "Constant",
+                                "kind": null,
+                                "value": 0
+                              }
+                            ],
+                            "left": {
+                              "_type": "Name",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "id": "integer"
+                            },
+                            "ops": [
+                              {
+                                "_type": "Lt"
+                              }
+                            ]
+                          }
+                        },
+                        "op": {
+                          "_type": "Add"
+                        },
+                        "right": {
+                          "_type": "Subscript",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "slice": {
+                            "_type": "Slice",
+                            "lower": {
+                              "_type": "Constant",
+                              "kind": null,
+                              "value": 2
+                            },
+                            "step": null,
+                            "upper": null
+                          },
+                          "value": {
+                            "_type": "Call",
+                            "args": [
+                              {
+                                "_type": "Call",
+                                "args": [
+                                  {
+                                    "_type": "Name",
+                                    "ctx": {
+                                      "_type": "Load"
+                                    },
+                                    "id": "integer"
+                                  }
+                                ],
+                                "func": {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "abs"
+                                },
+                                "keywords": []
+                              }
+                            ],
+                            "func": {
+                              "_type": "Name",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "id": "bin"
+                            },
+                            "keywords": []
+                          }
+                        }
+                      },
+                      {
+                        "_type": "BinOp",
+                        "left": {
+                          "_type": "IfExp",
+                          "body": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "-"
+                          },
+                          "orelse": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": ""
+                          },
+                          "test": {
+                            "_type": "Compare",
+                            "comparators": [
+                              {
+                                "_type": "Constant",
+                                "kind": null,
+                                "value": 0
+                              }
+                            ],
+                            "left": {
+                              "_type": "Name",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "id": "integer"
+                            },
+                            "ops": [
+                              {
+                                "_type": "Lt"
+                              }
+                            ]
+                          }
+                        },
+                        "op": {
+                          "_type": "Add"
+                        },
+                        "right": {
+                          "_type": "Subscript",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "slice": {
+                            "_type": "Slice",
+                            "lower": {
+                              "_type": "Constant",
+                              "kind": null,
+                              "value": 2
+                            },
+                            "step": null,
+                            "upper": null
+                          },
+                          "value": {
+                            "_type": "Call",
+                            "args": [
+                              {
+                                "_type": "Call",
+                                "args": [
+                                  {
+                                    "_type": "Name",
+                                    "ctx": {
+                                      "_type": "Load"
+                                    },
+                                    "id": "integer"
+                                  }
+                                ],
+                                "func": {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "abs"
+                                },
+                                "keywords": []
+                              }
+                            ],
+                            "func": {
+                              "_type": "Name",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "id": "oct"
+                            },
+                            "keywords": []
+                          }
+                        }
+                      },
+                      {
+                        "_type": "Call",
+                        "args": [
+                          {
+                            "_type": "Name",
+                            "ctx": {
+                              "_type": "Load"
+                            },
+                            "id": "integer"
+                          }
+                        ],
+                        "func": {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "str"
+                        },
+                        "keywords": []
+                      },
+                      {
+                        "_type": "BinOp",
+                        "left": {
+                          "_type": "IfExp",
+                          "body": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "-"
+                          },
+                          "orelse": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": ""
+                          },
+                          "test": {
+                            "_type": "Compare",
+                            "comparators": [
+                              {
+                                "_type": "Constant",
+                                "kind": null,
+                                "value": 0
+                              }
+                            ],
+                            "left": {
+                              "_type": "Name",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "id": "integer"
+                            },
+                            "ops": [
+                              {
+                                "_type": "Lt"
+                              }
+                            ]
+                          }
+                        },
+                        "op": {
+                          "_type": "Add"
+                        },
+                        "right": {
+                          "_type": "Call",
+                          "args": [],
+                          "func": {
+                            "_type": "Attribute",
+                            "attr": "upper",
+                            "ctx": {
+                              "_type": "Load"
+                            },
+                            "value": {
+                              "_type": "Subscript",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "slice": {
+                                "_type": "Slice",
+                                "lower": {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": 2
+                                },
+                                "step": null,
+                                "upper": null
+                              },
+                              "value": {
+                                "_type": "Call",
+                                "args": [
+                                  {
+                                    "_type": "Call",
+                                    "args": [
+                                      {
+                                        "_type": "Name",
+                                        "ctx": {
+                                          "_type": "Load"
+                                        },
+                                        "id": "integer"
+                                      }
+                                    ],
+                                    "func": {
+                                      "_type": "Name",
+                                      "ctx": {
+                                        "_type": "Load"
+                                      },
+                                      "id": "abs"
+                                    },
+                                    "keywords": []
+                                  }
+                                ],
+                                "func": {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "hex"
+                                },
+                                "keywords": []
+                              }
+                            }
+                          },
+                          "keywords": []
+                        }
+                      }
+                    ]
+                  }
                 }
               }
             ],
@@ -2420,6 +2304,36 @@
                                   "_type": "Load"
                                 },
                                 "id": "calculate_case"
+                              },
+                              "keywords": []
+                            },
+                            {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "base"
+                                },
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": 10
+                                }
+                              ],
+                              "func": {
+                                "_type": "Attribute",
+                                "attr": "get",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "value": {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "case"
+                                }
                               },
                               "keywords": []
                             }
@@ -2638,6 +2552,16 @@
                   "_type": "Constant",
                   "kind": null,
                   "value": "expression"
+                },
+                {
+                  "_type": "Constant",
+                  "kind": null,
+                  "value": "last"
+                },
+                {
+                  "_type": "Constant",
+                  "kind": null,
+                  "value": "base"
                 }
               ],
               "values": [
@@ -2645,6 +2569,16 @@
                   "_type": "Constant",
                   "kind": null,
                   "value": ""
+                },
+                {
+                  "_type": "Constant",
+                  "kind": null,
+                  "value": 0
+                },
+                {
+                  "_type": "Constant",
+                  "kind": null,
+                  "value": 10
                 }
               ]
             }
@@ -3026,6 +2960,37 @@
                         "slice": {
                           "_type": "Constant",
                           "kind": null,
+                          "value": "last"
+                        },
+                        "value": {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "state"
+                        }
+                      }
+                    ],
+                    "type_comment": null,
+                    "value": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "value"
+                    }
+                  },
+                  {
+                    "_type": "Assign",
+                    "targets": [
+                      {
+                        "_type": "Subscript",
+                        "ctx": {
+                          "_type": "Store"
+                        },
+                        "slice": {
+                          "_type": "Constant",
+                          "kind": null,
                           "value": "expression"
                         },
                         "value": {
@@ -3073,6 +3038,24 @@
                                 "_type": "Load"
                               },
                               "id": "value"
+                            },
+                            {
+                              "_type": "Subscript",
+                              "ctx": {
+                                "_type": "Load"
+                              },
+                              "slice": {
+                                "_type": "Constant",
+                                "kind": null,
+                                "value": "base"
+                              },
+                              "value": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "state"
+                              }
                             }
                           ],
                           "func": {
@@ -3230,6 +3213,194 @@
             "_type": "FunctionDef",
             "args": {
               "_type": "arguments",
+              "args": [
+                {
+                  "_type": "arg",
+                  "annotation": null,
+                  "arg": "value",
+                  "type_comment": null
+                }
+              ],
+              "defaults": [],
+              "kw_defaults": [],
+              "kwarg": null,
+              "kwonlyargs": [],
+              "posonlyargs": [],
+              "vararg": null
+            },
+            "body": [
+              {
+                "_type": "Assign",
+                "targets": [
+                  {
+                    "_type": "Subscript",
+                    "ctx": {
+                      "_type": "Store"
+                    },
+                    "slice": {
+                      "_type": "Constant",
+                      "kind": null,
+                      "value": "base"
+                    },
+                    "value": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "state"
+                    }
+                  }
+                ],
+                "type_comment": null,
+                "value": {
+                  "_type": "Call",
+                  "args": [
+                    {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "value"
+                    }
+                  ],
+                  "func": {
+                    "_type": "Name",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "id": "int"
+                  },
+                  "keywords": []
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [
+                    {
+                      "_type": "JoinedStr",
+                      "values": [
+                        {
+                          "_type": "Constant",
+                          "kind": null,
+                          "value": "base "
+                        },
+                        {
+                          "_type": "FormattedValue",
+                          "conversion": -1,
+                          "format_spec": null,
+                          "value": {
+                            "_type": "Name",
+                            "ctx": {
+                              "_type": "Load"
+                            },
+                            "id": "value"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "set",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "mode_text"
+                    }
+                  },
+                  "keywords": []
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [
+                    {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Subscript",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "slice": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "last"
+                          },
+                          "value": {
+                            "_type": "Name",
+                            "ctx": {
+                              "_type": "Load"
+                            },
+                            "id": "state"
+                          }
+                        },
+                        {
+                          "_type": "Subscript",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "slice": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "base"
+                          },
+                          "value": {
+                            "_type": "Name",
+                            "ctx": {
+                              "_type": "Load"
+                            },
+                            "id": "state"
+                          }
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "present"
+                      },
+                      "keywords": []
+                    }
+                  ],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "set",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Name",
+                      "ctx": {
+                        "_type": "Load"
+                      },
+                      "id": "display"
+                    }
+                  },
+                  "keywords": []
+                }
+              }
+            ],
+            "decorator_list": [],
+            "name": "set_base",
+            "returns": null,
+            "type_comment": null,
+            "type_params": []
+          },
+          {
+            "_type": "FunctionDef",
+            "args": {
+              "_type": "arguments",
               "args": [],
               "defaults": [],
               "kw_defaults": [],
@@ -3279,7 +3450,7 @@
                     {
                       "_type": "Constant",
                       "kind": null,
-                      "value": "Engineering Unit Calculator"
+                      "value": "Programmer Calculator"
                     }
                   ],
                   "func": {
@@ -3307,7 +3478,7 @@
                     {
                       "_type": "Constant",
                       "kind": null,
-                      "value": "600x350+1080+850"
+                      "value": "520x340+70+470"
                     }
                   ],
                   "func": {
@@ -3353,7 +3524,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": "#fefae0"
+                        "value": "#101820"
                       }
                     }
                   ]
@@ -3413,7 +3584,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": "temperature · distance · mass conversions"
+                        "value": "integer · base 10 · bitwise"
                       }
                     }
                   ]
@@ -3581,7 +3752,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#fefae0"
+                            "value": "#101820"
                           }
                         },
                         {
@@ -3590,7 +3761,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         }
                       ]
@@ -3672,7 +3843,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "°C→°F"
+                            "value": "HEX"
                           }
                         },
                         {
@@ -3694,7 +3865,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "c_to_f("
+                                  "value": "16"
                                 }
                               ],
                               "kw_defaults": [],
@@ -3719,7 +3890,7 @@
                                 "ctx": {
                                   "_type": "Load"
                                 },
-                                "id": "append"
+                                "id": "set_base"
                               },
                               "keywords": []
                             }
@@ -3731,7 +3902,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -3740,7 +3911,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -3822,7 +3993,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "°F→°C"
+                            "value": "DEC"
                           }
                         },
                         {
@@ -3844,7 +4015,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "f_to_c("
+                                  "value": "10"
                                 }
                               ],
                               "kw_defaults": [],
@@ -3869,7 +4040,7 @@
                                 "ctx": {
                                   "_type": "Load"
                                 },
-                                "id": "append"
+                                "id": "set_base"
                               },
                               "keywords": []
                             }
@@ -3881,7 +4052,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -3890,7 +4061,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -3972,7 +4143,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "km→mi"
+                            "value": "OCT"
                           }
                         },
                         {
@@ -3994,7 +4165,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "km_to_mi("
+                                  "value": "8"
                                 }
                               ],
                               "kw_defaults": [],
@@ -4019,7 +4190,7 @@
                                 "ctx": {
                                   "_type": "Load"
                                 },
-                                "id": "append"
+                                "id": "set_base"
                               },
                               "keywords": []
                             }
@@ -4031,7 +4202,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4040,7 +4211,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4122,7 +4293,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "mi→km"
+                            "value": "BIN"
                           }
                         },
                         {
@@ -4144,7 +4315,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "mi_to_km("
+                                  "value": "2"
                                 }
                               ],
                               "kw_defaults": [],
@@ -4169,7 +4340,7 @@
                                 "ctx": {
                                   "_type": "Load"
                                 },
-                                "id": "append"
+                                "id": "set_base"
                               },
                               "keywords": []
                             }
@@ -4181,7 +4352,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4190,7 +4361,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4272,7 +4443,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "kg→lb"
+                            "value": "<<"
                           }
                         },
                         {
@@ -4294,7 +4465,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "kg_to_lb("
+                                  "value": "<<"
                                 }
                               ],
                               "kw_defaults": [],
@@ -4331,7 +4502,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4340,7 +4511,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4422,7 +4593,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "lb→kg"
+                            "value": ">>"
                           }
                         },
                         {
@@ -4444,7 +4615,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "lb_to_kg("
+                                  "value": ">>"
                                 }
                               ],
                               "kw_defaults": [],
@@ -4481,7 +4652,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4490,7 +4661,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4513,6 +4684,906 @@
                         "_type": "Constant",
                         "kind": null,
                         "value": 2
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 5
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "AND"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "&"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 0
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "OR"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "|"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 1
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "XOR"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "^"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 2
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "NOT"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "~"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "MOD"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "%"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 4
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "DIV"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": "//"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 3
                       }
                     },
                     {
@@ -4631,7 +5702,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4640,7 +5711,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4662,7 +5733,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 3
+                        "value": 4
                       }
                     },
                     {
@@ -4781,7 +5852,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4790,7 +5861,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4812,7 +5883,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 3
+                        "value": 4
                       }
                     },
                     {
@@ -4931,7 +6002,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -4940,7 +6011,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -4962,7 +6033,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 3
+                        "value": 4
                       }
                     },
                     {
@@ -5022,7 +6093,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": ")"
+                            "value": "+"
                           }
                         },
                         {
@@ -5044,7 +6115,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": ")"
+                                  "value": "+"
                                 }
                               ],
                               "kw_defaults": [],
@@ -5081,7 +6152,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5090,7 +6161,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5112,7 +6183,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 3
+                        "value": 4
                       }
                     },
                     {
@@ -5231,7 +6302,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5240,7 +6311,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5262,7 +6333,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 3
+                        "value": 4
                       }
                     },
                     {
@@ -5342,7 +6413,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5351,7 +6422,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5373,7 +6444,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 3
+                        "value": 4
                       }
                     },
                     {
@@ -5492,7 +6563,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5501,7 +6572,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5523,7 +6594,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 4
+                        "value": 5
                       }
                     },
                     {
@@ -5642,7 +6713,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5651,7 +6722,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5673,7 +6744,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 4
+                        "value": 5
                       }
                     },
                     {
@@ -5792,7 +6863,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5801,7 +6872,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5823,7 +6894,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 4
+                        "value": 5
                       }
                     },
                     {
@@ -5942,7 +7013,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -5951,7 +7022,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -5973,7 +7044,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 4
+                        "value": 5
                       }
                     },
                     {
@@ -6092,7 +7163,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -6101,7 +7172,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -6123,7 +7194,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 4
+                        "value": 5
                       }
                     },
                     {
@@ -6242,7 +7313,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -6251,7 +7322,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -6273,7 +7344,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 4
+                        "value": 5
                       }
                     },
                     {
@@ -6392,7 +7463,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -6401,7 +7472,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -6423,7 +7494,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 6
                       }
                     },
                     {
@@ -6433,156 +7504,6 @@
                         "_type": "Constant",
                         "kind": null,
                         "value": 0
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "sticky",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": "nsew"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "Expr",
-                "value": {
-                  "_type": "Call",
-                  "args": [],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "grid",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "root"
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "Button"
-                      },
-                      "keywords": [
-                        {
-                          "_type": "keyword",
-                          "arg": "text",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "."
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "command",
-                          "value": {
-                            "_type": "Lambda",
-                            "args": {
-                              "_type": "arguments",
-                              "args": [
-                                {
-                                  "_type": "arg",
-                                  "annotation": null,
-                                  "arg": "value",
-                                  "type_comment": null
-                                }
-                              ],
-                              "defaults": [
-                                {
-                                  "_type": "Constant",
-                                  "kind": null,
-                                  "value": "."
-                                }
-                              ],
-                              "kw_defaults": [],
-                              "kwarg": null,
-                              "kwonlyargs": [],
-                              "posonlyargs": [],
-                              "vararg": null
-                            },
-                            "body": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "value"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "append"
-                              },
-                              "keywords": []
-                            }
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "bg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#ffffff"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "fg",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": "#283618"
-                          }
-                        },
-                        {
-                          "_type": "keyword",
-                          "arg": "width",
-                          "value": {
-                            "_type": "Constant",
-                            "kind": null,
-                            "value": 7
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "keywords": [
-                    {
-                      "_type": "keyword",
-                      "arg": "row",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 5
-                      }
-                    },
-                    {
-                      "_type": "keyword",
-                      "arg": "column",
-                      "value": {
-                        "_type": "Constant",
-                        "kind": null,
-                        "value": 1
                       }
                     },
                     {
@@ -6692,7 +7613,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -6701,7 +7622,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -6723,7 +7644,157 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 6
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "column",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 1
+                      }
+                    },
+                    {
+                      "_type": "keyword",
+                      "arg": "sticky",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": "nsew"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "_type": "Expr",
+                "value": {
+                  "_type": "Call",
+                  "args": [],
+                  "func": {
+                    "_type": "Attribute",
+                    "attr": "grid",
+                    "ctx": {
+                      "_type": "Load"
+                    },
+                    "value": {
+                      "_type": "Call",
+                      "args": [
+                        {
+                          "_type": "Name",
+                          "ctx": {
+                            "_type": "Load"
+                          },
+                          "id": "root"
+                        }
+                      ],
+                      "func": {
+                        "_type": "Name",
+                        "ctx": {
+                          "_type": "Load"
+                        },
+                        "id": "Button"
+                      },
+                      "keywords": [
+                        {
+                          "_type": "keyword",
+                          "arg": "text",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": ")"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "command",
+                          "value": {
+                            "_type": "Lambda",
+                            "args": {
+                              "_type": "arguments",
+                              "args": [
+                                {
+                                  "_type": "arg",
+                                  "annotation": null,
+                                  "arg": "value",
+                                  "type_comment": null
+                                }
+                              ],
+                              "defaults": [
+                                {
+                                  "_type": "Constant",
+                                  "kind": null,
+                                  "value": ")"
+                                }
+                              ],
+                              "kw_defaults": [],
+                              "kwarg": null,
+                              "kwonlyargs": [],
+                              "posonlyargs": [],
+                              "vararg": null
+                            },
+                            "body": {
+                              "_type": "Call",
+                              "args": [
+                                {
+                                  "_type": "Name",
+                                  "ctx": {
+                                    "_type": "Load"
+                                  },
+                                  "id": "value"
+                                }
+                              ],
+                              "func": {
+                                "_type": "Name",
+                                "ctx": {
+                                  "_type": "Load"
+                                },
+                                "id": "append"
+                              },
+                              "keywords": []
+                            }
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "bg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#23313f"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "fg",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": "#f2aa4c"
+                          }
+                        },
+                        {
+                          "_type": "keyword",
+                          "arg": "width",
+                          "value": {
+                            "_type": "Constant",
+                            "kind": null,
+                            "value": 7
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "keywords": [
+                    {
+                      "_type": "keyword",
+                      "arg": "row",
+                      "value": {
+                        "_type": "Constant",
+                        "kind": null,
+                        "value": 6
                       }
                     },
                     {
@@ -6803,7 +7874,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -6812,7 +7883,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -6834,7 +7905,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 6
                       }
                     },
                     {
@@ -6894,7 +7965,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "+"
+                            "value": "×"
                           }
                         },
                         {
@@ -6916,7 +7987,7 @@
                                 {
                                   "_type": "Constant",
                                   "kind": null,
-                                  "value": "+"
+                                  "value": "*"
                                 }
                               ],
                               "kw_defaults": [],
@@ -6953,7 +8024,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -6962,7 +8033,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -6984,7 +8055,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 6
                       }
                     },
                     {
@@ -7064,7 +8135,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "#23313f"
                           }
                         },
                         {
@@ -7073,7 +8144,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#283618"
+                            "value": "#f2aa4c"
                           }
                         },
                         {
@@ -7095,7 +8166,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": 5
+                        "value": 6
                       }
                     },
                     {
@@ -7758,28 +8829,27 @@
     "semantics": {
       "numeric_laws": {
         "constants": [],
-        "functions": [
-          "c_to_f",
-          "f_to_c",
-          "km_to_mi",
-          "mi_to_km",
-          "kg_to_lb",
-          "lb_to_kg"
-        ],
+        "functions": [],
         "kind": "expression",
-        "maximum_characters": 512,
-        "numeric_domain": "real",
+        "maximum_characters": 256,
+        "numeric_domain": "integer",
         "operators": [
           "add",
           "subtract",
           "multiply",
-          "divide",
-          "power"
+          "floor-divide",
+          "modulo",
+          "power",
+          "bit-and",
+          "bit-or",
+          "bit-xor",
+          "shift-left",
+          "shift-right"
         ],
-        "precision": 8,
         "unary": [
           "positive",
-          "negative"
+          "negative",
+          "bit-not"
         ]
       },
       "operations": {
@@ -7806,11 +8876,18 @@
             "token": "*"
           },
           {
-            "emit": "/",
-            "id": "divide",
-            "syntax": "ast.Div",
-            "target": "operator.truediv",
-            "token": "/"
+            "emit": "//",
+            "id": "floor-divide",
+            "syntax": "ast.FloorDiv",
+            "target": "operator.floordiv",
+            "token": "//"
+          },
+          {
+            "emit": "%",
+            "id": "modulo",
+            "syntax": "ast.Mod",
+            "target": "operator.mod",
+            "token": "%"
           },
           {
             "emit": "**",
@@ -7818,135 +8895,45 @@
             "syntax": "ast.Pow",
             "target": "operator.pow",
             "token": "^"
+          },
+          {
+            "emit": "&",
+            "id": "bit-and",
+            "syntax": "ast.BitAnd",
+            "target": "operator.and_",
+            "token": "&"
+          },
+          {
+            "emit": "|",
+            "id": "bit-or",
+            "syntax": "ast.BitOr",
+            "target": "operator.or_",
+            "token": "|"
+          },
+          {
+            "emit": "^",
+            "id": "bit-xor",
+            "syntax": "ast.BitXor",
+            "target": "operator.xor",
+            "token": "xor"
+          },
+          {
+            "emit": "<<",
+            "id": "shift-left",
+            "syntax": "ast.LShift",
+            "target": "operator.lshift",
+            "token": "<<"
+          },
+          {
+            "emit": ">>",
+            "id": "shift-right",
+            "syntax": "ast.RShift",
+            "target": "operator.rshift",
+            "token": ">>"
           }
         ],
         "constants": [],
-        "functions": [
-          {
-            "body": {
-              "add": [
-                {
-                  "divide": [
-                    {
-                      "multiply": [
-                        {
-                          "parameter": "value"
-                        },
-                        {
-                          "literal": 9
-                        }
-                      ]
-                    },
-                    {
-                      "literal": 5
-                    }
-                  ]
-                },
-                {
-                  "literal": 32
-                }
-              ]
-            },
-            "id": "c_to_f",
-            "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "divide": [
-                {
-                  "multiply": [
-                    {
-                      "subtract": [
-                        {
-                          "parameter": "value"
-                        },
-                        {
-                          "literal": 32
-                        }
-                      ]
-                    },
-                    {
-                      "literal": 5
-                    }
-                  ]
-                },
-                {
-                  "literal": 9
-                }
-              ]
-            },
-            "id": "f_to_c",
-            "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "multiply": [
-                {
-                  "parameter": "value"
-                },
-                {
-                  "literal": 0.621371192237334
-                }
-              ]
-            },
-            "id": "km_to_mi",
-            "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "divide": [
-                {
-                  "parameter": "value"
-                },
-                {
-                  "literal": 0.621371192237334
-                }
-              ]
-            },
-            "id": "mi_to_km",
-            "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "multiply": [
-                {
-                  "parameter": "value"
-                },
-                {
-                  "literal": 2.20462262184878
-                }
-              ]
-            },
-            "id": "kg_to_lb",
-            "parameters": [
-              "value"
-            ]
-          },
-          {
-            "body": {
-              "divide": [
-                {
-                  "parameter": "value"
-                },
-                {
-                  "literal": 2.20462262184878
-                }
-              ]
-            },
-            "id": "lb_to_kg",
-            "parameters": [
-              "value"
-            ]
-          }
-        ],
+        "functions": [],
         "unary": [
           {
             "emit": "+",
@@ -7959,6 +8946,12 @@
             "id": "negative",
             "syntax": "ast.USub",
             "target": "operator.neg"
+          },
+          {
+            "emit": "~",
+            "id": "bit-not",
+            "syntax": "ast.Invert",
+            "target": "operator.invert"
           }
         ]
       },
@@ -7969,44 +8962,76 @@
           "invalid-stack",
           "integer-required"
         ],
-        "maximum_characters": 512
+        "maximum_characters": 256
       }
     },
     "state": {
       "authority": "program.ast",
       "fields": [
-        "expression"
+        "expression",
+        "last",
+        "base"
       ]
     },
     "transitions": [
       {
-        "argument": "c_to_f(",
-        "event": "control.ctof.pressed",
+        "argument": "16",
+        "event": "control.hex.pressed",
+        "route": "set_base"
+      },
+      {
+        "argument": "10",
+        "event": "control.dec.pressed",
+        "route": "set_base"
+      },
+      {
+        "argument": "8",
+        "event": "control.oct.pressed",
+        "route": "set_base"
+      },
+      {
+        "argument": "2",
+        "event": "control.bin.pressed",
+        "route": "set_base"
+      },
+      {
+        "argument": "<<",
+        "event": "control.left-shift.pressed",
         "route": "append"
       },
       {
-        "argument": "f_to_c(",
-        "event": "control.ftoc.pressed",
+        "argument": ">>",
+        "event": "control.right-shift.pressed",
         "route": "append"
       },
       {
-        "argument": "km_to_mi(",
-        "event": "control.kmtomi.pressed",
+        "argument": "&",
+        "event": "control.and.pressed",
         "route": "append"
       },
       {
-        "argument": "mi_to_km(",
-        "event": "control.mitokm.pressed",
+        "argument": "|",
+        "event": "control.or.pressed",
         "route": "append"
       },
       {
-        "argument": "kg_to_lb(",
-        "event": "control.kgtolb.pressed",
+        "argument": "^",
+        "event": "control.xor.pressed",
         "route": "append"
       },
       {
-        "argument": "lb_to_kg(",
-        "event": "control.lbtokg.pressed",
+        "argument": "~",
+        "event": "control.not.pressed",
+        "route": "append"
+      },
+      {
+        "argument": "%",
+        "event": "control.mod.pressed",
+        "route": "append"
+      },
+      {
+        "argument": "//",
+        "event": "control.floor.pressed",
         "route": "append"
       },
       {
@@ -8025,8 +9050,8 @@
         "route": "append"
       },
       {
-        "argument": ")",
-        "event": "control.right.pressed",
+        "argument": "+",
+        "event": "control.add.pressed",
         "route": "append"
       },
       {
@@ -8075,13 +9100,13 @@
         "route": "append"
       },
       {
-        "argument": ".",
-        "event": "control.decimal.pressed",
+        "argument": "(",
+        "event": "control.left.pressed",
         "route": "append"
       },
       {
-        "argument": "(",
-        "event": "control.left.pressed",
+        "argument": ")",
+        "event": "control.right.pressed",
         "route": "append"
       },
       {
@@ -8090,8 +9115,8 @@
         "route": "backspace"
       },
       {
-        "argument": "+",
-        "event": "control.add.pressed",
+        "argument": "*",
+        "event": "control.multiply.pressed",
         "route": "append"
       },
       {

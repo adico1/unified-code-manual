@@ -20,38 +20,37 @@ every possible calculator.
 Generate and verify all ten applications:
 
 ```bash
-python3 run_all.py --generate-only
+python3 tools/verify_all.py --generate-only
 ```
 
 Generate, verify, and open all ten GUIs:
 
 ```bash
-python3 run_all.py
+python3 tools/verify_all.py
 ```
 
 List the registered seed programs:
 
 ```bash
-python3 run_all.py --list
+python3 tools/verify_all.py --list
 ```
 
 ## Source boundary
 
-- `main.py` is the author's original handwritten work and remains available
-  for comparison. The compiler never reads or edits it.
-- `normal/reference.py` is the frozen handwritten reference.
-- `seeds/bases/בלי_מה.seed.json` contains invariant construction authority.
-- `seeds/bases/calculator-family.seed.json` specializes that authority for the
+- `examples/original_handwritten_calculator.py` is the author's original
+  handwritten work. The compiler never reads or edits it.
+- `seed/bases/בלי_מה.seed.json` contains invariant construction authority.
+- `seed/families/calculator.seed.json` specializes that authority for the
   calculator family.
-- `seeds/*.seed.json` are ten application-specific מה seeds.
-- `seed_modifier.py` deterministically migrates and re-pins the complete seed
+- `seed/applications/*.seed.json` are ten application-specific מה seeds.
+- `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
-- `universal_generator.py` is the generic structured-program compiler.
-- `calculator_suite.seed.json` lists the ten seed paths and output paths; it
+- `src/seed_compiler.py` is the generic structured-program compiler.
+- `seed/suite.seed.json` lists the ten seed paths and output paths; it
   contains no application behavior.
-- `run_all.py` performs generation, acceptance, isolation, deterministic
+- `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
   rebuilding, source-separation checks, and optional launch.
-- `generated*/` contains disposable specialized applications.
+- `build/` contains disposable applications and evidence and is ignored.
 
 The ten applications are:
 
@@ -96,8 +95,8 @@ conflicting truths and ancestry cycles.
 Maintain or verify the complete graph:
 
 ```bash
-python3 seed_modifier.py --apply
-python3 seed_modifier.py --check
+python3 tools/modify_seeds.py --apply
+python3 tools/modify_seeds.py --check
 ```
 
 The generated runtime does not load its seed, import the compiler, or require
@@ -134,5 +133,5 @@ The aggregate operation independently rebuilds every seed in a second temporary
 tree and requires byte-identical outputs. It then copies each generated
 application without the repository or seed and runs its generated tests again.
 
-See [PROOF.md](PROOF.md) for measured evidence and
-[CALCULATOR_LANGUAGE.md](CALCULATOR_LANGUAGE.md) for the language boundary.
+See [the proof](docs/PROOF.md) for measured evidence and
+[the language specification](docs/LANGUAGE.md) for the language boundary.

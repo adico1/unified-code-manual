@@ -5,15 +5,17 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
-SEEDS = ROOT / "seeds"
-BASES = SEEDS / "bases"
+ROOT = Path(__file__).resolve().parents[1]
+SEED_ROOT = ROOT / "seed"
+SEEDS = SEED_ROOT / "applications"
+BASES = SEED_ROOT / "bases"
 WITHOUT_WHAT = BASES / "בלי_מה.seed.json"
-CALCULATOR_FAMILY = BASES / "calculator-family.seed.json"
+CALCULATOR_FAMILY = SEED_ROOT / "families" / "calculator.seed.json"
 LEAF_FORMAT = "manual-what-seed-3"
 BASE_FORMAT = "manual-seed-base-1"
 LEGACY_FORMAT = "manual-seed-program-2"
@@ -44,7 +46,7 @@ def load(path):
 def base_reference(owner, target, document):
     return {
         "identity": document["identity"],
-        "path": target.relative_to(owner.parent).as_posix(),
+        "path": Path(os.path.relpath(target, owner.parent)).as_posix(),
         "sha256": digest(document),
     }
 

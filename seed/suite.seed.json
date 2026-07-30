@@ -3,71 +3,71 @@
     {
       "enabled": true,
       "id": "normal",
-      "output": "generated",
-      "seed": "seeds/normal.seed.json",
+      "output": "build/normal",
+      "seed": "seed/applications/normal.seed.json",
       "title": "Normal Calculator"
     },
     {
       "enabled": true,
       "id": "regular",
-      "output": "generated-regular",
-      "seed": "seeds/regular.seed.json",
+      "output": "build/regular",
+      "seed": "seed/applications/regular.seed.json",
       "title": "Regular Calculator"
     },
     {
       "enabled": true,
       "id": "scientific",
-      "output": "generated-scientific",
-      "seed": "seeds/scientific.seed.json",
+      "output": "build/scientific",
+      "seed": "seed/applications/scientific.seed.json",
       "title": "Scientific Calculator"
     },
     {
       "enabled": true,
       "id": "programmer",
-      "output": "generated-programmer",
-      "seed": "seeds/programmer.seed.json",
+      "output": "build/programmer",
+      "seed": "seed/applications/programmer.seed.json",
       "title": "Programmer Calculator"
     },
     {
       "enabled": true,
       "id": "financial",
-      "output": "generated-financial",
-      "seed": "seeds/financial.seed.json",
+      "output": "build/financial",
+      "seed": "seed/applications/financial.seed.json",
       "title": "Financial Calculator"
     },
     {
       "enabled": true,
       "id": "statistical",
-      "output": "generated-statistical",
-      "seed": "seeds/statistical.seed.json",
+      "output": "build/statistical",
+      "seed": "seed/applications/statistical.seed.json",
       "title": "Statistical Calculator"
     },
     {
       "enabled": true,
       "id": "graphing",
-      "output": "generated-graphing",
-      "seed": "seeds/graphing.seed.json",
+      "output": "build/graphing",
+      "seed": "seed/applications/graphing.seed.json",
       "title": "Graphing Calculator"
     },
     {
       "enabled": true,
       "id": "matrix-vector",
-      "output": "generated-matrix-vector",
-      "seed": "seeds/matrix-vector.seed.json",
+      "output": "build/matrix-vector",
+      "seed": "seed/applications/matrix-vector.seed.json",
       "title": "Matrix and Vector Calculator"
     },
     {
       "enabled": true,
       "id": "engineering-units",
-      "output": "generated-engineering-units",
-      "seed": "seeds/engineering-units.seed.json",
+      "output": "build/engineering-units",
+      "seed": "seed/applications/engineering-units.seed.json",
       "title": "Engineering Unit Calculator"
     },
     {
       "enabled": true,
       "id": "rpn",
-      "output": "generated-rpn",
-      "seed": "seeds/rpn.seed.json",
+      "output": "build/rpn",
+      "seed": "seed/applications/rpn.seed.json",
       "title": "RPN Stack Calculator"
     }
   ],

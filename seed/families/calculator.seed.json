@@ -2,7 +2,7 @@
   "bases": [
     {
       "identity": "uc://manual/seeds/בלי_מה@1",
-      "path": "בלי_מה.seed.json",
+      "path": "../bases/בלי_מה.seed.json",
       "sha256": "5cc849ee1b6ee924b44710a321933d837b7354b6389097975bd7197cb1aed2b7"
     }
   ],

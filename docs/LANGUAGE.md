@@ -244,33 +244,33 @@ normal calculator seed program
 The current proof uses an immutable content-addressed seed graph:
 
 ```text
-seeds/bases/בלי_מה.seed.json
-→ seeds/bases/calculator-family.seed.json
+seed/bases/בלי_מה.seed.json
+→ seed/families/calculator.seed.json
 →
-seeds/normal.seed.json
-seeds/regular.seed.json
-seeds/scientific.seed.json
-seeds/programmer.seed.json
-seeds/financial.seed.json
-seeds/statistical.seed.json
-seeds/graphing.seed.json
-seeds/matrix-vector.seed.json
-seeds/engineering-units.seed.json
-seeds/rpn.seed.json
+seed/applications/normal.seed.json
+seed/applications/regular.seed.json
+seed/applications/scientific.seed.json
+seed/applications/programmer.seed.json
+seed/applications/financial.seed.json
+seed/applications/statistical.seed.json
+seed/applications/graphing.seed.json
+seed/applications/matrix-vector.seed.json
+seed/applications/engineering-units.seed.json
+seed/applications/rpn.seed.json
 ```
 
 The ten leaves are application-specific מה seeds. Every base reference pins an
-exact identity, relative path and SHA-256. `seed_modifier.py` migrates and
+exact identity, relative path and SHA-256. `tools/modify_seeds.py` migrates and
 re-pins the graph deterministically; the compiler rejects cycles, conflicts,
 floating references and tampering.
 
-The leaf seeds contain complete structured programs. `universal_generator.py`
+The leaf seeds contain complete structured programs. `src/seed_compiler.py`
 translates only generic AST structure and contains no calculator-specific
 equation, layout, event route, or product identity.
 
 ## Suite operation
 
-`run_all.py` reads `calculator_suite.seed.json`, regenerates every enabled seed,
+`tools/verify_all.py` reads `seed/suite.seed.json`, regenerates every enabled seed,
 runs generated acceptance tests in isolation, performs a second independent
 build, checks seed ancestry and compiler/application vocabulary separation, and
 optionally opens all ten GUIs.

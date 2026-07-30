@@ -142,7 +142,7 @@ derived through one content-addressed seed ancestry:
 One command performs the build and proof:
 
 ```bash
-python3 run_all.py --generate-only
+python3 tools/verify_all.py --generate-only
 ```
 
 Measured locally:

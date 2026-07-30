@@ -15,9 +15,9 @@ import time
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
-SUITE = ROOT / "calculator_suite.seed.json"
-COMPILER = ROOT / "universal_generator.py"
+ROOT = Path(__file__).resolve().parents[1]
+SUITE = ROOT / "seed" / "suite.seed.json"
+COMPILER = ROOT / "src" / "seed_compiler.py"
 
 
 def canonical(value):
@@ -226,7 +226,7 @@ def write_report(
     runner_bytes = Path(__file__).read_bytes()
     report = {
         "format": "manual-seed-assembly-report-1",
-        "operation": "python3 run_all.py --generate-only",
+        "operation": "python3 tools/verify_all.py --generate-only",
         "applications": [
             {
                 "id": item["id"],
@@ -246,11 +246,11 @@ def write_report(
             for item in generated
         ],
         "build_time_shared": {
-            "universal_generator.py": {
+            "src/seed_compiler.py": {
                 "sha256": digest(compiler_bytes),
                 "lines": len(compiler_bytes.splitlines()),
             },
-            "run_all.py": {
+            "tools/verify_all.py": {
                 "sha256": digest(runner_bytes),
                 "lines": len(runner_bytes.splitlines()),
             },
@@ -264,7 +264,8 @@ def write_report(
         "runtime_seed_access": 0,
         "seed_graph": seed_graph,
     }
-    destination = ROOT / "ASSEMBLY_REPORT.json"
+    destination = ROOT / "build" / "assembly-report.json"
+    destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(".json.tmp")
     temporary.write_bytes(canonical(report))
     temporary.replace(destination)
@@ -316,10 +317,10 @@ def expect_error(operation, identity):
 def verify_seed_graph(compiler):
     temporary = Path(tempfile.mkdtemp(prefix="manual-seed-graph-"))
     try:
-        copied = temporary / "seeds"
-        shutil.copytree(ROOT / "seeds", copied)
-        leaf = copied / "normal.seed.json"
-        family = copied / "bases" / "calculator-family.seed.json"
+        copied = temporary / "seed"
+        shutil.copytree(ROOT / "seed", copied)
+        leaf = copied / "applications" / "normal.seed.json"
+        family = copied / "families" / "calculator.seed.json"
 
         tampered = json.loads(family.read_text(encoding="utf-8"))
         tampered["provides"]["family"] = "tampered"
@@ -330,8 +331,8 @@ def verify_seed_graph(compiler):
         )
 
         shutil.rmtree(copied)
-        shutil.copytree(ROOT / "seeds", copied)
-        leaf = copied / "normal.seed.json"
+        shutil.copytree(ROOT / "seed", copied)
+        leaf = copied / "applications" / "normal.seed.json"
         unpinned = json.loads(leaf.read_text(encoding="utf-8"))
         del unpinned["bases"][0]["sha256"]
         leaf.write_bytes(canonical(unpinned))
@@ -340,7 +341,7 @@ def verify_seed_graph(compiler):
             "unpinned-base",
         )
 
-        root_path = ROOT / "seeds" / "bases" / "בלי_מה.seed.json"
+        root_path = ROOT / "seed" / "bases" / "בלי_מה.seed.json"
         root_document = json.loads(root_path.read_text(encoding="utf-8"))
         cycle = expect_error(
             lambda: compiler.resolve_base(

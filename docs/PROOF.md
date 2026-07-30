@@ -16,7 +16,7 @@ emission, hashing, traceability, verification, and atomic installation.
 ## Reproduce
 
 ```bash
-python3 run_all.py --generate-only
+python3 tools/verify_all.py --generate-only
 ```
 
 The operation requires:
@@ -50,13 +50,13 @@ seed-graph rejection proofs = 4/4
 Open all ten generated Tk applications:
 
 ```bash
-python3 run_all.py
+python3 tools/verify_all.py
 ```
 
 ## Honest boundary
 
-- The original `main.py` and `normal/reference.py` remain handwritten learning
-  artifacts, but neither is an input to generation.
+- `examples/original_handwritten_calculator.py` remains a handwritten learning
+  artifact, but it is not an input to generation.
 - `program.ast` is intentionally a low-level structured language. It proves
   complete seed authority more strongly than the earlier profile selector, but
   it is more verbose.

@@ -2,8 +2,8 @@
   "bases": [
     {
       "identity": "uc://manual/seeds/calculator-family@1",
-      "path": "bases/calculator-family.seed.json",
-      "sha256": "6e07e05db0d6ec7ff97e7d4371554147239bfb9affd9c3db07b58d87e7f31724"
+      "path": "../families/calculator.seed.json",
+      "sha256": "ac82f62bbb4b029831b83be4e1a0157066c6cae85ab0cf9fd8a812718c2482b5"
     }
   ],
   "format": "manual-what-seed-3",
@@ -14,19 +14,9 @@
           "error": null,
           "result": "14"
         },
-        "id": "regular.1",
+        "id": "normal.1",
         "input": {
           "expression": "2+3*4"
-        }
-      },
-      {
-        "expected": {
-          "error": null,
-          "result": "3.5"
-        },
-        "id": "regular.2",
-        "input": {
-          "expression": "7/2"
         }
       }
     ],
@@ -53,9 +43,9 @@
       }
     ],
     "identity": {
-      "canonical": "uc://manual/calculators/regular@1",
+      "canonical": "uc://manual/calculators/normal@1",
       "family": "calculator",
-      "variation": "regular",
+      "variation": "normal",
       "version": 1
     },
     "presentation": {
@@ -218,18 +208,18 @@
           "row": 6
         }
       ],
-      "geometry": "360x330+330+80",
+      "geometry": "300x300+50+50",
       "layout": {
         "columns": 4
       },
-      "mode_label": "decimal real · infix",
+      "mode_label": "normal · decimal real",
       "theme": {
-        "background": "#e8edf2",
-        "button_background": "#ffffff",
-        "button_foreground": "#17202a",
-        "foreground": "#17202a"
+        "background": "light green",
+        "button_background": "red",
+        "button_foreground": "black",
+        "foreground": "black"
       },
-      "title": "Regular Calculator"
+      "title": "Normal Calculator"
     },
     "program": {
       "ast": {
@@ -284,16 +274,6 @@
             ]
           },
           {
-            "_type": "Import",
-            "names": [
-              {
-                "_type": "alias",
-                "asname": null,
-                "name": "math"
-              }
-            ]
-          },
-          {
             "_type": "ImportFrom",
             "level": 0,
             "module": "tkinter",
@@ -340,65 +320,8 @@
             "value": {
               "_type": "Constant",
               "kind": null,
-              "value": "regular"
+              "value": "normal"
             }
-          },
-          {
-            "_type": "FunctionDef",
-            "args": {
-              "_type": "arguments",
-              "args": [
-                {
-                  "_type": "arg",
-                  "annotation": null,
-                  "arg": "value",
-                  "type_comment": null
-                }
-              ],
-              "defaults": [],
-              "kw_defaults": [],
-              "kwarg": null,
-              "kwonlyargs": [],
-              "posonlyargs": [],
-              "vararg": null
-            },
-            "body": [
-              {
-                "_type": "Return",
-                "value": {
-                  "_type": "Call",
-                  "args": [
-                    {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "value"
-                    }
-                  ],
-                  "func": {
-                    "_type": "Attribute",
-                    "attr": "sqrt",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "value": {
-                      "_type": "Name",
-                      "ctx": {
-                        "_type": "Load"
-                      },
-                      "id": "math"
-                    }
-                  },
-                  "keywords": []
-                }
-              }
-            ],
-            "decorator_list": [],
-            "name": "_semantic_0",
-            "returns": null,
-            "type_comment": null,
-            "type_params": []
           },
           {
             "_type": "Assign",
@@ -470,34 +393,6 @@
                     },
                     "id": "ast"
                   }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "Mod",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "ast"
-                  }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "Pow",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "ast"
-                  }
                 }
               ],
               "values": [
@@ -546,34 +441,6 @@
                 {
                   "_type": "Attribute",
                   "attr": "truediv",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "operator"
-                  }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "mod",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "value": {
-                    "_type": "Name",
-                    "ctx": {
-                      "_type": "Load"
-                    },
-                    "id": "operator"
-                  }
-                },
-                {
-                  "_type": "Attribute",
-                  "attr": "pow",
                   "ctx": {
                     "_type": "Load"
                   },
@@ -660,38 +527,6 @@
                     },
                     "id": "operator"
                   }
-                }
-              ]
-            }
-          },
-          {
-            "_type": "Assign",
-            "targets": [
-              {
-                "_type": "Name",
-                "ctx": {
-                  "_type": "Store"
-                },
-                "id": "FUNCTIONS"
-              }
-            ],
-            "type_comment": null,
-            "value": {
-              "_type": "Dict",
-              "keys": [
-                {
-                  "_type": "Constant",
-                  "kind": null,
-                  "value": "sqrt"
-                }
-              ],
-              "values": [
-                {
-                  "_type": "Name",
-                  "ctx": {
-                    "_type": "Load"
-                  },
-                  "id": "_semantic_0"
                 }
               ]
             }
@@ -1297,240 +1132,6 @@
                           "id": "type"
                         },
                         "keywords": []
-                      },
-                      "ops": [
-                        {
-                          "_type": "In"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "_type": "If",
-                "body": [
-                  {
-                    "_type": "Return",
-                    "value": {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Starred",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "GeneratorExp",
-                            "elt": {
-                              "_type": "Call",
-                              "args": [
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "item"
-                                },
-                                {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "id": "variables"
-                                }
-                              ],
-                              "func": {
-                                "_type": "Name",
-                                "ctx": {
-                                  "_type": "Load"
-                                },
-                                "id": "evaluate_node"
-                              },
-                              "keywords": []
-                            },
-                            "generators": [
-                              {
-                                "_type": "comprehension",
-                                "ifs": [],
-                                "is_async": 0,
-                                "iter": {
-                                  "_type": "Attribute",
-                                  "attr": "args",
-                                  "ctx": {
-                                    "_type": "Load"
-                                  },
-                                  "value": {
-                                    "_type": "Name",
-                                    "ctx": {
-                                      "_type": "Load"
-                                    },
-                                    "id": "node"
-                                  }
-                                },
-                                "target": {
-                                  "_type": "Name",
-                                  "ctx": {
-                                    "_type": "Store"
-                                  },
-                                  "id": "item"
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Subscript",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "slice": {
-                          "_type": "Attribute",
-                          "attr": "id",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Attribute",
-                            "attr": "func",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "value": {
-                              "_type": "Name",
-                              "ctx": {
-                                "_type": "Load"
-                              },
-                              "id": "node"
-                            }
-                          }
-                        },
-                        "value": {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "FUNCTIONS"
-                        }
-                      },
-                      "keywords": []
-                    }
-                  }
-                ],
-                "orelse": [],
-                "test": {
-                  "_type": "BoolOp",
-                  "op": {
-                    "_type": "And"
-                  },
-                  "values": [
-                    {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "node"
-                        },
-                        {
-                          "_type": "Attribute",
-                          "attr": "Call",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "ast"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "isinstance"
-                      },
-                      "keywords": []
-                    },
-                    {
-                      "_type": "Call",
-                      "args": [
-                        {
-                          "_type": "Attribute",
-                          "attr": "func",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "node"
-                          }
-                        },
-                        {
-                          "_type": "Attribute",
-                          "attr": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "ast"
-                          }
-                        }
-                      ],
-                      "func": {
-                        "_type": "Name",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "id": "isinstance"
-                      },
-                      "keywords": []
-                    },
-                    {
-                      "_type": "Compare",
-                      "comparators": [
-                        {
-                          "_type": "Name",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "id": "FUNCTIONS"
-                        }
-                      ],
-                      "left": {
-                        "_type": "Attribute",
-                        "attr": "id",
-                        "ctx": {
-                          "_type": "Load"
-                        },
-                        "value": {
-                          "_type": "Attribute",
-                          "attr": "func",
-                          "ctx": {
-                            "_type": "Load"
-                          },
-                          "value": {
-                            "_type": "Name",
-                            "ctx": {
-                              "_type": "Load"
-                            },
-                            "id": "node"
-                          }
-                        }
                       },
                       "ops": [
                         {
@@ -2950,7 +2551,7 @@
                     {
                       "_type": "Constant",
                       "kind": null,
-                      "value": "Regular Calculator"
+                      "value": "Normal Calculator"
                     }
                   ],
                   "func": {
@@ -2978,7 +2579,7 @@
                     {
                       "_type": "Constant",
                       "kind": null,
-                      "value": "360x330+330+80"
+                      "value": "300x300+50+50"
                     }
                   ],
                   "func": {
@@ -3024,7 +2625,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": "#e8edf2"
+                        "value": "light green"
                       }
                     }
                   ]
@@ -3084,7 +2685,7 @@
                       "value": {
                         "_type": "Constant",
                         "kind": null,
-                        "value": "decimal real · infix"
+                        "value": "normal · decimal real"
                       }
                     }
                   ]
@@ -3252,7 +2853,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#e8edf2"
+                            "value": "light green"
                           }
                         },
                         {
@@ -3261,7 +2862,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         }
                       ]
@@ -3402,7 +3003,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -3411,7 +3012,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -3552,7 +3153,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -3561,7 +3162,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -3702,7 +3303,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -3711,7 +3312,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -3852,7 +3453,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -3861,7 +3462,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4002,7 +3603,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4011,7 +3612,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4152,7 +3753,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4161,7 +3762,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4302,7 +3903,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4311,7 +3912,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4452,7 +4053,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4461,7 +4062,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4602,7 +4203,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4611,7 +4212,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4752,7 +4353,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4761,7 +4362,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -4902,7 +4503,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -4911,7 +4512,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5052,7 +4653,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5061,7 +4662,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5202,7 +4803,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5211,7 +4812,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5352,7 +4953,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5361,7 +4962,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5463,7 +5064,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5472,7 +5073,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5613,7 +5214,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5622,7 +5223,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5763,7 +5364,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5772,7 +5373,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -5913,7 +5514,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -5922,7 +5523,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -6024,7 +5625,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -6033,7 +5634,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -6135,7 +5736,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#ffffff"
+                            "value": "red"
                           }
                         },
                         {
@@ -6144,7 +5745,7 @@
                           "value": {
                             "_type": "Constant",
                             "kind": null,
-                            "value": "#17202a"
+                            "value": "black"
                           }
                         },
                         {
@@ -6753,9 +6354,7 @@
     "semantics": {
       "numeric_laws": {
         "constants": [],
-        "functions": [
-          "sqrt"
-        ],
+        "functions": [],
         "kind": "expression",
         "maximum_characters": 256,
         "numeric_domain": "real",
@@ -6763,9 +6362,7 @@
           "add",
           "subtract",
           "multiply",
-          "divide",
-          "modulo",
-          "power"
+          "divide"
         ],
         "precision": 12,
         "unary": [
@@ -6802,39 +6399,10 @@
             "syntax": "ast.Div",
             "target": "operator.truediv",
             "token": "/"
-          },
-          {
-            "emit": "%",
-            "id": "modulo",
-            "syntax": "ast.Mod",
-            "target": "operator.mod",
-            "token": "%"
-          },
-          {
-            "emit": "**",
-            "id": "power",
-            "syntax": "ast.Pow",
-            "target": "operator.pow",
-            "token": "^"
           }
         ],
         "constants": [],
-        "functions": [
-          {
-            "body": {
-              "arguments": [
-                {
-                  "parameter": "value"
-                }
-              ],
-              "call": "math.sqrt"
-            },
-            "id": "sqrt",
-            "parameters": [
-              "value"
-            ]
-          }
-        ],
+        "functions": [],
         "unary": [
           {
             "emit": "+",

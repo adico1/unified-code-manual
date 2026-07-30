@@ -2,14 +2,14 @@
 
 ## Normal case
 
-`main.py` is the original handwritten learning artifact.
-`normal/reference.py` is its frozen reference snapshot. They help compare human
-construction with seed construction, but they are not generator inputs.
+`examples/original_handwritten_calculator.py` is the original handwritten
+learning artifact. It helps compare human construction with seed construction,
+but it is not a generator input.
 
 The generated normal calculator is authoritative from:
 
 ```text
-seeds/normal.seed.json
+seed/applications/normal.seed.json
 ```
 
 ## Recursive seeds
