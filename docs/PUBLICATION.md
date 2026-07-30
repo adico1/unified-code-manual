@@ -25,12 +25,15 @@ derived reachable errors                  25
 seed-graph rejection proofs               5/5
 compiler application-vocabulary hits      0/128
 generated editable-input checks           3 per application
+application-owned self-tested Keys        287/287
+self-test applications closed             12/12
 runtime seed access                       0
 manual application code                   0
 manual application tests                  0
 deterministic rebuild                     PASS
 complete tree SHA-256
-3a5e8a57aaecccd4c9d9de517243534cb64213ef2c02d2aa01d2ae1ac6b0445b
+14bca5577e6d125d21b2ef754a15c3dd2f8d8b0cca0792e498f50aac1d051559
+single API elapsed                       4.25 seconds
 ```
 
 Reproduce:
@@ -38,13 +41,7 @@ Reproduce:
 ```bash
 git clone https://github.com/adico1/unified-code-manual.git
 cd unified-code-manual
-python3 tools/verify_all.py --generate-only
-```
-
-Open all twelve generated applications:
-
-```bash
-python3 tools/verify_all.py
+python3 tools/single_api.py
 ```
 
 ## LinkedIn announcement
@@ -123,7 +120,7 @@ claim generated `צבאות` parallel execution.
 
 ## Pre-publication checklist
 
-- Run `python3 tools/verify_all.py --generate-only`.
+- Run `python3 tools/single_api.py`.
 - Confirm the reported complete-tree hash matches this document.
 - Confirm `git diff --check`.
 - Publish the repository commit before linking it.

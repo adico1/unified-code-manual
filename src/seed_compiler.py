@@ -142,6 +142,38 @@ def materialize(
         for group in what["semantics"]["operations"].values()
         for item in group
     }
+    operation_identities = [
+        item["id"]
+        for group in what["semantics"]["operations"].values()
+        for item in group
+    ]
+    duplicate_operations = sorted(
+        {
+            identity
+            for identity in operation_identities
+            if operation_identities.count(identity) > 1
+        }
+    )
+    if duplicate_operations:
+        raise ValueError(
+            "duplicate-capability-identity:operation."
+            + ",operation.".join(duplicate_operations)
+        )
+    variable_identities = list(
+        what["semantics"]["numeric_laws"].get("variables", ())
+    )
+    duplicate_variables = sorted(
+        {
+            identity
+            for identity in variable_identities
+            if variable_identities.count(identity) > 1
+        }
+    )
+    if duplicate_variables:
+        raise ValueError(
+            "duplicate-capability-identity:variable."
+            + ",variable.".join(duplicate_variables)
+        )
     capabilities = {
         *(f"operation.{identity}" for identity in operation_ids),
         *(
@@ -542,10 +574,10 @@ def trace_program(seed, source, authorities):
         if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
     }
     semantic_functions = seed["semantics"]["operations"].get("functions", ())
-    launch = functions[seed["program"]["launch_entrypoint"]]
+    interface = functions["build_interface"]
     buttons = [
         node
-        for node in launch.body
+        for node in interface.body
         if (
             isinstance(node, ast.Expr)
             and isinstance(node.value, ast.Call)
@@ -623,13 +655,13 @@ def trace_program(seed, source, authorities):
 def render_tests(seed):
     entrypoint = seed["program"]["case_entrypoint"]
     transition_by_event = {
-        item["event"]: item["route"]
+        item["event"]: item
         for item in seed["transitions"]
     }
     actions = {
         control["action"]: transition_by_event[
             f"control.{control['id']}.pressed"
-        ]
+        ]["route"]
         for control in seed["presentation"]["controls"]
     }
     cases = [
@@ -639,6 +671,30 @@ def render_tests(seed):
             "expected": case["expected"],
         }
         for case in seed["acceptance"]
+    ]
+    expected_controls = [
+        {
+            "identity": control["id"],
+            "label": control["label"],
+            "row": control["row"],
+            "column": control["column"],
+            "route": transition_by_event[
+                f"control.{control['id']}.pressed"
+            ]["route"],
+            "arguments": (
+                [
+                    transition_by_event[
+                        f"control.{control['id']}.pressed"
+                    ]["argument"]
+                ]
+                if "argument"
+                in transition_by_event[
+                    f"control.{control['id']}.pressed"
+                ]
+                else []
+            ),
+        }
+        for control in seed["presentation"]["controls"]
     ]
     editable_lines = [
         "    display_value = ['']",
@@ -681,32 +737,41 @@ def render_tests(seed):
         "import ast",
         "import importlib.util",
         "import json",
+        "import sys",
         "from pathlib import Path",
         "from types import SimpleNamespace",
         "",
         f"CASES = {cases!r}",
-        f"EXPECTED_KEY_CALLBACKS = {len(seed['presentation']['controls'])!r}",
+        f"EXPECTED_CONTROLS = {expected_controls!r}",
         "",
         "def verify_key_callbacks(path):",
         "    tree = ast.parse(path.read_text(encoding='utf-8'))",
         "    functions = {node.name: node for node in tree.body if isinstance(node, ast.FunctionDef)}",
-        f"    launch = functions[{seed['program']['launch_entrypoint']!r}]",
-        "    buttons = [node for node in launch.body if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Attribute) and node.value.func.attr == 'grid' and isinstance(node.value.func.value, ast.Call) and isinstance(node.value.func.value.func, ast.Name) and node.value.func.value.func.id == 'Button']",
-        "    results = []",
+        "    interface = functions['build_interface']",
+        "    buttons = [node for node in interface.body if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Attribute) and node.value.func.attr == 'grid' and isinstance(node.value.func.value, ast.Call) and isinstance(node.value.func.value.func, ast.Name) and node.value.func.value.func.id == 'Button']",
+        "    actual = []",
         "    for button in buttons:",
         "        construction = button.value.func.value",
+        "        keywords = {item.arg: item.value for item in construction.keywords}",
+        "        grid = {item.arg: item.value for item in button.value.keywords}",
         "        command = next(item.value for item in construction.keywords if item.arg == 'command')",
         "        if isinstance(command, ast.Name):",
-        "            results.append(len(functions[command.id].args.args) == 0)",
+        "            route, arguments = command.id, []",
+        "            signature = len(functions[route].args.args) == 0",
+        "        elif isinstance(command, ast.Lambda) and isinstance(command.body, ast.Call) and isinstance(command.body.func, ast.Name) and len(command.args.args) == 1 and len(command.args.defaults) == 1 and len(command.body.args) == 1 and isinstance(command.body.args[0], ast.Name) and command.body.args[0].id == command.args.args[0].arg:",
+        "            route = command.body.func.id",
+        "            arguments = [ast.literal_eval(command.args.defaults[0])]",
+        "            signature = len(functions[route].args.args) == 1",
+        "        else:",
+        "            actual.append(None)",
         "            continue",
-        "        if not isinstance(command, ast.Lambda) or not isinstance(command.body, ast.Call) or not isinstance(command.body.func, ast.Name):",
-        "            results.append(False)",
-        "            continue",
-        "        target = functions[command.body.func.id]",
-        "        results.append(len(command.args.args) == len(command.args.defaults) and len(command.body.args) == len(target.args.args))",
-        "    return {'passed': sum(results), 'total': EXPECTED_KEY_CALLBACKS, 'complete': len(results) == EXPECTED_KEY_CALLBACKS and all(results)}",
+        "        actual.append({'label': ast.literal_eval(keywords['text']), 'row': ast.literal_eval(grid['row']), 'column': ast.literal_eval(grid['column']), 'route': route, 'arguments': arguments} if signature else None)",
+        "    expected = [{name: value for name, value in item.items() if name != 'identity'} for item in EXPECTED_CONTROLS]",
+        "    results = [left == right for left, right in zip(actual, expected)]",
+        "    complete = len(actual) == len(expected) and all(results)",
+        "    return {'passed': sum(results), 'total': len(expected), 'complete': complete}",
         "",
-        "def run():",
+        "def run(*, emit=True):",
         "    path = Path(__file__).with_name('main.py')",
         "    specification = importlib.util.spec_from_file_location('generated_app', path)",
         "    module = importlib.util.module_from_spec(specification)",
@@ -715,7 +780,8 @@ def render_tests(seed):
         *editable_lines,
         "    key_callbacks = verify_key_callbacks(path)",
         "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': sum(editable), 'total': len(editable)}, 'key_callbacks': {'passed': key_callbacks['passed'], 'total': key_callbacks['total']}}",
-        "    print(json.dumps(report, sort_keys=True))",
+        "    if emit:",
+        "        print(json.dumps(report, sort_keys=True))",
         "    return 0 if all((*results, *editable)) and key_callbacks['complete'] else 1",
         "",
         "if __name__ == '__main__':",
@@ -839,8 +905,13 @@ def generate(seed_path, output):
     try:
         for name, content in files.items():
             (stage / name).write_bytes(content)
-        test_namespace = {"__name__": "generated.tests"}
+        test_namespace = {
+            "__name__": "generated.tests",
+            "__file__": str(stage / "test_generated.py"),
+        }
         exec(compile(tests, "<generated-tests>", "exec"), test_namespace)
+        if test_namespace["run"](emit=False):
+            raise ValueError("generated-tests-failed")
         install(stage, output)
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)

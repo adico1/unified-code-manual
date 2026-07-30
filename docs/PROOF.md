@@ -18,7 +18,7 @@ resolves and specializes those declarations into exact applications.
 ## Reproduce
 
 ```bash
-python3 tools/verify_all.py --generate-only
+python3 tools/single_api.py
 ```
 
 The operation requires:
@@ -44,10 +44,12 @@ The operation requires:
     malformed definitions are rejected.
 16. family-owned callback argument contracts reject missing, mistyped and
     unexpected values.
-17. generated tests verify every emitted Key callback against its route
-    signature.
+17. generated tests verify every emitted Key's exact label, position, route,
+    argument and route signature before atomic installation.
 18. traceability records leaf placement, registry definition and required
     capability as separate authorities.
+19. each generated application invokes its own real Tk Keys once before lazy
+    execution, verifies observable effects, and destroys its proof window.
 
 Current measured result:
 
@@ -66,6 +68,8 @@ selected/resolved Key identities = 79/79
 unknown/duplicate/invalid/missing-capability Key rejection = PASS
 callback-contract mutations = 3/3
 generated Key callback wiring checks = 287/287
+application-owned self-tested Keys = 287/287
+self-test applications closed = 12/12
 runtime Key-registry access = 0
 stored leaf ASTs = 0
 build-time-generated ASTs = 12/12
@@ -74,13 +78,8 @@ derived transitions = 287
 derived reachable errors = 25
 generated editable-input checks = 3 per application
 complete tree =
-3a5e8a57aaecccd4c9d9de517243534cb64213ef2c02d2aa01d2ae1ac6b0445b
-```
-
-Open all twelve generated Tk applications:
-
-```bash
-python3 tools/verify_all.py
+14bca5577e6d125d21b2ef754a15c3dd2f8d8b0cca0792e498f50aac1d051559
+single API elapsed = 4.25 seconds
 ```
 
 ## Honest boundary

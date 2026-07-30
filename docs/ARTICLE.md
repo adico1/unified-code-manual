@@ -150,7 +150,7 @@ derived through one content-addressed seed ancestry:
 One command performs the build and proof:
 
 ```bash
-python3 tools/verify_all.py --generate-only
+python3 tools/single_api.py
 ```
 
 Measured locally:
@@ -170,8 +170,11 @@ six registered build-time stampers
 287 control transitions derived
 25 reachable errors derived
 generated editable-input checks = 3 per application
+application-owned self-tested Keys = 287/287
+self-test applications closed = 12/12
 complete-tree SHA-256 =
-3a5e8a57aaecccd4c9d9de517243534cb64213ef2c02d2aa01d2ae1ac6b0445b
+14bca5577e6d125d21b2ef754a15c3dd2f8d8b0cca0792e498f50aac1d051559
+single API elapsed = 4.25 seconds
 ```
 
 The runnable experiment is available at:

@@ -477,9 +477,33 @@ def gui_source(seed, routes, transitions):
     theme = presentation["theme"]
     rendering = presentation["rendering"]
     series = "series" in seed["semantics"]["numeric_laws"]
+    fields = set(seed["state"]["fields"])
+    transition_by_event = {item["event"]: item for item in seed["transitions"]}
+    self_test_controls = [
+        {
+            "identity": control["id"],
+            "label": control["label"],
+            "row": control["row"],
+            "column": control["column"],
+            "action": control["action"],
+            **(
+                {"value": transition_by_event[
+                    f"control.{control['id']}.pressed"
+                ]["argument"]}
+                if "argument"
+                in transition_by_event[
+                    f"control.{control['id']}.pressed"
+                ]
+                else {}
+            ),
+        }
+        for control in presentation["controls"]
+    ]
     globals_ = "display, mode_text, canvas" if series else "display, mode_text"
     lines = [
-        f"def {checked_name(seed['program']['launch_entrypoint'])}():",
+        f"SELF_TEST_CONTROLS = {self_test_controls!r}",
+        "",
+        "def build_interface():",
         f"    global {globals_}",
         "    root = Tk()",
         f"    root.title({presentation['title']!r})",
@@ -499,7 +523,6 @@ def gui_source(seed, routes, transitions):
                 f"    canvas.grid(row={row!r}, column=0, columnspan={columns!r})",
             ]
         )
-    transition_by_event = {item["event"]: item for item in seed["transitions"]}
     for control in presentation["controls"]:
         transition = transition_by_event[f"control.{control['id']}.pressed"]
         route = checked_name(transition["route"])
@@ -521,7 +544,126 @@ def gui_source(seed, routes, transitions):
         f"    root.grid_columnconfigure({column}, weight=1)"
         for column in range(columns)
     )
-    lines.extend(["    root.mainloop()", ""])
+    lines.extend(
+        [
+            "    return root",
+            "",
+            "def reset_interface():",
+            "    state.clear()",
+            f"    state.update({seed['state']['initial']!r})",
+            "    state['expression'] = '1'",
+            "    present_display('1')",
+            f"    mode_text.set({presentation['mode_label']!r})",
+            *(["    canvas.delete('all')"] if series else []),
+            "",
+            "def self_test_prepare(control):",
+            "    reset_interface()",
+            *(
+                [
+                    "    if control['action'] == 'apply':",
+                    "        state['stack'] = [1]",
+                ]
+                if "apply" in routes
+                else []
+            ),
+            *(
+                [
+                    "    if control['action'] == 'base':",
+                    "        state['last'] = 1",
+                ]
+                if "base" in routes
+                else []
+            ),
+            "",
+            "def self_test_effect(control):",
+            "    checks = {",
+            *(
+                [
+                    "        'append': lambda: display.get() == '1' + control['value'],",
+                ]
+                if "append" in routes
+                else []
+            ),
+            *(
+                ["        'clear': lambda: display.get() == '',"]
+                if "clear" in routes
+                else []
+            ),
+            *(
+                ["        'backspace': lambda: display.get() == '',"]
+                if "backspace" in routes
+                else []
+            ),
+            *(
+                ["        'evaluate': lambda: display.get() == '1',"]
+                if "evaluate" in routes
+                else []
+            ),
+            *(
+                [
+                    "        'base': lambda: state['base'] == int(control['value']),",
+                ]
+                if "base" in routes
+                else []
+            ),
+            *(
+                ["        'push': lambda: state['stack'] == [1],"]
+                if "push" in routes
+                else []
+            ),
+            *(
+                [
+                    "        'apply': lambda: len(state['stack']) == 1 and display.get() != 'invalid-stack',",
+                ]
+                if "apply" in routes
+                else []
+            ),
+            *(
+                [
+                    f"        'plot': lambda: len(canvas.find_all()) >= 3 and mode_text.get() == {rendering['plot_success']!r},",
+                ]
+                if "plot" in routes
+                else []
+            ),
+            "    }",
+            "    return checks[control['action']]()",
+            "",
+            "def self_test_interface(root):",
+            "    results = []",
+            "    for control in SELF_TEST_CONTROLS:",
+            "        self_test_prepare(control)",
+            "        widgets = [item for item in root.grid_slaves(row=control['row'], column=control['column']) if item.winfo_class() == 'Button']",
+            "        try:",
+            "            widget = widgets[0] if len(widgets) == 1 else None",
+            "            widget.invoke()",
+            "            root.update_idletasks()",
+            "            results.append(widget.cget('text') == control['label'] and self_test_effect(control))",
+            "        except Exception:",
+            "            results.append(False)",
+            "    reset_interface()",
+            "    return {'passed': sum(results), 'total': len(SELF_TEST_CONTROLS)}",
+            "",
+            "def self_test_application():",
+            "    root = build_interface()",
+            "    closed = False",
+            "    try:",
+            "        root.update()",
+            "        report = self_test_interface(root)",
+            "    finally:",
+            "        root.destroy()",
+            "        closed = True",
+            "    return {'self_test': report, 'closed': closed}",
+            "",
+            f"def {checked_name(seed['program']['launch_entrypoint'])}():",
+            "    root = build_interface()",
+            "    report = self_test_interface(root)",
+            "    if report['passed'] != report['total']:",
+            "        root.destroy()",
+            "        raise RuntimeError('self-test-failed')",
+            "    root.mainloop()",
+            "",
+        ]
+    )
     return lines
 
 
@@ -598,6 +740,10 @@ def stamp_06_inner_to_outer(seed, routes, transitions):
             "    if len(arguments) == 3 and arguments[1] == '--case':",
             f"        print(json.dumps({checked_name(seed['program']['case_entrypoint'])}(json.loads(arguments[2])), sort_keys=True))",
             "        return 0",
+            "    if len(arguments) == 2 and arguments[1] == '--self-test':",
+            "        report = self_test_application()",
+            "        print(json.dumps(report, sort_keys=True))",
+            "        return 0 if report['closed'] and report['self_test']['passed'] == report['self_test']['total'] else 1",
             f"    {checked_name(seed['program']['launch_entrypoint'])}()",
             "    return 0",
             "",

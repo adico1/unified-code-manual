@@ -18,23 +18,18 @@ every possible calculator.
 
 ## One operation
 
-Generate and verify all twelve applications:
+Generate, build, install, execute, exercise, and close all twelve applications:
 
 ```bash
-python3 tools/verify_all.py --generate-only
+python3 tools/single_api.py
 ```
 
-Generate, verify, and open all twelve GUIs:
-
-```bash
-python3 tools/verify_all.py
-```
-
-List the registered seed programs:
-
-```bash
-python3 tools/verify_all.py --list
-```
+This is the public development boundary. It resolves every seed into a
+specialized specification and Python AST, atomically installs every generated
+application, runs generated acceptance tests, invokes every real Tk Key through
+its generated GUI, closes every window, and verifies a byte-identical rebuild.
+Each generated application owns this self-test. Normal startup performs it once
+before entering the lazy Tk event loop; proof mode performs it and exits.
 
 Publish the verified repository and article through one words-in operation:
 
@@ -67,7 +62,9 @@ authorization boundary. Credentials are never stored in the repository.
 - `seed/suite.seed.json` lists the twelve seed paths and output paths; it
   contains no application behavior.
 - `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
-  rebuilding, source-separation checks, and optional launch.
+  rebuilding, source-separation checks, and parallel application self-starts
+  behind the single API.
+- `tools/single_api.py` is the one public seed-to-closed-GUI operation.
 - `build/` contains disposable applications and evidence and is ignored.
 
 The twelve applications are:

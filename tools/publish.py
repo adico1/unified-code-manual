@@ -241,7 +241,7 @@ def verify(query):
     if metadata.get("status") != "ready":
         raise ValueError("article-not-ready")
     proof = run(
-        [sys.executable, "tools/verify_all.py", "--generate-only"],
+        [sys.executable, "tools/single_api.py"],
         capture=True,
     )
     run([sys.executable, "tools/modify_seeds.py", "--check"], capture=True)

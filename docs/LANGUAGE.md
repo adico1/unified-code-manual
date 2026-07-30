@@ -277,7 +277,8 @@ calculator identity, selected equation or concrete layout.
 
 ## Suite operation
 
-`tools/verify_all.py` reads `seed/suite.seed.json`, regenerates every enabled seed,
-runs generated acceptance tests in isolation, performs a second independent
-build, checks seed ancestry and compiler/application vocabulary separation, and
-optionally opens all twelve GUIs.
+`tools/single_api.py` is the public operation. Behind it, `tools/verify_all.py`
+reads `seed/suite.seed.json`, regenerates every enabled seed, runs generated
+acceptance tests in isolation, invokes every real Tk Key, destroys every
+window, performs a second independent build, and checks seed ancestry plus
+compiler/application vocabulary separation.

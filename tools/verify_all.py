@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import importlib.util
 import json
@@ -76,8 +77,7 @@ def compile_app(compiler, application, output=None):
 def verify_isolated(generated):
     isolation = Path(tempfile.mkdtemp(prefix="manual-app-isolation-"))
     try:
-        reports = []
-        for item in generated:
+        def verify_one(item):
             copied = isolation / item["id"]
             shutil.copytree(item["output_path"], copied)
             result = subprocess.run(
@@ -87,10 +87,61 @@ def verify_isolated(generated):
                 capture_output=True,
                 text=True,
             )
-            reports.append(json.loads(result.stdout))
-        return reports
+            return json.loads(result.stdout)
+
+        with ThreadPoolExecutor(max_workers=len(generated)) as workers:
+            return list(workers.map(verify_one, generated))
     finally:
         shutil.rmtree(isolation)
+
+
+def verify_application_self_tests(generated):
+    running = [
+        (
+            item,
+            subprocess.Popen(
+                [sys.executable, "main.py", "--self-test"],
+                cwd=item["output_path"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            ),
+        )
+        for item in generated
+    ]
+    deadline = time.monotonic() + 5
+    reports = []
+    try:
+        for item, process in running:
+            remaining = max(0.01, deadline - time.monotonic())
+            output, error = process.communicate(timeout=remaining)
+            if process.returncode:
+                raise ValueError(
+                    f"application-self-test-failed:{item['id']}\n"
+                    + output
+                    + error
+                )
+            report = json.loads(output)
+            if (
+                report["self_test"]["passed"] != report["self_test"]["total"]
+                or not report["closed"]
+            ):
+                raise ValueError(
+                    f"application-self-test-failed:{item['id']}"
+                )
+            reports.append(report)
+    finally:
+        for _item, process in running:
+            if process.poll() is None:
+                process.terminate()
+        for _item, process in running:
+            if process.poll() is None:
+                try:
+                    process.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+    return reports
 
 
 def verify_determinism(compiler, applications, generated):
@@ -100,16 +151,20 @@ def verify_determinism(compiler, applications, generated):
             item["id"]: tree_bytes(item["output_path"])
             for item in generated
         }
-        second = {
-            item["id"]: tree_bytes(
-                compile_app(
-                    compiler,
-                    item,
-                    second_root / item["id"],
-                )["output_path"]
+        def rebuild(item):
+            return (
+                item["id"],
+                tree_bytes(
+                    compile_app(
+                        compiler,
+                        item,
+                        second_root / item["id"],
+                    )["output_path"]
+                ),
             )
-            for item in applications
-        }
+
+        with ThreadPoolExecutor(max_workers=len(applications)) as workers:
+            second = dict(workers.map(rebuild, applications))
         if first != second:
             raise ValueError("non-deterministic-output")
         return {
@@ -293,12 +348,14 @@ def write_report(
     seed_graph,
     key_registry,
     key_callbacks,
+    self_tests,
     declarations,
 ):
     runner_bytes = Path(__file__).read_bytes()
+    single_api_bytes = Path(__file__).with_name("single_api.py").read_bytes()
     report = {
         "format": "manual-seed-assembly-report-1",
-        "operation": "python3 tools/verify_all.py --generate-only",
+        "operation": "python3 tools/single_api.py",
         "applications": [
             {
                 "id": item["id"],
@@ -329,6 +386,10 @@ def write_report(
                 "sha256": digest(runner_bytes),
                 "lines": len(runner_bytes.splitlines()),
             },
+            "tools/single_api.py": {
+                "sha256": digest(single_api_bytes),
+                "lines": len(single_api_bytes.splitlines()),
+            },
         },
         "generated_source": source_churn(generated),
         "deterministic_artifact_hashes": hashes,
@@ -340,6 +401,7 @@ def write_report(
         "seed_graph": seed_graph,
         "key_registry": key_registry,
         "key_callbacks": key_callbacks,
+        "application_self_tests": self_tests,
         "concise_declarations": declarations,
     }
     destination = ROOT / "build" / "assembly-report.json"
@@ -675,39 +737,16 @@ def verify_key_registry(applications, compiler):
     }
 
 
-def launch(generated):
-    return [
-        {
-            **item,
-            "process": subprocess.Popen(
-                [sys.executable, str(item["application"])],
-                cwd=item["output_path"],
-            ),
-        }
-        for item in generated
-    ]
-
-
-def wait_for_windows(running):
-    try:
-        while any(item["process"].poll() is None for item in running):
-            time.sleep(0.1)
-    except KeyboardInterrupt:
-        for item in running:
-            if item["process"].poll() is None:
-                item["process"].terminate()
-        for item in running:
-            item["process"].wait()
-    return max((item["process"].returncode or 0) for item in running)
-
-
-def execute(generate_only):
+def generate_all_from_seeds(*, self_test):
     applications = load_suite()
     compiler = load_compiler()
-    generated = [
-        compile_app(compiler, application)
-        for application in applications
-    ]
+    with ThreadPoolExecutor(max_workers=len(applications)) as workers:
+        generated = list(
+            workers.map(
+                lambda application: compile_app(compiler, application),
+                applications,
+            )
+        )
     verify_specialization(generated)
     isolated = verify_isolated(generated)
     key_callbacks = {
@@ -716,6 +755,19 @@ def execute(generate_only):
     }
     if key_callbacks["passed"] != key_callbacks["total"]:
         raise ValueError("key-callback-verification")
+    self_test_reports = (
+        verify_application_self_tests(generated) if self_test else []
+    )
+    self_test_verification = {
+        "applications": len(self_test_reports),
+        "passed": sum(
+            item["self_test"]["passed"] for item in self_test_reports
+        ),
+        "total": sum(
+            item["self_test"]["total"] for item in self_test_reports
+        ),
+        "closed": all(item["closed"] for item in self_test_reports),
+    }
     hashes = verify_determinism(compiler, applications, generated)
     separation = verify_compiler_separation(applications, compiler)
     seed_graph = verify_seed_graph(compiler)
@@ -750,6 +802,7 @@ def execute(generate_only):
         seed_graph,
         key_registry,
         key_callbacks,
+        self_test_verification,
         declarations,
     )
     print(
@@ -767,20 +820,28 @@ def execute(generate_only):
         f"{key_registry['selected_identities']} "
         f"key-callbacks={key_callbacks['passed']}/"
         f"{key_callbacks['total']} "
+        f"application-self-tests={self_test_verification['passed']}/"
+        f"{self_test_verification['total']} "
+        f"closed={self_test_verification['closed']} "
         f"generated-ast={declarations['generated_ast']}/{len(generated)} "
         f"leaf-ast-files={declarations['leaf_ast_files']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )
-    if generate_only:
-        return 0
-    running = launch(generated)
-    for item in running:
-        print(
-            f"opened {item['id']}: pid={item['process'].pid}",
-            flush=True,
-        )
-    return wait_for_windows(running)
+    return {
+        "verdict": "PASS",
+        "applications": len(generated),
+        "acceptance": {"passed": passed, "total": total},
+        "key_callbacks": key_callbacks,
+        "application_self_tests": self_test_verification,
+        "deterministic_artifact_hashes": hashes,
+        "complete_tree_sha256": complete_tree,
+    }
+
+
+def execute(generate_only):
+    generate_all_from_seeds(self_test=not generate_only)
+    return 0
 
 
 def main(argv=None):
@@ -788,7 +849,7 @@ def main(argv=None):
     parser.add_argument(
         "--generate-only",
         action="store_true",
-        help="Build and verify all applications without opening windows.",
+        help="Build and verify without starting application self-tests.",
     )
     parser.add_argument(
         "--list",
