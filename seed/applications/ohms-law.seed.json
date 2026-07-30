@@ -1,0 +1,407 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/calculator-family@1",
+      "path": "../families/calculator.seed.json",
+      "sha256": "f38983c36297c1ac143168890eace87fd382f65110e51360bec84a35faf20a0b"
+    }
+  ],
+  "format": "manual-what-seed-4",
+  "what": {
+    "acceptance": [
+      {
+        "expected": {
+          "error": null,
+          "result": "24"
+        },
+        "id": "ohms-law.1",
+        "input": {
+          "expression": "voltage(2,12)"
+        }
+      },
+      {
+        "expected": {
+          "error": null,
+          "result": "2.5"
+        },
+        "id": "ohms-law.2",
+        "input": {
+          "expression": "current(5,2)"
+        }
+      },
+      {
+        "expected": {
+          "error": null,
+          "result": "12"
+        },
+        "id": "ohms-law.3",
+        "input": {
+          "expression": "resistance(24,2)"
+        }
+      },
+      {
+        "expected": {
+          "error": null,
+          "result": "-24"
+        },
+        "id": "ohms-law.negative-voltage",
+        "input": {
+          "expression": "voltage(-2,12)"
+        }
+      },
+      {
+        "expected": {
+          "error": "division-by-zero",
+          "result": null
+        },
+        "id": "ohms-law.current-zero-resistance",
+        "input": {
+          "expression": "current(24,0)"
+        }
+      },
+      {
+        "expected": {
+          "error": "division-by-zero",
+          "result": null
+        },
+        "id": "ohms-law.resistance-zero-current",
+        "input": {
+          "expression": "resistance(24,0)"
+        }
+      }
+    ],
+    "identity": {
+      "canonical": "uc://manual/calculators/ohms-law@1",
+      "family": "calculator",
+      "variation": "ohms-law",
+      "version": 1
+    },
+    "presentation": {
+      "controls": [
+        {
+          "action": "append",
+          "column": 0,
+          "id": "voltage",
+          "label": "V = I×R",
+          "row": 2,
+          "value": "voltage("
+        },
+        {
+          "action": "append",
+          "column": 1,
+          "id": "current",
+          "label": "I = V÷R",
+          "row": 2,
+          "value": "current("
+        },
+        {
+          "action": "append",
+          "column": 2,
+          "id": "resistance",
+          "label": "R = V÷I",
+          "row": 2,
+          "value": "resistance("
+        },
+        {
+          "action": "append",
+          "column": 3,
+          "id": "comma",
+          "label": ",",
+          "row": 2,
+          "value": ","
+        },
+        {
+          "action": "append",
+          "column": 4,
+          "id": "right",
+          "label": ")",
+          "row": 2,
+          "value": ")"
+        },
+        {
+          "action": "clear",
+          "column": 5,
+          "id": "clear",
+          "label": "C",
+          "row": 2
+        },
+        {
+          "action": "append",
+          "column": 0,
+          "id": "seven",
+          "label": "7",
+          "row": 3,
+          "value": "7"
+        },
+        {
+          "action": "append",
+          "column": 1,
+          "id": "eight",
+          "label": "8",
+          "row": 3,
+          "value": "8"
+        },
+        {
+          "action": "append",
+          "column": 2,
+          "id": "nine",
+          "label": "9",
+          "row": 3,
+          "value": "9"
+        },
+        {
+          "action": "append",
+          "column": 3,
+          "id": "divide",
+          "label": "÷",
+          "row": 3,
+          "value": "/"
+        },
+        {
+          "action": "append",
+          "column": 4,
+          "id": "multiply",
+          "label": "×",
+          "row": 3,
+          "value": "*"
+        },
+        {
+          "action": "backspace",
+          "column": 5,
+          "id": "backspace",
+          "label": "⌫",
+          "row": 3
+        },
+        {
+          "action": "append",
+          "column": 0,
+          "id": "four",
+          "label": "4",
+          "row": 4,
+          "value": "4"
+        },
+        {
+          "action": "append",
+          "column": 1,
+          "id": "five",
+          "label": "5",
+          "row": 4,
+          "value": "5"
+        },
+        {
+          "action": "append",
+          "column": 2,
+          "id": "six",
+          "label": "6",
+          "row": 4,
+          "value": "6"
+        },
+        {
+          "action": "append",
+          "column": 3,
+          "id": "subtract",
+          "label": "−",
+          "row": 4,
+          "value": "-"
+        },
+        {
+          "action": "append",
+          "column": 4,
+          "id": "add",
+          "label": "+",
+          "row": 4,
+          "value": "+"
+        },
+        {
+          "action": "append",
+          "column": 5,
+          "id": "left",
+          "label": "(",
+          "row": 4,
+          "value": "("
+        },
+        {
+          "action": "append",
+          "column": 0,
+          "id": "one",
+          "label": "1",
+          "row": 5,
+          "value": "1"
+        },
+        {
+          "action": "append",
+          "column": 1,
+          "id": "two",
+          "label": "2",
+          "row": 5,
+          "value": "2"
+        },
+        {
+          "action": "append",
+          "column": 2,
+          "id": "three",
+          "label": "3",
+          "row": 5,
+          "value": "3"
+        },
+        {
+          "action": "append",
+          "column": 3,
+          "id": "zero",
+          "label": "0",
+          "row": 5,
+          "value": "0"
+        },
+        {
+          "action": "append",
+          "column": 4,
+          "id": "decimal",
+          "label": ".",
+          "row": 5,
+          "value": "."
+        },
+        {
+          "action": "evaluate",
+          "column": 5,
+          "id": "evaluate",
+          "label": "=",
+          "row": 5
+        }
+      ],
+      "geometry": "720x350+440+220",
+      "layout": {
+        "columns": 6
+      },
+      "mode_label": "signed real · volts · amperes · ohms",
+      "theme": {
+        "background": "#fff8dc",
+        "button_background": "#ffffff",
+        "button_foreground": "#5c3d00",
+        "foreground": "#5c3d00"
+      },
+      "title": "Ohm's Law Calculator"
+    },
+    "program": {
+      "case_entrypoint": "run_case",
+      "language": "calculator-declaration-1",
+      "launch_entrypoint": "launch"
+    },
+    "semantics": {
+      "numeric_laws": {
+        "kind": "expression",
+        "maximum_characters": 512,
+        "numeric_domain": "real",
+        "precision": 8
+      },
+      "operations": {
+        "binary": [
+          {
+            "emit": "+",
+            "id": "add",
+            "syntax": "ast.Add",
+            "target": "operator.add",
+            "token": "+"
+          },
+          {
+            "emit": "-",
+            "id": "subtract",
+            "syntax": "ast.Sub",
+            "target": "operator.sub",
+            "token": "-"
+          },
+          {
+            "emit": "*",
+            "id": "multiply",
+            "syntax": "ast.Mult",
+            "target": "operator.mul",
+            "token": "*"
+          },
+          {
+            "emit": "/",
+            "id": "divide",
+            "syntax": "ast.Div",
+            "target": "operator.truediv",
+            "token": "/"
+          }
+        ],
+        "constants": [],
+        "functions": [
+          {
+            "body": {
+              "multiply": [
+                {
+                  "parameter": "current"
+                },
+                {
+                  "parameter": "resistance"
+                }
+              ]
+            },
+            "id": "voltage",
+            "parameters": [
+              "current",
+              "resistance"
+            ]
+          },
+          {
+            "body": {
+              "divide": [
+                {
+                  "parameter": "voltage"
+                },
+                {
+                  "parameter": "resistance"
+                }
+              ]
+            },
+            "id": "current",
+            "parameters": [
+              "voltage",
+              "resistance"
+            ]
+          },
+          {
+            "body": {
+              "divide": [
+                {
+                  "parameter": "voltage"
+                },
+                {
+                  "parameter": "current"
+                }
+              ]
+            },
+            "id": "resistance",
+            "parameters": [
+              "voltage",
+              "current"
+            ]
+          }
+        ],
+        "unary": [
+          {
+            "emit": "+",
+            "id": "positive",
+            "syntax": "ast.UAdd",
+            "target": "operator.pos"
+          },
+          {
+            "emit": "-",
+            "id": "negative",
+            "syntax": "ast.USub",
+            "target": "operator.neg"
+          }
+        ]
+      }
+    },
+    "state": {
+      "authority": "declarations",
+      "fields": [
+        "expression"
+      ],
+      "initial": {
+        "expression": ""
+      }
+    }
+  }
+}

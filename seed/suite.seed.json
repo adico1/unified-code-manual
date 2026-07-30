@@ -69,6 +69,13 @@
       "output": "build/rpn",
       "seed": "seed/applications/rpn.seed.json",
       "title": "RPN Stack Calculator"
+    },
+    {
+      "enabled": true,
+      "id": "ohms-law",
+      "output": "build/ohms-law",
+      "seed": "seed/applications/ohms-law.seed.json",
+      "title": "Ohm's Law Calculator"
     }
   ],
   "format": "manual-seed-program-suite-3"
