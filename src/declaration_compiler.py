@@ -333,13 +333,23 @@ def case_boundary(seed):
 def route_source(seed, routes):
     fields = set(seed["state"]["fields"])
     laws = seed["semantics"]["numeric_laws"]
-    lines = []
+    lines = [
+        "def visible_expression():",
+        "    visible = display.get()",
+        "    return visible if visible != displayed_value else state['expression']",
+        "",
+        "def present_display(value):",
+        "    global displayed_value",
+        "    displayed_value = str(value)",
+        "    display.set(displayed_value)",
+        "",
+    ]
     if "append" in routes:
         lines.extend(
             [
                 f"def {routes['append']}(value):",
-                "    state['expression'] += value",
-                "    display.set(state['expression'])",
+                "    state['expression'] = visible_expression() + value",
+                "    present_display(state['expression'])",
                 "",
             ]
         )
@@ -352,13 +362,13 @@ def route_source(seed, routes):
         )
         if "stack" in fields:
             lines.append("    state['stack'].clear()")
-        lines.extend(["    display.set('')", ""])
+        lines.extend(["    present_display('')", ""])
     if "backspace" in routes:
         lines.extend(
             [
                 f"def {routes['backspace']}():",
-                "    state['expression'] = state['expression'][:-1]",
-                "    display.set(state['expression'])",
+                "    state['expression'] = visible_expression()[:-1]",
+                "    present_display(state['expression'])",
                 "",
             ]
         )
@@ -371,6 +381,7 @@ def route_source(seed, routes):
         lines.extend(
             [
                 f"def {routes['evaluate']}():",
+                "    state['expression'] = visible_expression()",
                 "    try:",
                 f"        value = evaluate_expression(state['expression'], {mapping})",
             ]
@@ -380,11 +391,11 @@ def route_source(seed, routes):
         lines.extend(
             [
                 "        state['expression'] = str(value)",
-                f"        display.set(present(value{base}))",
+                f"        present_display(present(value{base}))",
                 "    except ZeroDivisionError:",
-                "        display.set('division-by-zero')",
+                "        present_display('division-by-zero')",
                 "    except (ArithmeticError, SyntaxError, TypeError, ValueError):",
-                "        display.set('invalid-expression')",
+                "        present_display('invalid-expression')",
                 "",
             ]
         )
@@ -394,7 +405,7 @@ def route_source(seed, routes):
                 f"def {routes['base']}(value):",
                 "    state['base'] = int(value)",
                 "    mode_text.set(f'base {value}')",
-                "    display.set(present(state['last'], state['base']))",
+                "    present_display(present(state['last'], state['base']))",
                 "",
             ]
         )
@@ -402,10 +413,11 @@ def route_source(seed, routes):
         lines.extend(
             [
                 f"def {routes['push']}():",
+                "    state['expression'] = visible_expression()",
                 "    if state['expression']:",
                 "        state['stack'].append(float(state['expression']) if '.' in state['expression'] else int(state['expression']))",
                 "        state['expression'] = ''",
-                "    display.set('  '.join(map(str, state['stack'])))",
+                "    present_display('  '.join(map(str, state['stack'])))",
                 "",
             ]
         )
@@ -419,9 +431,9 @@ def route_source(seed, routes):
                 "        right = state['stack'].pop()",
                 "        left = state['stack'].pop()",
                 "        state['stack'].append(OPERATIONS[symbol](left, right))",
-                "        display.set('  '.join(map(str, state['stack'])))",
+                "        present_display('  '.join(map(str, state['stack'])))",
                 "    except (ArithmeticError, IndexError, ValueError):",
-                "        display.set('invalid-stack')",
+                "        present_display('invalid-stack')",
                 "",
             ]
         )
@@ -435,6 +447,7 @@ def route_source(seed, routes):
         lines.extend(
             [
                 f"def {routes['plot']}():",
+                "    state['expression'] = visible_expression()",
                 "    canvas.delete('all')",
                 f"    width, height = ({width!r}, {rendering['canvas_height']!r})",
                 f"    canvas.create_line(0, height / 2, width, height / 2, fill={rendering['axis_color']!r})",
@@ -560,6 +573,7 @@ def stamp_05_core_to_inner(seed, routes):
     lines.extend(
         [
             "display = None",
+            "displayed_value = ''",
             "mode_text = None",
         ]
     )
