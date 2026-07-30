@@ -51,8 +51,8 @@ generator: application meaning
 
 ## The correction
 
-The calculator seed now contains both a readable semantic contract and its
-complete executable structured program. For example, the contract describes a
+The calculator seed now contains its complete concise semantic program. For
+example, the contract describes a
 two-by-two determinant as an expression tree:
 
 ```json
@@ -78,10 +78,9 @@ two-by-two determinant as an expression tree:
 }
 ```
 
-The build-time compiler does not contain the determinant formula. The complete
-program is represented as generic Python AST data under `program.ast`; the
-compiler validates and translates those generic syntax nodes without knowing
-which calculator, equation, control, or layout they implement.
+The build-time compiler does not contain the determinant formula. It generates
+a Python AST from the declared formula, operations, routes, state and controls.
+No application seed stores an AST or source blob.
 
 This produces a different boundary:
 
@@ -175,15 +174,13 @@ This experiment does not prove:
 - root-seed self-hosting;
 - that compilers never require extension.
 
-A new Python application expressible through the structured seed language
+A new Python application expressible through the declaration language
 changes only the seed. A new physical target still requires a generic compiler
-projection. The complete AST representation is deliberately low-level and
-verbose; a future higher-level language may compile into it without changing
-the seed/runtime authority law.
+projection.
 
 The current seed graph separates invariant `בלי_מה` authority, calculator-family
-authority and application-specific `מה`. This removes silent base selection,
-but it does not yet remove the verbose AST duplication inside each leaf.
+authority and application-specific `מה`. This removes silent base selection
+and the former AST duplication inside each leaf.
 
 That boundary is not a weakness to hide. It is the measurement that keeps the
 claim honest.

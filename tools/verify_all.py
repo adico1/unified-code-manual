@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = ROOT / "seed" / "suite.seed.json"
 COMPILER = ROOT / "src" / "seed_compiler.py"
+COMPILER_SOURCES = tuple(sorted((ROOT / "src").glob("*.py")))
 
 
 def canonical(value):
@@ -32,6 +33,7 @@ def digest(raw):
 
 
 def load_compiler():
+    sys.path.insert(0, str(COMPILER.parent))
     specification = importlib.util.spec_from_file_location(
         "manual_seed_compiler", COMPILER
     )
@@ -149,26 +151,36 @@ def seed_vocabulary(seed):
 
 
 def verify_compiler_separation(applications, compiler):
-    source = COMPILER.read_text(encoding="utf-8").casefold()
+    source = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in COMPILER_SOURCES
+    ).casefold()
     vocabulary = set()
+    registered = set()
     for application in applications:
         seed, _ = compiler.load_seed(ROOT / application["seed"])
         vocabulary.update(seed_vocabulary(seed))
+        registered.update(
+            item["action"]
+            for item in seed["presentation"]["controls"]
+        )
     generic = {
         "abs",
         "add",
         "append",
         "divide",
+        "left",
         "maximum",
         "minimum",
         "multiply",
         "power",
+        "right",
         "subtract",
         "sum",
         "trace",
     }
     inspected = sorted(
-        item for item in vocabulary - generic if len(item) >= 4
+        item for item in vocabulary - generic - registered if len(item) >= 4
     )
     hits = [
         item
@@ -213,6 +225,36 @@ def source_churn(generated):
     }
 
 
+def verify_concise_declarations(applications, compiler):
+    reports = []
+    for application in applications:
+        path = ROOT / application["seed"]
+        document = json.loads(path.read_text(encoding="utf-8"))
+        what = document["what"]
+        if "ast" in what["program"]:
+            raise ValueError("leaf-ast-present")
+        if what["state"].get("authority") != "declarations":
+            raise ValueError("state-not-declared")
+        tree = compiler.compile_declaration(
+            {"format": compiler.FORMAT, **what}
+        )
+        if type(tree).__name__ != "Module":
+            raise ValueError("declaration-ast-not-generated")
+        reports.append(
+            {
+                "id": application["id"],
+                "seed_bytes": path.stat().st_size,
+                "ast_source": "generated-at-build-time",
+            }
+        )
+    return {
+        "applications": reports,
+        "leaf_ast_files": 0,
+        "generated_ast": len(reports),
+        "total_seed_bytes": sum(item["seed_bytes"] for item in reports),
+    }
+
+
 def write_report(
     applications,
     generated,
@@ -221,8 +263,8 @@ def write_report(
     complete_tree,
     compiler,
     seed_graph,
+    declarations,
 ):
-    compiler_bytes = COMPILER.read_bytes()
     runner_bytes = Path(__file__).read_bytes()
     report = {
         "format": "manual-seed-assembly-report-1",
@@ -246,9 +288,12 @@ def write_report(
             for item in generated
         ],
         "build_time_shared": {
-            "src/seed_compiler.py": {
-                "sha256": digest(compiler_bytes),
-                "lines": len(compiler_bytes.splitlines()),
+            **{
+                path.relative_to(ROOT).as_posix(): {
+                    "sha256": digest(path.read_bytes()),
+                    "lines": len(path.read_bytes().splitlines()),
+                }
+                for path in COMPILER_SOURCES
             },
             "tools/verify_all.py": {
                 "sha256": digest(runner_bytes),
@@ -263,6 +308,7 @@ def write_report(
         "manual_application_tests": 0,
         "runtime_seed_access": 0,
         "seed_graph": seed_graph,
+        "concise_declarations": declarations,
     }
     destination = ROOT / "build" / "assembly-report.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -428,6 +474,7 @@ def execute(generate_only):
     hashes = verify_determinism(compiler, applications, generated)
     separation = verify_compiler_separation(applications, compiler)
     seed_graph = verify_seed_graph(compiler)
+    declarations = verify_concise_declarations(applications, compiler)
     passed = sum(
         item["evidence"]["verification"]["passed"]
         for item in generated
@@ -455,6 +502,7 @@ def execute(generate_only):
         complete_tree,
         compiler,
         seed_graph,
+        declarations,
     )
     print(
         "proof: "
@@ -467,6 +515,8 @@ def execute(generate_only):
         "manual-application-tests=0 "
         f"compiler-vocabulary={separation['hits']}/{separation['inspected']} "
         f"seed-graph={seed_graph['passed']}/{seed_graph['total']} "
+        f"generated-ast={declarations['generated_ast']}/10 "
+        f"leaf-ast-files={declarations['leaf_ast_files']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )

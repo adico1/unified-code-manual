@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "uc://schemas/manual-seed-graph@3",
+  "$id": "uc://schemas/manual-seed-graph@4",
   "title": "Recursive manual seed graph",
   "oneOf": [
     {
@@ -77,7 +77,7 @@
       ],
       "properties": {
         "format": {
-          "const": "manual-what-seed-3"
+          "const": "manual-what-seed-4"
         },
         "bases": {
           "type": "array",
@@ -257,27 +257,12 @@
         "program": {
           "additionalProperties": false,
           "properties": {
-            "ast": {
-              "properties": {
-                "_type": {
-                  "const": "Module"
-                },
-                "body": {
-                  "type": "array"
-                }
-              },
-              "required": [
-                "_type",
-                "body"
-              ],
-              "type": "object"
-            },
             "case_entrypoint": {
               "minLength": 1,
               "type": "string"
             },
             "language": {
-              "const": "python-ast-3"
+              "const": "calculator-declaration-1"
             },
             "launch_entrypoint": {
               "minLength": 1,
@@ -287,8 +272,7 @@
           "required": [
             "language",
             "case_entrypoint",
-            "launch_entrypoint",
-            "ast"
+            "launch_entrypoint"
           ],
           "type": "object"
         },
@@ -322,7 +306,7 @@
           "additionalProperties": false,
           "properties": {
             "authority": {
-              "const": "program.ast"
+              "const": "declarations"
             },
             "fields": {
               "items": {
@@ -330,11 +314,15 @@
               },
               "type": "array",
               "uniqueItems": true
+            },
+            "initial": {
+              "type": "object"
             }
           },
           "required": [
             "authority",
-            "fields"
+            "fields",
+            "initial"
           ],
           "type": "object"
         },

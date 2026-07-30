@@ -198,8 +198,8 @@ sin button
 ## Seed layers
 
 ```text
-L0 — structured program language
-     generic syntax nodes, values, names, calls, state and effects
+L0 — declaration-to-AST language
+     values, names, formulas, routes, state, controls and effects
 
 L1 — expression language
      grammar, notation, precedence, evaluation semantics
@@ -264,9 +264,10 @@ exact identity, relative path and SHA-256. `tools/modify_seeds.py` migrates and
 re-pins the graph deterministically; the compiler rejects cycles, conflicts,
 floating references and tampering.
 
-The leaf seeds contain complete structured programs. `src/seed_compiler.py`
-translates only generic AST structure and contains no calculator-specific
-equation, layout, event route, or product identity.
+The leaf seeds contain complete concise application declarations.
+`src/declaration_compiler.py` generates the specialized AST from registered
+numeric, state, transition and presentation vocabulary. It contains no
+calculator identity, selected equation or concrete layout.
 
 ## Suite operation
 

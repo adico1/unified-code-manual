@@ -78,15 +78,15 @@ validation and deterministic errors
 state fields and state-transition routes
 GUI title, theme, layout, controls, identities and arguments
 physical boundaries and effects
-complete structured program
 acceptance cases
 ```
 
-`program.ast` is executable structured data, not the name of behavior hidden in
-the compiler. It contains the exact program to compile. The compiler translates
-generic Python AST nodes, writes the specialized application and generated
-tests, records seed-to-source line traceability, verifies acceptance, and
-installs the result atomically.
+The declarations are the complete application program. At build time the
+calculator declaration language translates their equations, operations, state,
+routes and GUI controls into a specialized Python AST. No leaf seed contains an
+AST or source blob. The generic compiler writes the application and generated
+tests, records seed-to-source traceability, verifies acceptance, and installs
+the result atomically.
 
 Every leaf references its immediate base by exact canonical identity, relative
 path and SHA-256. Resolution rejects floating references, altered bases,

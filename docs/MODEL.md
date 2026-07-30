@@ -52,8 +52,8 @@ control event
 → generated presentation
 ```
 
-The exact physical functions implementing that flow are present in
-`program.ast` and become specialized source before runtime.
+The build-time declaration compiler derives the exact physical functions and
+Python AST from these declared transitions. No AST is stored in a leaf seed.
 
 ## Boundaries
 

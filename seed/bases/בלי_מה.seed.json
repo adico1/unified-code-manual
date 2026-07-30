@@ -18,7 +18,7 @@
       "runtime_seed_interpretation": false,
       "same_authorities_same_artifact": true
     },
-    "program_language": "python-ast-3",
+    "program_language": "calculator-declaration-1",
     "target": "python-tk",
     "verification": {
       "acceptance_generated": true,

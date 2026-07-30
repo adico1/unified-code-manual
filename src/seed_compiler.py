@@ -11,9 +11,12 @@ import sys
 import tempfile
 from pathlib import Path
 
+from declaration_compiler import LANGUAGE as DECLARATION_LANGUAGE
+from declaration_compiler import compile_declaration
 
-FORMAT = "manual-seed-program-2"
-LEAF_FORMAT = "manual-what-seed-3"
+
+FORMAT = "manual-resolved-declaration-4"
+LEAF_FORMAT = "manual-what-seed-4"
 BASE_FORMAT = "manual-seed-base-1"
 REQUIRED_CONTRACT = frozenset(
     {
@@ -103,14 +106,6 @@ def resolve_base(path, document, ancestry=()):
 def load_seed(path):
     path = Path(path).resolve(strict=True)
     document = load_document(path)
-    if document.get("format") == FORMAT:
-        return document, [
-            {
-                "identity": document["identity"]["canonical"],
-                "kind": "legacy-complete-seed",
-                "sha256": document_digest(document),
-            }
-        ]
     if document.get("format") != LEAF_FORMAT:
         raise ValueError("leaf-format")
     references = document.get("bases", ())
@@ -131,6 +126,10 @@ def load_seed(path):
     required = set(provisions.get("required_meaning", ()))
     if required - what.keys():
         raise ValueError("incomplete-what")
+    if what.get("program", {}).get("language") != provisions.get(
+        "program_language"
+    ):
+        raise ValueError("program-language-authority-mismatch")
     resolved = {"format": FORMAT, **what}
     authorities.append(
         {
@@ -140,26 +139,6 @@ def load_seed(path):
         }
     )
     return resolved, authorities
-
-
-def decode_node(value):
-    if isinstance(value, list):
-        return [decode_node(item) for item in value]
-    if not isinstance(value, dict):
-        return value
-    if "_type" not in value:
-        return {key: decode_node(item) for key, item in value.items()}
-    node_type = value["_type"]
-    constructor = getattr(ast, node_type, None)
-    if constructor is None or not isinstance(constructor, type):
-        raise ValueError("unknown-program-node")
-    return constructor(
-        **{
-            key: decode_node(item)
-            for key, item in value.items()
-            if key != "_type"
-        }
-    )
 
 
 def validate(seed):
@@ -195,36 +174,20 @@ def validate(seed):
     if any(f"control.{item.get('id')}.pressed" not in events for item in controls):
         errors.append("control-routes")
     program = seed.get("program", {})
-    if program.get("language") != "python-ast-3":
+    if program.get("language") != DECLARATION_LANGUAGE:
         errors.append("program-language")
-    if not isinstance(program.get("ast"), dict):
+    if "ast" in program:
         errors.append("program")
     if not program.get("case_entrypoint") or not program.get("launch_entrypoint"):
         errors.append("entrypoints")
     if not seed.get("acceptance"):
         errors.append("acceptance")
     if not errors:
-        tree = decode_node(program["ast"])
+        tree = compile_declaration(seed)
         functions = {
             node.name
             for node in ast.walk(tree)
             if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
-        }
-        names = {
-            node.id
-            for node in ast.walk(tree)
-            if isinstance(node, ast.Name)
-        }
-        attributes = {
-            node.attr
-            for node in ast.walk(tree)
-            if isinstance(node, ast.Attribute)
-        }
-        constants = {
-            node.value
-            for node in ast.walk(tree)
-            if isinstance(node, ast.Constant)
-            and isinstance(node.value, (int, float, str))
         }
         routes = {
             item.get("route")
@@ -237,47 +200,13 @@ def validate(seed):
             program["launch_entrypoint"],
         } <= functions:
             errors.append("entrypoint-program-link")
-        presentation_literals = {
-            seed["presentation"]["title"],
-            seed["presentation"]["geometry"],
-            seed["presentation"]["mode_label"],
-            *seed["presentation"]["theme"].values(),
-            *(
-                item["label"]
-                for item in seed["presentation"]["controls"]
-            ),
-            *(
-                item["argument"]
-                for item in seed["transitions"]
-                if item.get("argument") is not None
-            ),
-        }
-        if not presentation_literals <= constants:
-            errors.append("presentation-program-link")
-        operation_declarations = [
-            item
-            for family in seed["semantics"]["operations"].values()
-            for item in family
-        ]
-        program_symbols = names | attributes | constants
-        if any(
-            not {
-                item.get("id"),
-                item.get("syntax", "").rsplit(".", 1)[-1],
-                item.get("target", "").rsplit(".", 1)[-1],
-                item.get("token"),
-            }
-            & program_symbols
-            for item in operation_declarations
-        ):
-            errors.append("operation-program-link")
-        if not set(seed["state"]["fields"]) <= constants:
-            errors.append("state-program-link")
+        if set(seed["state"]["fields"]) != set(seed["state"].get("initial", {})):
+            errors.append("state-initial")
     return sorted(set(errors))
 
 
 def render_program(seed):
-    tree = decode_node(seed["program"]["ast"])
+    tree = compile_declaration(seed)
     if not isinstance(tree, ast.Module):
         raise ValueError("program-root")
     ast.fix_missing_locations(tree)
@@ -288,12 +217,28 @@ def render_program(seed):
 
 def trace_program(seed, source, authorities):
     rendered = ast.parse(source)
-    original = seed["program"]["ast"].get("body", ())
     functions = {
         node.name: node
         for node in rendered.body
         if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
     }
+    semantic_functions = seed["semantics"]["operations"].get("functions", ())
+    launch = functions[seed["program"]["launch_entrypoint"]]
+    buttons = [
+        node
+        for node in launch.body
+        if (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Call)
+            and isinstance(node.value.func, ast.Attribute)
+            and node.value.func.attr == "grid"
+            and isinstance(node.value.func.value, ast.Call)
+            and isinstance(node.value.func.value.func, ast.Name)
+            and node.value.func.value.func.id == "Button"
+        )
+    ]
+    if len(buttons) != len(seed["presentation"]["controls"]):
+        raise ValueError("control-trace-mismatch")
     return {
         "format": "manual-seed-trace-1",
         "seed_sha256": digest(canonical(seed)),
@@ -301,14 +246,11 @@ def trace_program(seed, source, authorities):
         "authorities": authorities,
         "top_level": [
             {
-                "seed_path": f"/program/ast/body/{index}",
-                "node": item.get("_type", "unknown"),
-                "generated_lines": [
-                    rendered.body[index].lineno,
-                    rendered.body[index].end_lineno,
-                ],
+                "seed_path": "/program",
+                "node": type(item).__name__,
+                "generated_lines": [item.lineno, item.end_lineno],
             }
-            for index, item in enumerate(original)
+            for item in rendered.body
         ],
         "contract_sections": {
             f"/{name}": digest(canonical(seed[name]))
@@ -325,6 +267,27 @@ def trace_program(seed, source, authorities):
                 ],
             }
             for index, transition in enumerate(seed["transitions"])
+        ],
+        "semantic_functions": [
+            {
+                "seed_path": f"/semantics/operations/functions/{index}/body",
+                "identity": item["id"],
+                "generated_lines": [
+                    functions[f"_semantic_{index}"].lineno,
+                    functions[f"_semantic_{index}"].end_lineno,
+                ],
+            }
+            for index, item in enumerate(semantic_functions)
+        ],
+        "controls": [
+            {
+                "seed_path": f"/presentation/controls/{index}",
+                "identity": control["id"],
+                "generated_lines": [button.lineno, button.end_lineno],
+            }
+            for index, (control, button) in enumerate(
+                zip(seed["presentation"]["controls"], buttons)
+            )
         ],
     }
 
@@ -453,7 +416,14 @@ def generate(seed_path, output):
         "identity": seed["identity"],
         "seed_sha256": digest(canonical(seed)),
         "authorities": authorities,
-        "compiler_sha256": digest(Path(__file__).read_bytes()),
+        "compiler_sha256": digest(
+            canonical(
+                {
+                    path.name: digest(path.read_bytes())
+                    for path in sorted(Path(__file__).parent.glob("*.py"))
+                }
+            )
+        ),
         "files": file_hashes,
         "tree_sha256": tree_hash,
         "verification": verification,

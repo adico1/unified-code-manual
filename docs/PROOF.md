@@ -8,9 +8,9 @@ pinned recursive seed graph
 → exact standalone application and generated tests
 ```
 
-Application meaning is represented by each seed's structured program, semantic
-contract, transitions, interface, boundaries, and acceptance cases. The
-compiler owns only parsing, validation, generic AST construction, rendering,
+Application meaning is represented by each seed's semantic contract,
+transitions, interface, boundaries, and acceptance cases. The compiler owns
+only parsing, validation, generic AST construction, rendering,
 emission, hashing, traceability, verification, and atomic installation.
 
 ## Reproduce
@@ -30,8 +30,9 @@ The operation requires:
 7. no seed or compiler loading path in generated runtime source;
 8. zero selected application vocabulary in the compiler;
 9. exact seed, compiler, file, and tree hashes;
-10. top-level seed-AST to generated-source line traceability.
+10. declaration-section and event-route to generated-source traceability;
 11. rejection of altered, floating, cyclic and conflicting base authority.
+12. zero stored leaf ASTs and ten build-time-generated ASTs.
 
 Current measured result:
 
@@ -45,6 +46,8 @@ manual application code = 0
 manual application tests = 0
 compiler application-vocabulary hits = 0
 seed-graph rejection proofs = 4/4
+stored leaf ASTs = 0
+build-time-generated ASTs = 10/10
 ```
 
 Open all ten generated Tk applications:
@@ -57,15 +60,13 @@ python3 tools/verify_all.py
 
 - `examples/original_handwritten_calculator.py` remains a handwritten learning
   artifact, but it is not an input to generation.
-- `program.ast` is intentionally a low-level structured language. It proves
-  complete seed authority more strongly than the earlier profile selector, but
-  it is more verbose.
-- The semantic and presentation summaries currently coexist with the
-  authoritative structured program. Traceability hashes both; a future
-  higher-level compiler can derive the AST from those summaries.
-- Recursive seed ancestry is now implemented and content-addressed, but the
-  leaf AST remains verbose and duplicated with its readable semantic summary.
-- Adding behavior expressible with Python AST requires only a seed change.
+- The concise declarations now generate the Python AST; it is no longer copied
+  into each application seed.
+- Recursive seed ancestry is content-addressed, and every formula, operation,
+  transition, control and acceptance case remains explicit data.
+- Adding behavior expressible by the registered declaration vocabulary requires
+  only a seed change.
+- A genuinely new semantic primitive requires a generic language extension.
 - A new target language requires a generic compiler projection.
 - This does not prove every possible calculator, every GUI toolkit, full
   Standard Ten conformance, or root-seed self-hosting.
