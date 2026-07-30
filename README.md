@@ -35,6 +35,20 @@ List the registered seed programs:
 python3 tools/verify_all.py --list
 ```
 
+Publish the verified repository and article through one words-in operation:
+
+```bash
+python3 tools/publish.py \
+  "publish From Seeds to Apps with the proven technical claim" \
+  --execute
+```
+
+The operation verifies everything before its first external write, pushes the
+exact verified commit to GitHub `main`, and idempotently creates or updates the
+canonical adico.tech article through WordPress REST. WordPress authority is
+read from `ADICO_WORDPRESS_USER` and `ADICO_WORDPRESS_APP_PASSWORD`; credentials
+are never stored in the repository.
+
 ## Source boundary
 
 - `examples/original_handwritten_calculator.py` is the author's original
