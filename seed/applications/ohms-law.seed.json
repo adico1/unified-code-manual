@@ -22,11 +22,11 @@
       {
         "expected": {
           "error": null,
-          "result": "2"
+          "result": "2.5"
         },
         "id": "ohms-law.2",
         "input": {
-          "expression": "current(24,12)"
+          "expression": "current(5,2)"
         }
       },
       {
@@ -37,6 +37,36 @@
         "id": "ohms-law.3",
         "input": {
           "expression": "resistance(24,2)"
+        }
+      },
+      {
+        "expected": {
+          "error": null,
+          "result": "-24"
+        },
+        "id": "ohms-law.negative-voltage",
+        "input": {
+          "expression": "voltage(-2,12)"
+        }
+      },
+      {
+        "expected": {
+          "error": "division-by-zero",
+          "result": null
+        },
+        "id": "ohms-law.current-zero-resistance",
+        "input": {
+          "expression": "current(24,0)"
+        }
+      },
+      {
+        "expected": {
+          "error": "division-by-zero",
+          "result": null
+        },
+        "id": "ohms-law.resistance-zero-current",
+        "input": {
+          "expression": "resistance(24,0)"
         }
       }
     ],
