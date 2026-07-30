@@ -22,8 +22,8 @@ python3 tools/verify_all.py --generate-only
 
 The operation requires:
 
-1. exactly one pinned בלי_מה root, one family base and ten leaf מה seeds;
-2. ten distinct generated application sources;
+1. exactly one pinned בלי_מה root, one family base and twelve leaf מה seeds;
+2. twelve distinct generated application sources;
 3. all seed-declared and derived negative acceptance cases to pass;
 4. generated tests for every application;
 5. copied execution without seed, compiler, or repository access;
@@ -34,7 +34,7 @@ The operation requires:
 10. declaration-section and event-route to generated-source traceability;
 11. rejection of altered, floating, cyclic, conflicting, and escaping base
     authority;
-12. zero stored leaf ASTs and ten build-time-generated ASTs.
+12. zero stored leaf ASTs and twelve build-time-generated ASTs.
 13. exactly six registered build-time stampers;
 14. leaf transition tables, boundaries, reachable errors, and duplicated
     numeric-law indexes are absent and deterministically derived.
@@ -42,26 +42,26 @@ The operation requires:
 Current measured result:
 
 ```text
-applications = 10
-acceptance = 40/40
-isolated copied applications = 10/10
+applications = 12
+acceptance = 57/57
+isolated copied applications = 12/12
 deterministic = PASS
 runtime seed access = 0
 manual application code = 0
 manual application tests = 0
-compiler application-vocabulary hits = 0
+compiler application-vocabulary hits = 0/71
 seed-graph rejection proofs = 5/5
 stored leaf ASTs = 0
-build-time-generated ASTs = 10/10
+build-time-generated ASTs = 12/12
 registered build-time stampers = 6
-derived transitions = 238
-derived reachable errors = 21
-verification time = 1.82 seconds
+derived transitions = 287
+derived reachable errors = 25
+generated editable-input checks = 3 per application
 complete tree =
-a32ab7ed59713152dc9ab70c5dd29fb65d031ad158e98bb27a98e74a1c5ecb62
+371f159f7a724fcf10b965adac06fd9d17bfdf3e6f5dd600b8acfeed95cab73d
 ```
 
-Open all ten generated Tk applications:
+Open all twelve generated Tk applications:
 
 ```bash
 python3 tools/verify_all.py

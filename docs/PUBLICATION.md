@@ -9,28 +9,28 @@ Website source: [ARTICLE.md](ARTICLE.md)
 ## One-sentence result
 
 One pinned seed graph and one build-time compiler deterministically generate
-ten independent, standalone calculator applications with generated tests,
+twelve independent, standalone calculator applications with generated tests,
 zero handwritten application code, and no runtime seed interpreter.
 
 ## Evidence summary
 
 ```text
-applications                              10
-positive + derived negative acceptance    40/40
-isolated copied execution                 10/10
-build-time-generated ASTs                 10/10
+applications                              12
+positive + derived negative acceptance    57/57
+isolated copied execution                 12/12
+build-time-generated ASTs                 12/12
 registered stampers                       6
-derived control transitions               238
-derived reachable errors                  21
+derived control transitions               287
+derived reachable errors                  25
 seed-graph rejection proofs               5/5
-compiler application-vocabulary hits      0/62
+compiler application-vocabulary hits      0/71
+generated editable-input checks           3 per application
 runtime seed access                       0
 manual application code                   0
 manual application tests                  0
 deterministic rebuild                     PASS
-verification time                         1.82 seconds
 complete tree SHA-256
-a32ab7ed59713152dc9ab70c5dd29fb65d031ad158e98bb27a98e74a1c5ecb62
+371f159f7a724fcf10b965adac06fd9d17bfdf3e6f5dd600b8acfeed95cab73d
 ```
 
 Reproduce:
@@ -41,7 +41,7 @@ cd unified-code-manual
 python3 tools/verify_all.py --generate-only
 ```
 
-Open all ten generated applications:
+Open all twelve generated applications:
 
 ```bash
 python3 tools/verify_all.py
@@ -49,24 +49,24 @@ python3 tools/verify_all.py
 
 ## LinkedIn announcement
 
-I built ten different calculator products from one shared construction
+I built twelve different calculator products from one shared construction
 infrastructure.
 
-Not ten templates selecting hidden handwritten behavior. Each application seed
+Not twelve templates selecting hidden handwritten behavior. Each application seed
 declares its own identity, mathematical operations, formulas, state, controls,
 layout, and acceptance behavior. A pinned calculator-family seed supplies the
 unchanging family law once. One build-time compiler specializes the selected
-meaning into ten exact standalone Python applications.
+meaning into twelve exact standalone Python applications.
 
 Measured proof:
 
-- 10 independently generated applications;
-- 40/40 positive and derived negative acceptance cases;
+- 12 independently generated applications;
+- 57/57 positive and derived negative acceptance cases;
 - deterministic byte-identical rebuilding;
 - generated tests and seed-to-source traceability;
 - zero handwritten application code or tests;
 - zero runtime seed access;
-- complete verification in 1.82 seconds locally.
+- generated editable-input checks for every application.
 
 This raises a larger economic question. Companies often rebuild equivalent
 foundations while competing through product-specific interfaces and services.
@@ -86,7 +86,7 @@ https://github.com/adico1/unified-code-manual
 ## Short announcement
 
 From seeds to apps: one pinned seed graph and one build-time compiler now
-generate ten exact, standalone calculators with generated tests, deterministic
+generate twelve exact, standalone calculators with generated tests, deterministic
 hashes, and no runtime seed interpreter.
 
 Technical reuse is proven at this scale. Large economic savings remain an open
@@ -98,7 +98,7 @@ https://github.com/adico1/unified-code-manual
 
 | Claim | Status | Publication wording |
 | --- | --- | --- |
-| Ten calculators are generated | Proven locally | “Ten generated applications” |
+| Twelve calculators are generated | Proven locally | “Twelve generated applications” |
 | Generated outputs are deterministic | Proven locally | “Byte-identical repeated builds” |
 | Applications run without seeds | Proven locally | “Runtime seed access is zero” |
 | Application code and tests are handwritten | Rejected by evidence | “Manual application code and tests are zero” |

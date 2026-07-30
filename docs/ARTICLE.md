@@ -7,7 +7,7 @@ date: 2026-07-30
 
 # A Seed Must Describe Meaning, Not Select Hidden Code
 
-While building ten calculator variations beside the Unified Code project, I
+While building twelve calculator variations beside the Unified Code project, I
 found a defect that passed every visible demonstration: the applications
 worked, but the generator already contained their real behavior.
 
@@ -129,7 +129,7 @@ It proves something narrower and useful:
 
 ## Current evidence
 
-The public experiment now contains ten seed-programmed calculator applications
+The public experiment now contains twelve seed-programmed calculator applications
 derived through one content-addressed seed ancestry:
 
 - normal;
@@ -141,7 +141,9 @@ derived through one content-addressed seed ancestry:
 - graphing;
 - matrix and vector;
 - engineering units;
-- reverse Polish notation.
+- reverse Polish notation;
+- Ohm's law;
+- quadratic-polynomial evaluation.
 
 One command performs the build and proof:
 
@@ -152,22 +154,22 @@ python3 tools/verify_all.py --generate-only
 Measured locally:
 
 ```text
-10 seed programs compiled into 10 applications
-40/40 positive and derived negative acceptance cases passed
+12 seed programs compiled into 12 applications
+57/57 positive and derived negative acceptance cases passed
 byte-identical repeated generation
-isolated copied execution = 10/10
+isolated copied execution = 12/12
 runtime seed access = 0
 shared all-calculators runtime = 0
 manual application code = 0
 manual application tests = 0
-compiler application-vocabulary hits = 0
+compiler application-vocabulary hits = 0/71
 altered/floating/cyclic/conflicting/escaping base rejection = 5/5
 six registered build-time stampers
-238 control transitions derived
-21 reachable errors derived
+287 control transitions derived
+25 reachable errors derived
+generated editable-input checks = 3 per application
 complete-tree SHA-256 =
-a32ab7ed59713152dc9ab70c5dd29fb65d031ad158e98bb27a98e74a1c5ecb62
-complete local verification = 1.82 seconds
+371f159f7a724fcf10b965adac06fd9d17bfdf3e6f5dd600b8acfeed95cab73d
 ```
 
 The runnable experiment is available at:
@@ -199,7 +201,7 @@ claim honest.
 
 ## One infrastructure, many products
 
-The ten calculators also expose an economic question. Today, companies often
+The twelve calculators also expose an economic question. Today, companies often
 rebuild equivalent foundations while competing through relatively small
 product differences.
 
@@ -208,8 +210,8 @@ This experiment demonstrates a different technical arrangement:
 ```text
 one shared compiler
 + one shared family authority
-+ ten independent product seeds
-= ten independently presented products
++ twelve independent product seeds
+= twelve independently presented products
 ```
 
 This does not mean one company, one interface, or one commercial product.
