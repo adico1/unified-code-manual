@@ -54,28 +54,39 @@ The leaf does not repeat those truths. During base resolution, the compiler
 derives one transition from each control, derives only reachable errors, and
 adds the matching negative cases.
 
-## Six build-time stampers
+## One body and six build-time stampers
 
 The compiler assembles six transformations around the selected computation
 core:
 
 ```text
-יה inward:
+יה — building blocks:
 01 outer_to_inner
+06 inner_to_outer
 
-יהוה internal:
+יהוה — organs inside one body:
 02 inner_to_core
 03 core_prepare
 04 core_collect
 05 core_to_inner
-
-יה outward:
-06 inner_to_outer
 ```
 
-Together the six are the registered `צבאות` assembly surface. They run before
-Python compilation. They are not runtime templates, and the generated
-application contains no stamper registry or seed interpreter.
+The six stages form one calculator body. They run before Python compilation.
+They are not runtime templates, and the generated application contains no
+stamper registry or seed interpreter.
+
+`צבאות` is a different relation:
+
+```text
+multiple יה building blocks
++ multiple יהוה organs
++ one-body identity and lawful coordination
+→ parallel manifestation
+```
+
+It does not mean “the sum of these six sequential stages.” This calculator
+proof currently demonstrates specialization and composition inside one body;
+it does not yet claim a generated parallel execution proof.
 
 ## Flow
 

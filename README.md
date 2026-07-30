@@ -79,7 +79,8 @@ GUI title, theme, layout, controls, identities and arguments
 acceptance cases
 ```
 
-The family base supplies the six ordered build-time stampers, registered
+The family base supplies the six ordered build-time stampers for one body,
+registered
 control routes, physical boundaries, rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
 selected controls and operations, so those truths are not repeated ten times.
@@ -91,6 +92,10 @@ AST. No leaf seed contains an AST or source blob. The generic compiler writes
 the application and generated tests, records seed-to-source traceability,
 verifies positive and derived negative acceptance, and installs the result
 atomically.
+
+Here `יה` names building blocks and `יהוה` names organs inside the one body.
+`צבאות` is reserved for their lawful parallel coordination; the current
+calculator assembly does not claim that parallelism proof.
 
 Every leaf references its immediate base by exact canonical identity, relative
 path and SHA-256. Resolution rejects floating references, altered bases,
