@@ -74,19 +74,23 @@ Each application מה seed declares:
 ```text
 canonical identity and calculator variation
 numeric laws and operations
-validation and deterministic errors
-state fields and state-transition routes
+state fields
 GUI title, theme, layout, controls, identities and arguments
-physical boundaries and effects
 acceptance cases
 ```
 
-The declarations are the complete application program. At build time the
-calculator declaration language translates their equations, operations, state,
-routes and GUI controls into a specialized Python AST. No leaf seed contains an
-AST or source blob. The generic compiler writes the application and generated
-tests, records seed-to-source traceability, verifies acceptance, and installs
-the result atomically.
+The family base supplies the six ordered build-time stampers, registered
+control routes, physical boundaries, rendering defaults, and error rules.
+Transitions, reachable errors, and negative cases are derived from each leaf's
+selected controls and operations, so those truths are not repeated ten times.
+
+The resolved declarations are the complete application program. At build time
+the calculator declaration language composes the six stampers around the
+selected computation core and translates the result into a specialized Python
+AST. No leaf seed contains an AST or source blob. The generic compiler writes
+the application and generated tests, records seed-to-source traceability,
+verifies positive and derived negative acceptance, and installs the result
+atomically.
 
 Every leaf references its immediate base by exact canonical identity, relative
 path and SHA-256. Resolution rejects floating references, altered bases,

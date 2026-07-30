@@ -18,8 +18,6 @@ WITHOUT_WHAT = BASES / "בלי_מה.seed.json"
 CALCULATOR_FAMILY = SEED_ROOT / "families" / "calculator.seed.json"
 LEAF_FORMAT = "manual-what-seed-4"
 BASE_FORMAT = "manual-seed-base-1"
-LEGACY_FORMAT = "manual-seed-program-2"
-PREVIOUS_FORMAT = "manual-what-seed-3"
 
 
 def canonical(value):
@@ -60,45 +58,16 @@ def leaf_paths():
     )
 
 
-def literal_node(node):
-    node_type = node.get("_type")
-    if node_type == "Constant":
-        return node["value"]
-    if node_type == "List":
-        return [literal_node(item) for item in node["elts"]]
-    if node_type == "Tuple":
-        return tuple(literal_node(item) for item in node["elts"])
-    if node_type == "Dict":
-        return {
-            literal_node(key): literal_node(value)
-            for key, value in zip(node["keys"], node["values"])
-        }
-    raise ValueError("nonliteral-initial-state")
-
-
-def declared_state(program):
-    for node in program["ast"]["body"]:
-        targets = node.get("targets", ())
-        if (
-            node.get("_type") == "Assign"
-            and len(targets) == 1
-            and targets[0].get("_type") == "Name"
-            and targets[0].get("id") == "state"
-        ):
-            return literal_node(node["value"])
-    raise ValueError("missing-initial-state")
-
-
 def concise_what(what):
     program = what["program"]
-    if "ast" not in program:
-        return what
-    return {
+    if "ast" in program:
+        raise ValueError("legacy-ast-not-supported")
+    concise = {
         **what,
         "state": {
             **what["state"],
             "authority": "declarations",
-            "initial": declared_state(program),
+            "initial": what["state"]["initial"],
         },
         "program": {
             "language": "calculator-declaration-1",
@@ -106,17 +75,21 @@ def concise_what(what):
             "launch_entrypoint": program["launch_entrypoint"],
         },
     }
+    concise.pop("transitions", None)
+    concise.pop("boundaries", None)
+    laws = concise["semantics"]["numeric_laws"]
+    concise["semantics"]["numeric_laws"] = {
+        key: value
+        for key, value in laws.items()
+        if key not in {"constants", "functions", "operators", "unary"}
+    }
+    concise["semantics"].pop("validation", None)
+    return concise
 
 
 def migrate_leaf(path, family_document):
     document = load(path)
-    if document.get("format") == LEGACY_FORMAT:
-        what = {
-            key: value
-            for key, value in document.items()
-            if key != "format"
-        }
-    elif document.get("format") in {PREVIOUS_FORMAT, LEAF_FORMAT}:
+    if document.get("format") == LEAF_FORMAT:
         what = document["what"]
     else:
         raise ValueError(f"unsupported-seed:{path.name}")

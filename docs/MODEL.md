@@ -29,9 +29,8 @@ family invariants. The leaf מה seed contains the complete selected application
 ```text
 identity
 + semantic contract
-+ state and transitions
++ state
 + presentation and controls
-+ boundaries and effects
 + structured executable program
 + acceptance cases
 ```
@@ -39,6 +38,44 @@ identity
 A base reference contains exact identity, relative path and content hash. A
 child cannot silently select a floating version or override a conflicting
 truth.
+
+The calculator-family authority contains the unchanging family law:
+
+```text
+six ordered stamp identities
++ control-action routes
++ physical boundaries
++ GUI rendering defaults
++ error derivation rules
++ negative verification vectors
+```
+
+The leaf does not repeat those truths. During base resolution, the compiler
+derives one transition from each control, derives only reachable errors, and
+adds the matching negative cases.
+
+## Six build-time stampers
+
+The compiler assembles six transformations around the selected computation
+core:
+
+```text
+יה inward:
+01 outer_to_inner
+
+יהוה internal:
+02 inner_to_core
+03 core_prepare
+04 core_collect
+05 core_to_inner
+
+יה outward:
+06 inner_to_outer
+```
+
+Together the six are the registered `צבאות` assembly surface. They run before
+Python compilation. They are not runtime templates, and the generated
+application contains no stamper registry or seed interpreter.
 
 ## Flow
 
@@ -52,12 +89,13 @@ control event
 → generated presentation
 ```
 
-The build-time declaration compiler derives the exact physical functions and
-Python AST from these declared transitions. No AST is stored in a leaf seed.
+The build-time declaration compiler derives the transitions and exact physical
+functions, then generates the Python AST. No transition table or AST is stored
+in a leaf seed.
 
 ## Boundaries
 
-Each seed names its authority crossings:
+The calculator-family seed names the shared authority crossings:
 
 | Boundary | Direction | Meaning |
 | --- | --- | --- |
@@ -66,7 +104,8 @@ Each seed names its authority crossings:
 | `tk.window` | outward | Tk owns the physical window and event loop |
 | `process.case` | inward-outward | Canonical JSON enters and leaves the acceptance interface |
 
-Additional boundaries must be declared by the seed that uses them.
+An application-specific boundary must first be registered by the authoritative
+family vocabulary before a leaf can select it.
 
 ## Build time and runtime
 

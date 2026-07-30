@@ -98,9 +98,7 @@
         "identity",
         "semantics",
         "state",
-        "transitions",
         "presentation",
-        "boundaries",
         "program",
         "acceptance"
       ],

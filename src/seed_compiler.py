@@ -32,6 +32,101 @@ REQUIRED_CONTRACT = frozenset(
 )
 
 
+def deep_merge(defaults, selected):
+    if not isinstance(defaults, dict) or not isinstance(selected, dict):
+        return selected
+    return {
+        key: (
+            deep_merge(defaults.get(key, {}), value)
+            if key in defaults
+            else value
+        )
+        for key, value in {**defaults, **selected}.items()
+    }
+
+
+def materialize(what, assembly):
+    result = {**what}
+    presentation = deep_merge(
+        {"rendering": assembly["gui_defaults"]},
+        what["presentation"],
+    )
+    transitions = [
+        {
+            **{
+                "event": f"control.{control['id']}.pressed",
+                "route": assembly["routes"][control["action"]],
+            },
+            **(
+                {"argument": control["value"]}
+                if "value" in control
+                else {}
+            ),
+        }
+        for control in presentation["controls"]
+    ]
+    laws = what["semantics"]["numeric_laws"]
+    operation_ids = {
+        item["id"]
+        for group in what["semantics"]["operations"].values()
+        for item in group
+    }
+    error_rules = assembly["error_rules"]
+    errors = list(error_rules[laws["kind"]])
+    if operation_ids & set(error_rules["zero_division_operations"]):
+        errors.insert(0, "division-by-zero")
+    negative_cases = assembly["negative_cases"][laws["kind"]]
+    variables = {name: 0 for name in laws.get("variables", ())}
+    zero_operation = next(
+        (
+            identity
+            for identity in error_rules["zero_division_operations"]
+            if identity in operation_ids
+        ),
+        None,
+    )
+    derived_acceptance = [
+        {
+            "id": f"derived.{identity}",
+            "input": {
+                **negative_cases[identity],
+                **variables,
+                **(
+                    {
+                        "expression": assembly[
+                            "zero_division_expressions"
+                        ][zero_operation]
+                    }
+                    if identity == "division-by-zero"
+                    and laws["kind"] == "expression"
+                    else {}
+                ),
+            },
+            "expected": {"result": None, "error": identity},
+        }
+        for identity in errors
+    ]
+    semantics = {
+        **what["semantics"],
+        "validation": {
+            **what["semantics"].get("validation", {}),
+            "errors": errors,
+        },
+    }
+    return {
+        **result,
+        "semantics": semantics,
+        "presentation": presentation,
+        "transitions": transitions,
+        "boundaries": assembly["boundaries"],
+        "acceptance": [*what["acceptance"], *derived_acceptance],
+        "_assembly": {
+            "stamps": assembly["stamps"],
+            "registered_actions": sorted(assembly["routes"]),
+        },
+    }
+
+
 def canonical(value):
     return (
         json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -58,6 +153,16 @@ def resolve_reference(owner, reference, ancestry):
     if relative.is_absolute():
         raise ValueError("base-path-not-relative")
     target = (owner.parent / relative).resolve(strict=True)
+    authority_root = next(
+        (
+            candidate
+            for candidate in (owner, *owner.parents)
+            if candidate.name == "seed"
+        ),
+        owner.parent,
+    )
+    if not target.is_relative_to(authority_root):
+        raise ValueError("base-path-outside-authority")
     document = load_document(target)
     if document.get("identity") != reference["identity"]:
         raise ValueError("base-identity-mismatch")
@@ -130,7 +235,10 @@ def load_seed(path):
         "program_language"
     ):
         raise ValueError("program-language-authority-mismatch")
-    resolved = {"format": FORMAT, **what}
+    resolved = {
+        "format": FORMAT,
+        **materialize(what, provisions["assembly"]),
+    }
     authorities.append(
         {
             "identity": what["identity"]["canonical"],
@@ -244,6 +352,7 @@ def trace_program(seed, source, authorities):
         "seed_sha256": digest(canonical(seed)),
         "source_sha256": digest(source),
         "authorities": authorities,
+        "assembly_stamps": seed["_assembly"]["stamps"],
         "top_level": [
             {
                 "seed_path": "/program",
@@ -425,6 +534,7 @@ def generate(seed_path, output):
             )
         ),
         "files": file_hashes,
+        "assembly_stamps": seed["_assembly"]["stamps"],
         "tree_sha256": tree_hash,
         "verification": verification,
         "runtime_seed_files": 0,

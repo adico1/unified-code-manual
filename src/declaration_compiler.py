@@ -299,6 +299,7 @@ def presenter(seed):
 
 def case_boundary(seed):
     laws = seed["semantics"]["numeric_laws"]
+    errors = seed["semantics"]["validation"]["errors"]
     if laws["kind"] == "stack":
         calculate = []
     else:
@@ -312,12 +313,18 @@ def case_boundary(seed):
     base = ", case.get('base', 10)" if "base" in seed["state"]["fields"] else ""
     return [
         *calculate,
+        f"ERRORS = {{{', '.join(f'{item!r}: {item!r}' for item in errors)}}}",
+        "",
         "def run_case(case):",
         "    try:",
         f"        return {{'result': present(calculate_case(case){base}), 'error': None}}",
         "    except ZeroDivisionError:",
         "        return {'result': None, 'error': 'division-by-zero'}",
-        "    except (ArithmeticError, IndexError, KeyError, SyntaxError, TypeError, ValueError):",
+        "    except IndexError:",
+        "        return {'result': None, 'error': ERRORS.get('invalid-stack', 'invalid-expression')}",
+        "    except ValueError as error:",
+        "        return {'result': None, 'error': ERRORS.get(str(error), 'invalid-expression')}",
+        "    except (ArithmeticError, KeyError, SyntaxError, TypeError):",
         "        return {'result': None, 'error': 'invalid-expression'}",
         "",
     ]
@@ -424,13 +431,14 @@ def route_source(seed, routes):
         scale = series["scale"]
         variable = series["variable"]
         accent = seed["presentation"]["theme"]["accent"]
+        rendering = seed["presentation"]["rendering"]
         lines.extend(
             [
                 f"def {routes['plot']}():",
                 "    canvas.delete('all')",
-                f"    width, height = ({width!r}, 180)",
-                "    canvas.create_line(0, height / 2, width, height / 2, fill='#888')",
-                "    canvas.create_line(width / 2, 0, width / 2, height, fill='#888')",
+                f"    width, height = ({width!r}, {rendering['canvas_height']!r})",
+                f"    canvas.create_line(0, height / 2, width, height / 2, fill={rendering['axis_color']!r})",
+                f"    canvas.create_line(width / 2, 0, width / 2, height, fill={rendering['axis_color']!r})",
                 "    points = []",
                 "    for pixel in range(width):",
                 f"        value = (pixel - width / 2) / {scale!r}",
@@ -442,8 +450,8 @@ def route_source(seed, routes):
                 "        except (ArithmeticError, SyntaxError, TypeError, ValueError):",
                 "            pass",
                 "    if len(points) >= 4:",
-                f"        canvas.create_line(*points, fill={accent!r}, width=2)",
-                "    mode_text.set('series plotted')",
+                f"        canvas.create_line(*points, fill={accent!r}, width={rendering['plot_line_width']!r})",
+                f"    mode_text.set({rendering['plot_success']!r})",
                 "",
             ]
         )
@@ -454,6 +462,7 @@ def gui_source(seed, routes, transitions):
     presentation = seed["presentation"]
     columns = presentation["layout"]["columns"]
     theme = presentation["theme"]
+    rendering = presentation["rendering"]
     series = "series" in seed["semantics"]["numeric_laws"]
     globals_ = "display, mode_text, canvas" if series else "display, mode_text"
     lines = [
@@ -465,7 +474,7 @@ def gui_source(seed, routes, transitions):
         f"    root.configure(bg={theme['background']!r})",
         "    display = StringVar()",
         f"    mode_text = StringVar(value={presentation['mode_label']!r})",
-        f"    Entry(root, textvariable=display, font=('Menlo', 18), justify='right').grid(row=0, column=0, columnspan={columns!r}, sticky='nsew')",
+        f"    Entry(root, textvariable=display, font={tuple(rendering['entry_font'])!r}, justify={rendering['entry_justify']!r}).grid(row=0, column=0, columnspan={columns!r}, sticky={rendering['grid_sticky']!r})",
         f"    Label(root, textvariable=mode_text, bg={theme['background']!r}, fg={theme['foreground']!r}).grid(row=1, column=0, columnspan={columns!r}, sticky='w')",
     ]
     if series:
@@ -473,7 +482,7 @@ def gui_source(seed, routes, transitions):
         width = seed["semantics"]["numeric_laws"]["series"]["samples"]
         lines.extend(
             [
-                f"    canvas = Canvas(root, width={width!r}, height=180, bg='white')",
+                f"    canvas = Canvas(root, width={width!r}, height={rendering['canvas_height']!r}, bg={rendering['canvas_background']!r})",
                 f"    canvas.grid(row={row!r}, column=0, columnspan={columns!r})",
             ]
         )
@@ -491,9 +500,9 @@ def gui_source(seed, routes, transitions):
             "    Button("
             f"root, text={control['label']!r}, command={command}, "
             f"bg={theme['button_background']!r}, "
-            f"fg={theme['button_foreground']!r}, width=7"
+            f"fg={theme['button_foreground']!r}, width={rendering['button_width']!r}"
             f").grid(row={control['row']!r}, column={control['column']!r}, "
-            "sticky='nsew')"
+            f"sticky={rendering['grid_sticky']!r})"
         )
     lines.extend(
         f"    root.grid_columnconfigure({column}, weight=1)"
@@ -503,32 +512,51 @@ def gui_source(seed, routes, transitions):
     return lines
 
 
-def compile_declaration(seed):
-    if seed["program"].get("language") != LANGUAGE:
-        raise ValueError("declaration-language")
+def stamp_01_outer_to_inner(seed):
     laws = seed["semantics"]["numeric_laws"]
-    routes, transitions = action_routes(seed)
     imports = ["ast", "json", "operator", "sys", *required_imports(seed)]
     if laws["kind"] == "stack":
         imports.remove("ast")
     widgets = ["Button", "Entry", "Label", "StringVar", "Tk"]
     if "series" in laws:
         widgets.append("Canvas")
-    lines = [
+    return [
+        "# stamp: 01_outer_to_inner",
         '"""Generated from concise declarations; no seed is loaded at runtime."""',
         *(f"import {name}" for name in dict.fromkeys(imports)),
         f"from tkinter import {', '.join(widgets)}",
         f"IDENTITY = {seed['identity']['variation']!r}",
         "",
     ]
+
+
+def stamp_02_inner_to_core(seed):
+    return ["# stamp: 02_inner_to_core", ""]
+
+
+def stamp_03_core_prepare(seed):
+    laws = seed["semantics"]["numeric_laws"]
+    lines = ["# stamp: 03_core_prepare"]
     if laws["kind"] == "expression":
         lines.extend(expression_runtime(seed))
     elif laws["kind"] == "stack":
         lines.extend(stack_runtime(seed))
     else:
         raise ValueError("unknown-numeric-model")
-    lines.extend(presenter(seed))
-    lines.extend(case_boundary(seed))
+    return lines
+
+
+def stamp_04_core_collect(seed):
+    return [
+        "# stamp: 04_core_collect",
+        *presenter(seed),
+        *case_boundary(seed),
+    ]
+
+
+def stamp_05_core_to_inner(seed, routes):
+    laws = seed["semantics"]["numeric_laws"]
+    lines = ["# stamp: 05_core_to_inner"]
     lines.extend(
         [
             "display = None",
@@ -542,6 +570,14 @@ def compile_declaration(seed):
             f"state = {seed['state']['initial']!r}",
             "",
             *route_source(seed, routes),
+        ]
+    )
+    return lines
+
+
+def stamp_06_inner_to_outer(seed, routes, transitions):
+    return [
+            "# stamp: 06_inner_to_outer",
             *gui_source(seed, routes, transitions),
             "def main(argv=None):",
             "    arguments = list(sys.argv if argv is None else argv)",
@@ -553,8 +589,34 @@ def compile_declaration(seed):
             "",
             "if __name__ == '__main__':",
             "    raise SystemExit(main())",
-        ]
-    )
+    ]
+
+
+STAMPS = (
+    "01_outer_to_inner",
+    "02_inner_to_core",
+    "03_core_prepare",
+    "04_core_collect",
+    "05_core_to_inner",
+    "06_inner_to_outer",
+)
+
+
+def compile_declaration(seed):
+    if seed["program"].get("language") != LANGUAGE:
+        raise ValueError("declaration-language")
+    declared = tuple(item["stage"] for item in seed["_assembly"]["stamps"])
+    if declared != STAMPS:
+        raise ValueError("stamper-order")
+    routes, transitions = action_routes(seed)
+    lines = [
+        *stamp_01_outer_to_inner(seed),
+        *stamp_02_inner_to_core(seed),
+        *stamp_03_core_prepare(seed),
+        *stamp_04_core_collect(seed),
+        *stamp_05_core_to_inner(seed, routes),
+        *stamp_06_inner_to_outer(seed, routes, transitions),
+    ]
     source = "\n".join(lines) + "\n"
     tree = ast.parse(source)
     ast.fix_missing_locations(tree)

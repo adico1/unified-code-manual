@@ -160,10 +160,7 @@ def verify_compiler_separation(applications, compiler):
     for application in applications:
         seed, _ = compiler.load_seed(ROOT / application["seed"])
         vocabulary.update(seed_vocabulary(seed))
-        registered.update(
-            item["action"]
-            for item in seed["presentation"]["controls"]
-        )
+        registered.update(seed["_assembly"]["registered_actions"])
     generic = {
         "abs",
         "add",
@@ -235,9 +232,17 @@ def verify_concise_declarations(applications, compiler):
             raise ValueError("leaf-ast-present")
         if what["state"].get("authority") != "declarations":
             raise ValueError("state-not-declared")
-        tree = compiler.compile_declaration(
-            {"format": compiler.FORMAT, **what}
-        )
+        forbidden_derived = {"transitions", "boundaries"} & what.keys()
+        if forbidden_derived:
+            raise ValueError("leaf-derived-meaning:" + ",".join(forbidden_derived))
+        if what["semantics"].get("validation", {}).get("errors"):
+            raise ValueError("leaf-reachable-errors")
+        seed = compiler.load_seed(path)[0]
+        tree = compiler.compile_declaration(seed)
+        if tuple(
+            item["stage"] for item in seed["_assembly"]["stamps"]
+        ) != compiler.compile_declaration.__globals__["STAMPS"]:
+            raise ValueError("six-stamper-contract")
         if type(tree).__name__ != "Module":
             raise ValueError("declaration-ast-not-generated")
         reports.append(
@@ -251,6 +256,19 @@ def verify_concise_declarations(applications, compiler):
         "applications": reports,
         "leaf_ast_files": 0,
         "generated_ast": len(reports),
+        "stamps": 6,
+        "derived_transitions": sum(
+            len(compiler.load_seed(ROOT / item["seed"])[0]["transitions"])
+            for item in applications
+        ),
+        "derived_reachable_errors": sum(
+            len(
+                compiler.load_seed(ROOT / item["seed"])[0]["semantics"][
+                    "validation"
+                ]["errors"]
+            )
+            for item in applications
+        ),
         "total_seed_bytes": sum(item["seed_bytes"] for item in reports),
     }
 
@@ -424,13 +442,27 @@ def verify_seed_graph(compiler):
             ),
             "base-conflict",
         )
+        outside = copied.parent / "outside.seed.json"
+        outside.write_bytes(canonical(root_document))
+        escaped = json.loads(leaf.read_text(encoding="utf-8"))
+        escaped["bases"][0] = {
+            "identity": root_document["identity"],
+            "path": "../../outside.seed.json",
+            "sha256": compiler.document_digest(root_document),
+        }
+        leaf.write_bytes(canonical(escaped))
+        containment = expect_error(
+            lambda: compiler.load_seed(leaf),
+            "base-path-outside-authority",
+        )
         return {
             "tamper": tamper,
             "floating": floating,
             "cycle": cycle,
             "conflict": conflict,
-            "passed": 4,
-            "total": 4,
+            "containment": containment,
+            "passed": 5,
+            "total": 5,
         }
     finally:
         shutil.rmtree(temporary)

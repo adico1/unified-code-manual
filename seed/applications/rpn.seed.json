@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/calculator-family@1",
       "path": "../families/calculator.seed.json",
-      "sha256": "3d871320c761318a162aee0b4fc1010550e0ceeddf25b1a0534d63117782f6e8"
+      "sha256": "f38983c36297c1ac143168890eace87fd382f65110e51360bec84a35faf20a0b"
     }
   ],
   "format": "manual-what-seed-4",
@@ -38,28 +38,6 @@
             "/"
           ]
         }
-      }
-    ],
-    "boundaries": [
-      {
-        "direction": "inward",
-        "effect": "control event enters generated state transition",
-        "identity": "tk.input"
-      },
-      {
-        "direction": "outward",
-        "effect": "generated state is presented",
-        "identity": "tk.display"
-      },
-      {
-        "direction": "outward",
-        "effect": "physical GUI and event loop",
-        "identity": "tk.window"
-      },
-      {
-        "direction": "inward-outward",
-        "effect": "canonical JSON acceptance boundary",
-        "identity": "process.case"
       }
     ],
     "identity": {
@@ -247,20 +225,10 @@
     },
     "semantics": {
       "numeric_laws": {
-        "constants": [],
-        "functions": [],
         "kind": "stack",
         "maximum_characters": 128,
         "numeric_domain": "real",
-        "operators": [
-          "add",
-          "subtract",
-          "multiply",
-          "divide",
-          "power"
-        ],
-        "precision": 12,
-        "unary": []
+        "precision": 12
       },
       "operations": {
         "binary": [
@@ -303,15 +271,6 @@
         "constants": [],
         "functions": [],
         "unary": []
-      },
-      "validation": {
-        "errors": [
-          "division-by-zero",
-          "invalid-expression",
-          "invalid-stack",
-          "integer-required"
-        ],
-        "maximum_characters": 128
       }
     },
     "state": {
@@ -324,108 +283,6 @@
         "expression": "",
         "stack": []
       }
-    },
-    "transitions": [
-      {
-        "argument": "7",
-        "event": "control.seven.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "8",
-        "event": "control.eight.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "9",
-        "event": "control.nine.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "/",
-        "event": "control.divide.pressed",
-        "route": "apply"
-      },
-      {
-        "argument": "4",
-        "event": "control.four.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "5",
-        "event": "control.five.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "6",
-        "event": "control.six.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "*",
-        "event": "control.multiply.pressed",
-        "route": "apply"
-      },
-      {
-        "argument": "1",
-        "event": "control.one.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "2",
-        "event": "control.two.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "3",
-        "event": "control.three.pressed",
-        "route": "append"
-      },
-      {
-        "argument": "-",
-        "event": "control.subtract.pressed",
-        "route": "apply"
-      },
-      {
-        "argument": "0",
-        "event": "control.zero.pressed",
-        "route": "append"
-      },
-      {
-        "argument": ".",
-        "event": "control.decimal.pressed",
-        "route": "append"
-      },
-      {
-        "argument": null,
-        "event": "control.enter.pressed",
-        "route": "push"
-      },
-      {
-        "argument": "+",
-        "event": "control.add.pressed",
-        "route": "apply"
-      },
-      {
-        "argument": "^",
-        "event": "control.power.pressed",
-        "route": "apply"
-      },
-      {
-        "argument": null,
-        "event": "control.backspace.pressed",
-        "route": "backspace"
-      },
-      {
-        "argument": null,
-        "event": "control.clear.pressed",
-        "route": "clear"
-      },
-      {
-        "argument": null,
-        "event": "control.enter2.pressed",
-        "route": "push"
-      }
-    ]
+    }
   }
 }
