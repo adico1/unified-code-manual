@@ -208,7 +208,8 @@ def publish_wordpress_browser(bundle, site):
     ).decode()
     javascript = (
         "(()=>{"
-        f"const p=JSON.parse(atob('{encoded}'));"
+        f"const bytes=Uint8Array.from(atob('{encoded}'),c=>c.charCodeAt(0));"
+        "const p=JSON.parse(new TextDecoder().decode(bytes));"
         "const s=Array.from(document.scripts).map(x=>x.textContent)"
         ".find(t=>t.includes('var wpApiSettings'));"
         "const m=s&&s.match(/var wpApiSettings = (\\{.*?\\});/s);"
@@ -225,7 +226,9 @@ def publish_wordpress_browser(bundle, site):
         "+encodeURIComponent(p.slug));"
         "const body={title:p.title,slug:p.slug,content:p.content,status:'publish'};"
         "const out=q('POST',found.length?base+'/'+found[0].id:base,body);"
-        "return JSON.stringify({id:out.id,link:out.link,status:out.status})"
+        "if(out.content.raw!==p.content)throw new Error('wordpress-content-mismatch');"
+        "return JSON.stringify({id:out.id,link:out.link,status:out.status,"
+        "content_match:true})"
         "})()"
     )
     return json.loads(browser_javascript(javascript))
@@ -284,10 +287,13 @@ def publish_wordpress(bundle, site, authorization):
         else base + "/wp-json/wp/v2/posts"
     )
     result = request(endpoint, authorization, "POST", payload)
+    if result["content"]["raw"] != bundle["html"]:
+        raise ValueError("wordpress-content-mismatch")
     return {
         "id": result["id"],
         "link": result["link"],
         "status": result["status"],
+        "content_match": True,
     }
 
 
