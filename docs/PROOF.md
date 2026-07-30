@@ -42,6 +42,12 @@ The operation requires:
     numeric-law indexes are absent and deterministically derived.
 15. all selected Key identities resolve exactly once and unknown, duplicate or
     malformed definitions are rejected.
+16. family-owned callback argument contracts reject missing, mistyped and
+    unexpected values.
+17. generated tests verify every emitted Key callback against its route
+    signature.
+18. traceability records leaf placement, registry definition and required
+    capability as separate authorities.
 
 Current measured result:
 
@@ -58,6 +64,8 @@ seed-graph rejection proofs = 5/5
 canonical Key definitions = 79
 selected/resolved Key identities = 79/79
 unknown/duplicate/invalid/missing-capability Key rejection = PASS
+callback-contract mutations = 3/3
+generated Key callback wiring checks = 287/287
 runtime Key-registry access = 0
 stored leaf ASTs = 0
 build-time-generated ASTs = 12/12
@@ -66,7 +74,7 @@ derived transitions = 287
 derived reachable errors = 25
 generated editable-input checks = 3 per application
 complete tree =
-41e71e7ea99f49135eba87fc28c23c11da52bf3be22fcafd7f6b9c493d653392
+3a5e8a57aaecccd4c9d9de517243534cb64213ef2c02d2aa01d2ae1ac6b0445b
 ```
 
 Open all twelve generated Tk applications:

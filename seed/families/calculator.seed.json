@@ -11,6 +11,35 @@
   "kind": "family-authority",
   "provides": {
     "assembly": {
+      "action_contracts": {
+        "append": {
+          "arguments": 1,
+          "value_type": "string"
+        },
+        "apply": {
+          "arguments": 1,
+          "value_type": "string"
+        },
+        "backspace": {
+          "arguments": 0
+        },
+        "base": {
+          "arguments": 1,
+          "value_type": "string"
+        },
+        "clear": {
+          "arguments": 0
+        },
+        "evaluate": {
+          "arguments": 0
+        },
+        "plot": {
+          "arguments": 0
+        },
+        "push": {
+          "arguments": 0
+        }
+      },
       "boundaries": [
         {
           "direction": "inward",

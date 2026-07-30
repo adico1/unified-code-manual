@@ -100,9 +100,9 @@ acceptance cases
 ```
 
 The canonical Key registry supplies each selected key's label, action and
-emitted value exactly once. The family base supplies the six ordered build-time
-stampers for one body, registered control routes, physical boundaries,
-rendering defaults, and error rules.
+emitted value exactly once. The family base supplies callback argument
+contracts, the six ordered build-time stampers for one body, registered control
+routes, physical boundaries, rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
 selected Keys and operations, so those truths are not repeated in every
 application seed.
@@ -114,6 +114,11 @@ AST. No leaf seed contains an AST or source blob. The generic compiler writes
 the application and generated tests, records seed-to-source traceability,
 verifies positive and derived negative acceptance, and installs the result
 atomically.
+
+Generated tests structurally verify every emitted Key callback against its
+generated route signature. Traceability records both the leaf placement and
+the exact registry definition, plus the selected backend capability when one
+is required.
 
 Here `יה` names building blocks and `יהוה` names organs inside the one body.
 `צבאות` is reserved for their lawful parallel coordination; the current

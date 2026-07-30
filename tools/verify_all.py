@@ -292,6 +292,7 @@ def write_report(
     compiler,
     seed_graph,
     key_registry,
+    key_callbacks,
     declarations,
 ):
     runner_bytes = Path(__file__).read_bytes()
@@ -338,6 +339,7 @@ def write_report(
         "runtime_seed_access": 0,
         "seed_graph": seed_graph,
         "key_registry": key_registry,
+        "key_callbacks": key_callbacks,
         "concise_declarations": declarations,
     }
     destination = ROOT / "build" / "assembly-report.json"
@@ -497,8 +499,16 @@ def verify_key_registry(applications, compiler):
 
     family_path = ROOT / "seed" / "families" / "calculator.seed.json"
     family_document = json.loads(family_path.read_text(encoding="utf-8"))
-    inherited, _ = compiler.resolve_base(family_path, family_document)
+    inherited, inherited_authorities = compiler.resolve_base(
+        family_path,
+        family_document,
+    )
     registry = inherited["key_registry"]
+    registry_authority = next(
+        item
+        for item in inherited_authorities
+        if "key_registry" in item.get("provides", ())
+    )
     required_key = next(
         item
         for item in registry
@@ -519,6 +529,11 @@ def verify_key_registry(applications, compiler):
     proof_document = json.loads(proof_path.read_text(encoding="utf-8"))
     _, authorities = compiler.load_seed(proof_path)
     what = proof_document["what"]
+    leaf_authority = {
+        "identity": what["identity"]["canonical"],
+        "kind": "what-authority",
+        "sha256": compiler.document_digest(proof_document),
+    }
 
     unknown_what = json.loads(json.dumps(what))
     unknown_what["presentation"]["keys"][0]["key"] = "key.unknown"
@@ -527,6 +542,8 @@ def verify_key_registry(applications, compiler):
             unknown_what,
             inherited["assembly"],
             registry,
+            registry_authority,
+            leaf_authority,
         ),
         "unknown-key:key.unknown",
     )
@@ -535,6 +552,8 @@ def verify_key_registry(applications, compiler):
             what,
             inherited["assembly"],
             [*registry, registry[0]],
+            registry_authority,
+            leaf_authority,
         ),
         "duplicate-key-identity",
     )
@@ -545,8 +564,74 @@ def verify_key_registry(applications, compiler):
             what,
             inherited["assembly"],
             invalid_registry,
+            registry_authority,
+            leaf_authority,
         ),
         "invalid-key-definition",
+    )
+    required_definition = next(
+        item
+        for item in registry
+        if inherited["assembly"]["action_contracts"][item["action"]][
+            "arguments"
+        ]
+        == 1
+    )
+    missing_value_registry = json.loads(json.dumps(registry))
+    next(
+        item
+        for item in missing_value_registry
+        if item["identity"] == required_definition["identity"]
+    ).pop("value")
+    missing_value = expect_error(
+        lambda: compiler.materialize(
+            what,
+            inherited["assembly"],
+            missing_value_registry,
+            registry_authority,
+            leaf_authority,
+        ),
+        "invalid-key-arguments:" + required_definition["identity"],
+    )
+    non_string_registry = json.loads(json.dumps(registry))
+    next(
+        item
+        for item in non_string_registry
+        if item["identity"] == required_definition["identity"]
+    )["value"] = 7
+    non_string_value = expect_error(
+        lambda: compiler.materialize(
+            what,
+            inherited["assembly"],
+            non_string_registry,
+            registry_authority,
+            leaf_authority,
+        ),
+        "invalid-key-arguments:" + required_definition["identity"],
+    )
+    free_definition = next(
+        item
+        for item in registry
+        if inherited["assembly"]["action_contracts"][item["action"]][
+            "arguments"
+        ]
+        == 0
+    )
+    unexpected_value_registry = json.loads(json.dumps(registry))
+    next(
+        item
+        for item in unexpected_value_registry
+        if item["identity"] == free_definition["identity"]
+    )["value"] = "unexpected"
+    unexpected_value = expect_error(
+        lambda: compiler.materialize(
+            what,
+            inherited["assembly"],
+            unexpected_value_registry,
+            registry_authority,
+            leaf_authority,
+        ),
+        "invalid-key-arguments:" + free_definition["identity"],
     )
     missing_what = json.loads(json.dumps(what))
     missing_identity = required_key["requires"].split(".", 1)[1]
@@ -563,6 +648,8 @@ def verify_key_registry(applications, compiler):
             missing_what,
             inherited["assembly"],
             registry,
+            registry_authority,
+            leaf_authority,
         ),
         "key-requirement-missing:" + required_key["requires"],
     )
@@ -579,6 +666,11 @@ def verify_key_registry(applications, compiler):
         "duplicate": duplicate,
         "invalid": invalid,
         "missing_requirement": missing,
+        "callback_contract_mutations": {
+            "missing_value": missing_value,
+            "non_string_value": non_string_value,
+            "unexpected_value": unexpected_value,
+        },
         "runtime_registry_access": 0,
     }
 
@@ -618,6 +710,12 @@ def execute(generate_only):
     ]
     verify_specialization(generated)
     isolated = verify_isolated(generated)
+    key_callbacks = {
+        "passed": sum(item["key_callbacks"]["passed"] for item in isolated),
+        "total": sum(item["key_callbacks"]["total"] for item in isolated),
+    }
+    if key_callbacks["passed"] != key_callbacks["total"]:
+        raise ValueError("key-callback-verification")
     hashes = verify_determinism(compiler, applications, generated)
     separation = verify_compiler_separation(applications, compiler)
     seed_graph = verify_seed_graph(compiler)
@@ -651,6 +749,7 @@ def execute(generate_only):
         compiler,
         seed_graph,
         key_registry,
+        key_callbacks,
         declarations,
     )
     print(
@@ -666,6 +765,8 @@ def execute(generate_only):
         f"seed-graph={seed_graph['passed']}/{seed_graph['total']} "
         f"key-registry={key_registry['definitions']}/"
         f"{key_registry['selected_identities']} "
+        f"key-callbacks={key_callbacks['passed']}/"
+        f"{key_callbacks['total']} "
         f"generated-ast={declarations['generated_ast']}/{len(generated)} "
         f"leaf-ast-files={declarations['leaf_ast_files']} "
         f"complete-tree={complete_tree}",

@@ -77,6 +77,23 @@ Resolution is exact. Unknown, duplicate and malformed registry identities are
 invalid. The selected definition is specialized into the generated
 application, which never loads the registry at runtime.
 
+Callback arity is family authority:
+
+```text
+argument-required action + one string value → valid
+argument-free action + no value            → valid
+every other combination                    → invalid
+```
+
+Traceability keeps both authorities visible:
+
+```text
+leaf Key placement
++ canonical registry definition
++ required semantic capability
+→ generated Button source line
+```
+
 ## One body and six build-time stampers
 
 The compiler assembles six transformations around the selected computation

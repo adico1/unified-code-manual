@@ -45,8 +45,33 @@ def deep_merge(defaults, selected):
     }
 
 
-def materialize(what, assembly, key_registry):
+def materialize(
+    what,
+    assembly,
+    key_registry,
+    key_registry_authority,
+    leaf_authority,
+):
     result = {**what}
+    action_contracts = assembly.get("action_contracts", {})
+    if (
+        set(action_contracts) != set(assembly["routes"])
+        or any(
+            set(contract)
+            not in ({"arguments"}, {"arguments", "value_type"})
+            or contract.get("arguments") not in (0, 1)
+            or (
+                contract.get("arguments") == 0
+                and "value_type" in contract
+            )
+            or (
+                contract.get("arguments") == 1
+                and contract.get("value_type") != "string"
+            )
+            for contract in action_contracts.values()
+        )
+    ):
+        raise ValueError("invalid-action-contract")
     if any(
         not isinstance(item, dict)
         or not {"identity", "label", "action"} <= set(item)
@@ -54,6 +79,7 @@ def materialize(what, assembly, key_registry):
         or not isinstance(item["identity"], str)
         or not item["identity"]
         or not isinstance(item["label"], str)
+        or not isinstance(item["action"], str)
         or item["action"] not in assembly["routes"]
         or (
             "requires" in item
@@ -68,6 +94,25 @@ def materialize(what, assembly, key_registry):
     key_identities = [item["identity"] for item in key_registry]
     if len(key_identities) != len(set(key_identities)):
         raise ValueError("duplicate-key-identity")
+    invalid_arguments = sorted(
+        item["identity"]
+        for item in key_registry
+        if (
+            action_contracts[item["action"]]["arguments"] == 0
+            and "value" in item
+        )
+        or (
+            action_contracts[item["action"]]["arguments"] == 1
+            and (
+                "value" not in item
+                or type(item["value"]) is not str
+            )
+        )
+    )
+    if invalid_arguments:
+        raise ValueError(
+            "invalid-key-arguments:" + ",".join(invalid_arguments)
+        )
     key_definitions = {
         item["identity"]: {
             name: value
@@ -118,6 +163,73 @@ def materialize(what, assembly, key_registry):
         raise ValueError(
             "key-requirement-missing:" + ",".join(missing_requirements)
         )
+    definition_indexes = {
+        item["identity"]: index
+        for index, item in enumerate(key_registry)
+    }
+
+    def capability_trace(requirement):
+        if requirement is None:
+            return None
+        kind, identity = requirement.split(".", 1)
+        if kind == "operation":
+            matches = [
+                (group, index, item)
+                for group, definitions in what["semantics"][
+                    "operations"
+                ].items()
+                for index, item in enumerate(definitions)
+                if item["id"] == identity
+            ]
+            group, index, item = matches[0]
+            return {
+                "identity": requirement,
+                "authority": leaf_authority["identity"],
+                "authority_sha256": leaf_authority["sha256"],
+                "path": (
+                    f"/what/semantics/operations/{group}/{index}"
+                ),
+                "definition_sha256": document_digest(item),
+            }
+        variables = what["semantics"]["numeric_laws"].get("variables", ())
+        index = list(variables).index(identity)
+        return {
+            "identity": requirement,
+            "authority": leaf_authority["identity"],
+            "authority_sha256": leaf_authority["sha256"],
+            "path": f"/what/semantics/numeric_laws/variables/{index}",
+            "definition_sha256": document_digest(identity),
+        }
+
+    selected_keys = [
+        {
+            "identity": placement["key"],
+            "placement": {
+                "authority": leaf_authority["identity"],
+                "authority_sha256": leaf_authority["sha256"],
+                "path": f"/what/presentation/keys/{index}",
+            },
+            "registry": {
+                "authority": key_registry_authority["identity"],
+                "authority_sha256": key_registry_authority["sha256"],
+                "definition_path": (
+                    "/provides/key_registry/"
+                    f"{definition_indexes[placement['key']]}"
+                ),
+                "definition_sha256": document_digest(
+                    key_registry[definition_indexes[placement["key"]]]
+                ),
+            },
+            **(
+                {"capability": capability_trace(
+                    key_definitions[placement["key"]].get("requires")
+                )}
+                if "requires" in key_definitions[placement["key"]]
+                else {}
+            ),
+        }
+        for index, placement in enumerate(placements)
+    ]
     controls = [
         {
             "id": placement["key"],
@@ -210,6 +322,7 @@ def materialize(what, assembly, key_registry):
         "_assembly": {
             "stamps": assembly["stamps"],
             "registered_actions": sorted(assembly["routes"]),
+            "selected_keys": selected_keys,
         },
     }
 
@@ -289,6 +402,7 @@ def resolve_base(path, document, ancestry=()):
     authorities.append(
         {
             "identity": document["identity"],
+            "provides": sorted(document.get("provides", {})),
             "sha256": document_digest(document),
         }
     )
@@ -322,21 +436,27 @@ def load_seed(path):
         "program_language"
     ):
         raise ValueError("program-language-authority-mismatch")
+    key_registry_authority = next(
+        item
+        for item in authorities
+        if "key_registry" in item.get("provides", ())
+    )
+    leaf_authority = {
+        "identity": what["identity"]["canonical"],
+        "kind": "what-authority",
+        "sha256": document_digest(document),
+    }
     resolved = {
         "format": FORMAT,
         **materialize(
             what,
             provisions["assembly"],
             provisions["key_registry"],
+            key_registry_authority,
+            leaf_authority,
         ),
     }
-    authorities.append(
-        {
-            "identity": what["identity"]["canonical"],
-            "kind": "what-authority",
-            "sha256": document_digest(document),
-        }
-    )
+    authorities.append(leaf_authority)
     return resolved, authorities
 
 
@@ -481,12 +601,20 @@ def trace_program(seed, source, authorities):
         ],
         "controls": [
             {
-                "seed_path": f"/presentation/keys/{index}",
                 "identity": control["id"],
+                "placement": selected["placement"],
+                "registry": selected["registry"],
+                **(
+                    {"capability": selected["capability"]}
+                    if "capability" in selected
+                    else {}
+                ),
                 "generated_lines": [button.lineno, button.end_lineno],
             }
-            for index, (control, button) in enumerate(
-                zip(seed["presentation"]["controls"], buttons)
+            for control, selected, button in zip(
+                seed["presentation"]["controls"],
+                seed["_assembly"]["selected_keys"],
+                buttons,
             )
         ],
     }
@@ -550,12 +678,33 @@ def render_tests(seed):
         )
     lines = [
         '"""Generated acceptance tests. Do not edit."""',
+        "import ast",
         "import importlib.util",
         "import json",
         "from pathlib import Path",
         "from types import SimpleNamespace",
         "",
         f"CASES = {cases!r}",
+        f"EXPECTED_KEY_CALLBACKS = {len(seed['presentation']['controls'])!r}",
+        "",
+        "def verify_key_callbacks(path):",
+        "    tree = ast.parse(path.read_text(encoding='utf-8'))",
+        "    functions = {node.name: node for node in tree.body if isinstance(node, ast.FunctionDef)}",
+        f"    launch = functions[{seed['program']['launch_entrypoint']!r}]",
+        "    buttons = [node for node in launch.body if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Attribute) and node.value.func.attr == 'grid' and isinstance(node.value.func.value, ast.Call) and isinstance(node.value.func.value.func, ast.Name) and node.value.func.value.func.id == 'Button']",
+        "    results = []",
+        "    for button in buttons:",
+        "        construction = button.value.func.value",
+        "        command = next(item.value for item in construction.keywords if item.arg == 'command')",
+        "        if isinstance(command, ast.Name):",
+        "            results.append(len(functions[command.id].args.args) == 0)",
+        "            continue",
+        "        if not isinstance(command, ast.Lambda) or not isinstance(command.body, ast.Call) or not isinstance(command.body.func, ast.Name):",
+        "            results.append(False)",
+        "            continue",
+        "        target = functions[command.body.func.id]",
+        "        results.append(len(command.args.args) == len(command.args.defaults) and len(command.body.args) == len(target.args.args))",
+        "    return {'passed': sum(results), 'total': EXPECTED_KEY_CALLBACKS, 'complete': len(results) == EXPECTED_KEY_CALLBACKS and all(results)}",
         "",
         "def run():",
         "    path = Path(__file__).with_name('main.py')",
@@ -564,9 +713,10 @@ def render_tests(seed):
         "    specification.loader.exec_module(module)",
         f"    results = [module.{entrypoint}(case['input']) == case['expected'] for case in CASES]",
         *editable_lines,
-        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': sum(editable), 'total': len(editable)}}",
+        "    key_callbacks = verify_key_callbacks(path)",
+        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': sum(editable), 'total': len(editable)}, 'key_callbacks': {'passed': key_callbacks['passed'], 'total': key_callbacks['total']}}",
         "    print(json.dumps(report, sort_keys=True))",
-        "    return 0 if all((*results, *editable)) else 1",
+        "    return 0 if all((*results, *editable)) and key_callbacks['complete'] else 1",
         "",
         "if __name__ == '__main__':",
         "    raise SystemExit(run())",
