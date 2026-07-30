@@ -1,4 +1,4 @@
-# From Seeds to Apps — Ten Calculators
+# From Seeds to Apps — Twelve Calculators
 
 This repository is the handwritten learning track beside
 [Unified Code](https://github.com/adico1/unified-code). It is an experimental
@@ -7,9 +7,9 @@ proof of one precise boundary:
 ```text
 one pinned בלי_מה authority
 → one calculator-family base seed
-→ ten application מה seeds
+→ twelve application מה seeds
 → one generic build-time assembly compiler
-→ ten exact specialized applications
+→ twelve exact specialized applications
 ```
 
 It does not claim full Standard Ten, UEM, self-hosting, or representation of
@@ -17,13 +17,13 @@ every possible calculator.
 
 ## One operation
 
-Generate and verify all ten applications:
+Generate and verify all twelve applications:
 
 ```bash
 python3 tools/verify_all.py --generate-only
 ```
 
-Generate, verify, and open all ten GUIs:
+Generate, verify, and open all twelve GUIs:
 
 ```bash
 python3 tools/verify_all.py
@@ -57,17 +57,17 @@ authorization boundary. Credentials are never stored in the repository.
 - `seed/bases/בלי_מה.seed.json` contains invariant construction authority.
 - `seed/families/calculator.seed.json` specializes that authority for the
   calculator family.
-- `seed/applications/*.seed.json` are ten application-specific מה seeds.
+- `seed/applications/*.seed.json` are twelve application-specific מה seeds.
 - `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
 - `src/seed_compiler.py` is the generic structured-program compiler.
-- `seed/suite.seed.json` lists the ten seed paths and output paths; it
+- `seed/suite.seed.json` lists the twelve seed paths and output paths; it
   contains no application behavior.
 - `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
   rebuilding, source-separation checks, and optional launch.
 - `build/` contains disposable applications and evidence and is ignored.
 
-The ten applications are:
+The twelve applications are:
 
 ```text
 normal
@@ -80,6 +80,8 @@ graphing
 matrix-vector
 engineering-units
 rpn
+ohms-law
+quadratic-polynomial
 ```
 
 ## Seed authority
@@ -98,7 +100,8 @@ The family base supplies the six ordered build-time stampers for one body,
 registered
 control routes, physical boundaries, rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
-selected controls and operations, so those truths are not repeated ten times.
+selected controls and operations, so those truths are not repeated in every
+application seed.
 
 The resolved declarations are the complete application program. At build time
 the calculator declaration language composes the six stampers around the

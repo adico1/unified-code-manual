@@ -257,9 +257,11 @@ seed/applications/graphing.seed.json
 seed/applications/matrix-vector.seed.json
 seed/applications/engineering-units.seed.json
 seed/applications/rpn.seed.json
+seed/applications/ohms-law.seed.json
+seed/applications/quadratic-polynomial.seed.json
 ```
 
-The ten leaves are application-specific מה seeds. Every base reference pins an
+The twelve leaves are application-specific מה seeds. Every base reference pins an
 exact identity, relative path and SHA-256. `tools/modify_seeds.py` migrates and
 re-pins the graph deterministically; the compiler rejects cycles, conflicts,
 floating references and tampering.
@@ -274,4 +276,4 @@ calculator identity, selected equation or concrete layout.
 `tools/verify_all.py` reads `seed/suite.seed.json`, regenerates every enabled seed,
 runs generated acceptance tests in isolation, performs a second independent
 build, checks seed ancestry and compiler/application vocabulary separation, and
-optionally opens all ten GUIs.
+optionally opens all twelve GUIs.
