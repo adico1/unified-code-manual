@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import ast
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from copy import deepcopy
 import hashlib
 import importlib.util
 import json
@@ -479,6 +481,7 @@ def verify_compiler_separation(generated):
         "status",
         "subtract",
         "sum",
+        "total",
         "trace",
     }
     inspected = sorted(
@@ -615,6 +618,136 @@ def verify_concise_declarations(generated):
     }
 
 
+def nested_calculations(value):
+    if isinstance(value, dict):
+        if set(value) == {"calculate"}:
+            yield value["calculate"]
+        for child in value.values():
+            yield from nested_calculations(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from nested_calculations(child)
+
+
+def verify_cross_family_composition(generated, compiler):
+    applications = [
+        item
+        for item in generated
+        if item["resolved_seed"]["semantics"].get("calculations", {}).get(
+            "functions"
+        )
+    ]
+    if not applications:
+        raise ValueError("cross-family-composition-absent")
+    reports = []
+    mutations = []
+    for application in applications:
+        definitions = application["resolved_seed"]["semantics"][
+            "calculations"
+        ]["functions"]
+        source = application["application"].read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        generated_functions = sorted(
+            node.name
+            for node in tree.body
+            if isinstance(node, ast.FunctionDef)
+            and node.name.startswith("_calculation_")
+        )
+        expected_functions = [
+            f"_calculation_{index}" for index in range(len(definitions))
+        ]
+        if generated_functions != expected_functions:
+            raise ValueError("cross-family-specialization")
+        calls = {
+            node.func.id
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+        }
+        if not set(expected_functions) <= calls:
+            raise ValueError("cross-family-calculation-unreachable")
+        if any(
+            token in source
+            for token in (
+                "semantic_expression",
+                "def expression(",
+                "unknown-semantic-expression",
+                "seed_compiler",
+            )
+        ):
+            raise ValueError("cross-family-runtime-interpreter")
+        trace = json.loads(
+            application["output_path"].joinpath(
+                "traceability.json"
+            ).read_text(encoding="utf-8")
+        )
+        expected_trace = [
+            {
+                "identity": item["id"],
+                "seed_path": (
+                    f"/semantics/calculations/functions/{index}/body"
+                ),
+            }
+            for index, item in enumerate(definitions)
+        ]
+        actual_trace = [
+            {
+                "identity": item["identity"],
+                "seed_path": item["seed_path"],
+            }
+            for item in trace["semantic_functions"]
+        ]
+        if actual_trace != expected_trace:
+            raise ValueError("cross-family-traceability")
+        mutated = deepcopy(application["resolved_seed"])
+        mutated["semantics"]["calculations"]["functions"][0][
+            "id"
+        ] = "unreachable_calculation"
+        mutations.append(
+            expect_error(
+                lambda: compiler.render_declaration_source(mutated),
+                "unknown-stateful-calculation",
+            )
+        )
+        wrong_arity = deepcopy(application["resolved_seed"])
+        calculation_call = next(nested_calculations(wrong_arity))
+        calculation_call["arguments"].pop()
+        mutations.append(
+            expect_error(
+                lambda: compiler.render_declaration_source(wrong_arity),
+                "invalid-stateful-calculation-arity",
+            )
+        )
+        reports.append(
+            {
+                "id": application["id"],
+                "functions": [item["id"] for item in definitions],
+                "generated_functions": generated_functions,
+                "traceability": "PASS",
+                "runtime_interpreter_files": 0,
+            }
+        )
+    shared_source = {
+        path.name: path.read_text(encoding="utf-8")
+        for path in COMPILER_SOURCES
+    }
+    if (
+        "from semantic_expression import function_source"
+        not in shared_source["declaration_compiler.py"]
+        or "from semantic_expression import function_source"
+        not in shared_source["stateful_compiler.py"]
+    ):
+        raise ValueError("cross-family-expression-authority-divided")
+    return {
+        "applications": reports,
+        "shared_expression_authority": "src/semantic_expression.py",
+        "mutations": {
+            "passed": len(mutations),
+            "total": len(applications) * 2,
+        },
+    }
+
+
 def write_report(
     applications,
     generated,
@@ -628,6 +761,7 @@ def write_report(
     self_tests,
     declarations,
     catalog,
+    cross_family,
 ):
     runner_bytes = Path(__file__).read_bytes()
     single_api_bytes = Path(__file__).with_name("single_api.py").read_bytes()
@@ -681,6 +815,7 @@ def write_report(
         "application_self_tests": self_tests,
         "concise_declarations": declarations,
         "application_profile_catalog": catalog,
+        "cross_family_composition": cross_family,
     }
     destination = ROOT / "build" / "assembly-report.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -1185,6 +1320,11 @@ def generate_all_from_seeds(*, self_test):
                 generated,
             ),
             "catalog": workers.submit(verify_catalog),
+            "cross_family": workers.submit(
+                verify_cross_family_composition,
+                generated,
+                compiler,
+            ),
         }
         isolated = futures["isolated"].result()
         self_test_reports = (
@@ -1196,6 +1336,7 @@ def generate_all_from_seeds(*, self_test):
         control_registry = futures["control_registry"].result()
         declarations = futures["declarations"].result()
         catalog = futures["catalog"].result()
+        cross_family = futures["cross_family"].result()
     key_callbacks = {
         "passed": sum(item["key_callbacks"]["passed"] for item in isolated),
         "total": sum(item["key_callbacks"]["total"] for item in isolated),
@@ -1244,6 +1385,7 @@ def generate_all_from_seeds(*, self_test):
         self_test_verification,
         declarations,
         catalog,
+        cross_family,
     )
     print(
         "proof: "
@@ -1272,6 +1414,9 @@ def generate_all_from_seeds(*, self_test):
         f"catalogued={catalog['catalogued']} "
         f"catalog-mutations={catalog['mutations']['passed']}/"
         f"{catalog['mutations']['total']} "
+        f"cross-family={len(cross_family['applications'])} "
+        f"cross-family-mutations={cross_family['mutations']['passed']}/"
+        f"{cross_family['mutations']['total']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )
@@ -1282,6 +1427,7 @@ def generate_all_from_seeds(*, self_test):
         "key_callbacks": key_callbacks,
         "application_self_tests": self_test_verification,
         "application_profile_catalog": catalog,
+        "cross_family_composition": cross_family,
         "deterministic_artifact_hashes": hashes,
         "complete_tree_sha256": complete_tree,
     }

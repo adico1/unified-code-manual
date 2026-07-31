@@ -90,6 +90,13 @@
       "output": "build/todo",
       "seed": "seed/applications/todo.seed.json",
       "title": "Todo"
+    },
+    {
+      "enabled": true,
+      "id": "costed-todo",
+      "output": "build/costed-todo",
+      "seed": "seed/applications/costed-todo.seed.json",
+      "title": "Costed Todo"
     }
   ],
   "format": "manual-seed-program-suite-3"

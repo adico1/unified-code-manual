@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import ast
-import re
 
+from semantic_expression import checked_name
+from semantic_expression import checked_qualified
+from semantic_expression import expression
+from semantic_expression import function_source
 from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
 from stateful_compiler import compile_declaration as compile_stateful_declaration
 from stateful_compiler import render_source as render_stateful_source
@@ -12,77 +15,6 @@ from stateful_compiler import render_source as render_stateful_source
 
 LANGUAGE = "calculator-declaration-1"
 LANGUAGES = (LANGUAGE, STATEFUL_LANGUAGE)
-NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
-QUALIFIED = re.compile(r"^[A-Za-z_][A-Za-z0-9_.]*$")
-
-
-def checked_name(value):
-    if not isinstance(value, str) or not NAME.fullmatch(value):
-        raise ValueError("invalid-declaration-name")
-    return value
-
-
-def checked_qualified(value):
-    if not isinstance(value, str) or not QUALIFIED.fullmatch(value):
-        raise ValueError("invalid-declaration-target")
-    return value
-
-
-def expression(value):
-    if not isinstance(value, dict):
-        raise ValueError("invalid-semantic-expression")
-    if set(value) == {"call", "arguments"}:
-        target = checked_qualified(value["call"])
-        arguments = ", ".join(expression(item) for item in value["arguments"])
-        return f"{target}({arguments})"
-    if len(value) != 1:
-        raise ValueError("invalid-semantic-expression")
-    operation, payload = next(iter(value.items()))
-    if operation == "literal":
-        return repr(payload)
-    if operation == "parameter":
-        return checked_name(payload)
-    if operation == "variadic":
-        return checked_name(payload)
-    if operation == "spread":
-        return "*" + checked_name(payload)
-    if operation == "list":
-        return f"list({expression(payload)})"
-    if operation == "negate":
-        return f"-({expression(payload)})"
-    binary = {
-        "add": "+",
-        "subtract": "-",
-        "multiply": "*",
-        "divide": "/",
-        "power": "**",
-        "equal": "==",
-    }
-    if operation in binary:
-        if not isinstance(payload, list) or len(payload) != 2:
-            raise ValueError("invalid-semantic-arity")
-        return (
-            f"({expression(payload[0])} {binary[operation]} "
-            f"{expression(payload[1])})"
-        )
-    if operation == "call":
-        target = checked_qualified(payload)
-        return target
-    if operation == "arguments":
-        raise ValueError("orphan-semantic-arguments")
-    if operation == "choose":
-        if set(payload) != {"when", "then", "otherwise"}:
-            raise ValueError("invalid-semantic-choice")
-        return (
-            f"({expression(payload['then'])} if "
-            f"{expression(payload['when'])} else "
-            f"{expression(payload['otherwise'])})"
-        )
-    if "call" in value and "arguments" in value:
-        raise ValueError("invalid-semantic-call")
-    raise ValueError("unknown-semantic-expression")
-
-
 def semantic_body(value):
     return expression(value)
 
@@ -132,27 +64,6 @@ def operation_map(items):
         f"{checked_qualified(item['target'])}"
         for item in items
     )
-
-
-def function_source(items):
-    lines = []
-    names = []
-    for index, item in enumerate(items):
-        internal = f"_semantic_{index}"
-        parameters = item.get("parameters")
-        if parameters is None:
-            parameters = ["*" + checked_name(item["variadic"])]
-        else:
-            parameters = [checked_name(value) for value in parameters]
-        lines.extend(
-            [
-                f"def {internal}({', '.join(parameters)}):",
-                f"    return {semantic_body(item['body'])}",
-                "",
-            ]
-        )
-        names.append((item["id"], internal))
-    return lines, names
 
 
 def action_routes(seed):

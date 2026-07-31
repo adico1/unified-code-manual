@@ -134,7 +134,7 @@ Read
 Then inspect:
 
 ```text
-expression
+src/semantic_expression.py
 action_routes
 expression_runtime
 route_source
@@ -165,6 +165,8 @@ After understanding one calculator, read:
 - [`seed/registries/stateful-interface-controls.seed.json`](../seed/registries/stateful-interface-controls.seed.json)
 - [`seed/families/stateful-list.seed.json`](../seed/families/stateful-list.seed.json)
 - [`seed/applications/todo.seed.json`](../seed/applications/todo.seed.json)
+- [`seed/applications/costed-todo.seed.json`](../seed/applications/costed-todo.seed.json)
+- [`src/semantic_expression.py`](../src/semantic_expression.py)
 - [`src/stateful_compiler.py`](../src/stateful_compiler.py)
 
 Trace one persisted sequence:
@@ -183,6 +185,11 @@ vocabulary. The expected intersection is empty. Generic words such as
 `collection`, `record`, `guard`, `append`, and `update` belong to the
 declaration language; product words and error identities belong to the leaf
 seed.
+
+Finally trace `line_total` from the Costed Todo seed into
+`build/costed-todo/traceability.json` and the generated `_calculation_0`
+function. Confirm that the stateful and calculator compilers import the same
+build-time expression authority and that the generated runtime imports neither.
 
 ## Trace one Key end to end
 

@@ -31,7 +31,10 @@ class DynamicSuiteTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             suite = Path(directory) / "suite.seed.json"
             suite.write_text(json.dumps(document), encoding="utf-8")
-            with patch.object(VERIFY_ALL, "SUITE", suite):
+            with (
+                patch.object(VERIFY_ALL, "SUITE", suite),
+                patch.object(VERIFY_ALL, "materialize_catalog", return_value=[]),
+            ):
                 loaded = VERIFY_ALL.load_suite()
         self.assertEqual(
             [item["id"] for item in loaded],
@@ -42,7 +45,8 @@ class DynamicSuiteTests(unittest.TestCase):
         source = (
             ROOT / "tools" / "verify_all.py"
         ).read_text(encoding="utf-8")
-        self.assertIn('"main.py", "--self-test"', source)
+        self.assertIn("path=pathlib.Path(root)/'main.py'", source)
+        self.assertIn("self_test_application", source)
         self.assertNotIn('"test_generated.py", "--gui-e2e"', source)
 
 

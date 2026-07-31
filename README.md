@@ -1,4 +1,4 @@
-# From Seeds to Apps — 64 Proven Applications
+# From Seeds to Apps — 65 Proven Applications
 
 This repository is the handwritten learning track beside
 [Unified Code](https://github.com/adico1/unified-code). It is an experimental
@@ -8,9 +8,9 @@ proof of one precise boundary:
 one pinned בלי_מה authority
 → canonical interface registries
 → calculator and stateful-list family seeds
-→ 13 direct and 51 derived application מה programs
+→ 14 direct and 51 derived application מה programs
 → one generic build-time assembly compiler
-→ 64 exact specialized applications
+→ 65 exact specialized applications
 ```
 
 It does not claim full Standard Ten, UEM, self-hosting, or representation of
@@ -18,7 +18,7 @@ every possible calculator.
 
 ## One operation
 
-Generate, build, install, execute, exercise, and close all 64 applications:
+Generate, build, install, execute, exercise, and close all 65 applications:
 
 ```bash
 python3 tools/single_api.py
@@ -59,15 +59,15 @@ authorization boundary. Credentials are never stored in the repository.
   calculator family.
 - `seed/families/stateful-list.seed.json` supplies domain-neutral state,
   collection, persistence, and interface boundaries.
-- `seed/applications/*.seed.json` are 13 direct application-specific מה seeds.
+- `seed/applications/*.seed.json` are 14 direct application-specific מה seeds.
 - `seed/catalog.seed.json` contains 51 complete, pinned derived-seed programs
-  in addition to the 13 direct profile references.
+  in addition to the 13 direct catalog profile references.
 - `tools/catalog_materializer.py` applies only generic, content-addressed JSON
   merge declarations and emits disposable complete seeds under `build/`.
 - `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
 - `src/seed_compiler.py` is the generic structured-program compiler.
-- `seed/suite.seed.json` lists the 13 direct seeds; the catalog supplies the
+- `seed/suite.seed.json` lists the 14 direct seeds; the catalog supplies the
   remaining 51 programs and output identities without adding behavior to the
   suite.
 - `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
@@ -92,6 +92,7 @@ rpn
 ohms-law
 quadratic-polynomial
 todo
+costed-todo
 ```
 
 ## Seed authority
@@ -129,6 +130,13 @@ commands, guards, collection transformations, persistence, controls, and
 acceptance sequences. The compiler contains no Todo application vocabulary.
 The generated application persists its exact state atomically and proves the
 same state after restart without loading its seed at runtime.
+
+The Costed Todo seed composes the stateful-list declaration with the same
+generic semantic-expression authority used by the calculators. Its seed
+declares one bounded multiplication function and calls it from record creation
+and update. Build-time specialization emits only that function, while generated
+acceptance and real-GUI tests prove recalculation and persistence. The compiler
+contains neither calculator nor Costed Todo vocabulary.
 
 Generated tests structurally verify every emitted Key callback against its
 generated route signature. Traceability records both the leaf placement and
@@ -186,8 +194,9 @@ application without the repository or seed and runs its generated tests again.
 
 Start with [how to read and review the project](docs/HOW_TO_READ.md), then see
 [the proof](docs/PROOF.md) for measured evidence,
-[the 64-profile application catalog](docs/CATALOG.md) for all 64 proven
-products and their bounded semantic contracts,
+[the 64-profile application catalog](docs/CATALOG.md) for the bounded
+calculator and Todo catalog,
+[the cross-family composition proof](docs/COMPOSITION.md),
 [the multi-family article](docs/TODO_ARTICLE.md), and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
 Publication-ready article and announcement copy are collected in

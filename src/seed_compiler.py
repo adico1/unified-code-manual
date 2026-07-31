@@ -715,7 +715,8 @@ def validate(seed, tree=None):
         if not seed.get("semantics", {}).get("operations"):
             errors.append("operations")
     elif language == STATEFUL_LANGUAGE:
-        commands = seed.get("semantics", {}).get("commands", ())
+        semantics = seed.get("semantics", {})
+        commands = semantics.get("commands", ())
         command_ids = [item.get("id") for item in commands]
         if (
             not commands
@@ -727,6 +728,22 @@ def validate(seed, tree=None):
             )
         ):
             errors.append("commands")
+        calculations = semantics.get("calculations")
+        if calculations:
+            functions = calculations.get("functions", ())
+            function_ids = [item.get("id") for item in functions]
+            if (
+                set(calculations) != {"numeric_laws", "functions"}
+                or not functions
+                or len(function_ids) != len(set(function_ids))
+                or any(
+                    not item.get("id")
+                    or not isinstance(item.get("parameters"), list)
+                    or "body" not in item
+                    for item in functions
+                )
+            ):
+                errors.append("calculations")
         if not seed.get("persistence", {}).get("environment"):
             errors.append("persistence")
         presentation = seed.get("presentation", {})
@@ -798,8 +815,20 @@ def trace_program(seed, source, rendered, authorities):
         for node in rendered.body
         if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
     }
-    semantic_functions = seed["semantics"].get("operations", {}).get(
+    stateful_calculations = seed["semantics"].get("calculations", {}).get(
         "functions", ()
+    )
+    semantic_functions = (
+        stateful_calculations
+        or seed["semantics"].get("operations", {}).get("functions", ())
+    )
+    semantic_path = (
+        "/semantics/calculations/functions"
+        if stateful_calculations
+        else "/semantics/operations/functions"
+    )
+    semantic_prefix = (
+        "_calculation" if stateful_calculations else "_semantic"
     )
     interface = functions["build_interface"]
     buttons = sorted(
@@ -846,11 +875,11 @@ def trace_program(seed, source, rendered, authorities):
         ],
         "semantic_functions": [
             {
-                "seed_path": f"/semantics/operations/functions/{index}/body",
+                "seed_path": f"{semantic_path}/{index}/body",
                 "identity": item["id"],
                 "generated_lines": [
-                    functions[f"_semantic_{index}"].lineno,
-                    functions[f"_semantic_{index}"].end_lineno,
+                    functions[f"{semantic_prefix}_{index}"].lineno,
+                    functions[f"{semantic_prefix}_{index}"].end_lineno,
                 ],
             }
             for index, item in enumerate(semantic_functions)
