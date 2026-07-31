@@ -7,6 +7,7 @@ import re
 
 from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
 from stateful_compiler import compile_declaration as compile_stateful_declaration
+from stateful_compiler import render_source as render_stateful_source
 
 
 LANGUAGE = "calculator-declaration-1"
@@ -28,7 +29,13 @@ def checked_qualified(value):
 
 
 def expression(value):
-    if not isinstance(value, dict) or len(value) != 1:
+    if not isinstance(value, dict):
+        raise ValueError("invalid-semantic-expression")
+    if set(value) == {"call", "arguments"}:
+        target = checked_qualified(value["call"])
+        arguments = ", ".join(expression(item) for item in value["arguments"])
+        return f"{target}({arguments})"
+    if len(value) != 1:
         raise ValueError("invalid-semantic-expression")
     operation, payload = next(iter(value.items()))
     if operation == "literal":
@@ -77,10 +84,6 @@ def expression(value):
 
 
 def semantic_body(value):
-    if set(value) == {"call", "arguments"}:
-        target = checked_qualified(value["call"])
-        arguments = ", ".join(expression(item) for item in value["arguments"])
-        return f"{target}({arguments})"
     return expression(value)
 
 
@@ -503,6 +506,20 @@ def gui_source(seed, routes, transitions):
         }
         for control in presentation["controls"]
     ]
+    evaluation_control = next(
+        (
+            control
+            for control in self_test_controls
+            if control["action"] == "evaluate"
+        ),
+        None,
+    )
+    gui_acceptance = (
+        seed["acceptance"][0]
+        if evaluation_control
+        and set(seed["acceptance"][0]["input"]) == {"expression"}
+        else None
+    )
     globals_ = "display, mode_text, canvas" if series else "display, mode_text"
     lines = [
         f"SELF_TEST_CONTROLS = {self_test_controls!r}",
@@ -640,18 +657,28 @@ def gui_source(seed, routes, transitions):
             "        try:",
             "            widget = widgets[0] if len(widgets) == 1 else None",
             "            widget.invoke()",
-            "            root.update_idletasks()",
             "            results.append(widget.cget('text') == control['label'] and self_test_effect(control))",
             "        except Exception:",
             "            results.append(False)",
+            *(
+                [
+                    "    reset_interface()",
+                    f"    display.set({gui_acceptance['input']['expression']!r})",
+                    "    state['expression'] = ''",
+                    f"    widgets = [item for item in root.grid_slaves(row={evaluation_control['row']!r}, column={evaluation_control['column']!r}) if item.winfo_class() == 'Button']",
+                    "    widgets[0].invoke()",
+                    f"    results.append(display.get() == {(gui_acceptance['expected']['result'] or gui_acceptance['expected']['error'])!r})",
+                ]
+                if gui_acceptance
+                else []
+            ),
             "    reset_interface()",
-            "    return {'passed': sum(results), 'total': len(SELF_TEST_CONTROLS)}",
+            "    return {'passed': sum(results), 'total': len(results)}",
             "",
             "def self_test_application():",
             "    root = build_interface()",
             "    closed = False",
             "    try:",
-            "        root.update()",
             "        report = self_test_interface(root)",
             "    finally:",
             "        root.destroy()",
@@ -766,7 +793,7 @@ STAMPS = (
 )
 
 
-def compile_calculator_declaration(seed):
+def render_calculator_source(seed):
     if seed["program"].get("language") != LANGUAGE:
         raise ValueError("declaration-language")
     declared = tuple(item["stage"] for item in seed["_assembly"]["stamps"])
@@ -781,8 +808,11 @@ def compile_calculator_declaration(seed):
         *stamp_05_core_to_inner(seed, routes),
         *stamp_06_inner_to_outer(seed, routes, transitions),
     ]
-    source = "\n".join(lines) + "\n"
-    tree = ast.parse(source)
+    return "\n".join(lines) + "\n"
+
+
+def compile_calculator_declaration(seed):
+    tree = ast.parse(render_calculator_source(seed))
     ast.fix_missing_locations(tree)
     return tree
 
@@ -797,3 +827,14 @@ def compile_declaration(seed):
     if compiler is None:
         raise ValueError("declaration-language")
     return compiler(seed)
+
+
+def render_declaration_source(seed):
+    renderers = {
+        LANGUAGE: render_calculator_source,
+        STATEFUL_LANGUAGE: render_stateful_source,
+    }
+    renderer = renderers.get(seed["program"].get("language"))
+    if renderer is None:
+        raise ValueError("declaration-language")
+    return renderer(seed)

@@ -267,10 +267,11 @@ seed/registries/stateful-interface-controls.seed.json
 → seed/applications/todo.seed.json
 ```
 
-The thirteen leaves are application-specific מה seeds. Every base reference pins an
-exact identity, relative path and SHA-256. `tools/modify_seeds.py` migrates and
-re-pins the graph deterministically; the compiler rejects cycles, conflicts,
-floating references and tampering.
+Thirteen leaves are direct application-specific מה seeds. Fifty-one additional
+programs are complete derived-seed declarations in the catalog. Every
+prototype and base reference pins an exact identity or path and SHA-256.
+`tools/modify_seeds.py` migrates and re-pins the direct graph deterministically;
+the compiler rejects cycles, conflicts, floating references and tampering.
 
 The leaf seeds contain complete concise application declarations. Reusable
 Key meaning is pinned once in the canonical registry; leaves select unique Key
