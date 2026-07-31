@@ -43,7 +43,7 @@ truth.
 The calculator-family authority contains the unchanging family law:
 
 ```text
-six ordered stamp identities
+seven ordered stage identities
 + control-action routes
 + physical boundaries
 + GUI rendering defaults
@@ -94,24 +94,25 @@ leaf Key placement
 → generated Button source line
 ```
 
-## One body and six build-time stampers
+## One body and seven build-time stages
 
-The compiler assembles six transformations around the selected computation
-core:
+The compiler assembles six transformations around one explicit computation
+stage:
 
 ```text
 יה — building blocks:
 01 outer_to_inner
-06 inner_to_outer
+07 inner_to_outer
 
 יהוה — organs inside one body:
 02 inner_to_core
 03 core_prepare
-04 core_collect
-05 core_to_inner
+04 core_processing
+05 core_collect
+06 core_to_inner
 ```
 
-The six stages form one calculator body. They run before Python compilation.
+The seven stages form one application body. They run before Python compilation.
 They are not runtime templates, and the generated application contains no
 stamper registry or seed interpreter.
 
@@ -124,7 +125,7 @@ multiple יה building blocks
 → parallel manifestation
 ```
 
-It does not mean “the sum of these six sequential stages.” This calculator
+It does not mean “the sum of these seven sequential stages.” This calculator
 proof currently demonstrates specialization and composition inside one body;
 it does not yet claim a generated parallel execution proof.
 

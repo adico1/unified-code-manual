@@ -9,12 +9,18 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from verify_all import generate_all_from_seeds
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from root_authority import verify_root
 
 MAX_VERIFICATION_SECONDS = 5.0
 
 
 def single_api():
-    return generate_all_from_seeds(self_test=True)
+    root = verify_root(
+        Path(__file__).resolve().parents[1] / "seed" / "ROOT.seed.json"
+    )
+    result = generate_all_from_seeds(self_test=True)
+    return {**result, "root": root}
 
 
 def main():

@@ -572,11 +572,12 @@ def verify_concise_declarations(generated):
             "01_outer_to_inner",
             "02_inner_to_core",
             "03_core_prepare",
-            "04_core_collect",
-            "05_core_to_inner",
-            "06_inner_to_outer",
+            "04_core_processing",
+            "05_core_collect",
+            "06_core_to_inner",
+            "07_inner_to_outer",
         ):
-            raise ValueError("six-stamper-contract")
+            raise ValueError("seven-stage-contract")
         if manifests[application["id"]].get("generated_ast") is not True:
             raise ValueError("declaration-ast-not-generated")
         reports.append(
@@ -590,7 +591,7 @@ def verify_concise_declarations(generated):
         "applications": reports,
         "leaf_ast_files": 0,
         "generated_ast": len(reports),
-        "stamps": 6,
+        "stamps": 7,
         "derived_transitions": sum(
             len(item["resolved_seed"]["transitions"])
             for item in generated
@@ -1343,6 +1344,21 @@ def generate_all_from_seeds(*, self_test):
     }
     if key_callbacks["passed"] != key_callbacks["total"]:
         raise ValueError("key-callback-verification")
+    canonical_things = {
+        "passed": sum(item["things"]["passed"] for item in isolated),
+        "total": sum(item["things"]["total"] for item in isolated),
+        "states": [
+            "unknown",
+            "absent",
+            "false",
+            "formed",
+            "valid",
+            "invalid",
+        ],
+        "semantic_depths": 10,
+    }
+    if canonical_things["passed"] != canonical_things["total"]:
+        raise ValueError("canonical-thing-verification")
     self_test_verification = {
         "applications": len(self_test_reports),
         "passed": sum(
@@ -1404,6 +1420,8 @@ def generate_all_from_seeds(*, self_test):
         f"{control_registry['selected_identities']} "
         f"key-callbacks={key_callbacks['passed']}/"
         f"{key_callbacks['total']} "
+        f"canonical-things={canonical_things['passed']}/"
+        f"{canonical_things['total']} "
         f"application-self-tests={self_test_verification['passed']}/"
         f"{self_test_verification['total']} "
         f"closed={self_test_verification['closed']} "
@@ -1425,6 +1443,7 @@ def generate_all_from_seeds(*, self_test):
         "applications": len(generated),
         "acceptance": {"passed": passed, "total": total},
         "key_callbacks": key_callbacks,
+        "canonical_things": canonical_things,
         "application_self_tests": self_test_verification,
         "application_profile_catalog": catalog,
         "cross_family_composition": cross_family,

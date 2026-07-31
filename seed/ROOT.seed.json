@@ -1,0 +1,160 @@
+{
+  "authorities": [
+    {
+      "identity": "uc://authorities/applications/costed-todo.seed.json",
+      "path": "seed/applications/costed-todo.seed.json",
+      "sha256": "4986caba643844580ed9f6cd3c59a1de2789fd827e1037a0c141f143d83cc37c"
+    },
+    {
+      "identity": "uc://authorities/applications/engineering-units.seed.json",
+      "path": "seed/applications/engineering-units.seed.json",
+      "sha256": "59527901248414405c80cd9c1e3f61f19eef58b611b9ff94ae4aacd2301632af"
+    },
+    {
+      "identity": "uc://authorities/applications/financial.seed.json",
+      "path": "seed/applications/financial.seed.json",
+      "sha256": "ec7a3ebb09d3b035cd63a9c94423aa4febf5a0ff3e1f9f1068df58e6c8e8abdf"
+    },
+    {
+      "identity": "uc://authorities/applications/graphing.seed.json",
+      "path": "seed/applications/graphing.seed.json",
+      "sha256": "5acc5fd2d7589f865f48a9cde754bb9e28b17b12c6fe58d6e2df247d4ebdfede"
+    },
+    {
+      "identity": "uc://authorities/applications/matrix-vector.seed.json",
+      "path": "seed/applications/matrix-vector.seed.json",
+      "sha256": "07d9848b57aeee887d6e7c74ed6027dad79121fd46a4a885a1e5a14ab7a36a9d"
+    },
+    {
+      "identity": "uc://authorities/applications/normal.seed.json",
+      "path": "seed/applications/normal.seed.json",
+      "sha256": "5b0da8d3344368c23a5681aa640a6ae0ca8ee7f6c92fa23dede2c8450d66743d"
+    },
+    {
+      "identity": "uc://authorities/applications/ohms-law.seed.json",
+      "path": "seed/applications/ohms-law.seed.json",
+      "sha256": "7984f9b01a79cd0de71ad2d9c4a1e508668a2522caf2d27002599c2edf9bb60b"
+    },
+    {
+      "identity": "uc://authorities/applications/programmer.seed.json",
+      "path": "seed/applications/programmer.seed.json",
+      "sha256": "e8c3bd91985ef9d201888045a283cad6f2114513ae76daef02b410f8b2d5b26a"
+    },
+    {
+      "identity": "uc://authorities/applications/quadratic-polynomial.seed.json",
+      "path": "seed/applications/quadratic-polynomial.seed.json",
+      "sha256": "b2c3db132b01185e40f5950c010fe14102c207501c42e24b0d63c3890636a143"
+    },
+    {
+      "identity": "uc://authorities/applications/regular.seed.json",
+      "path": "seed/applications/regular.seed.json",
+      "sha256": "188e91b2130f70fbf89dbd64146c69948cf38fde2ac5bcba09adeefefc341c33"
+    },
+    {
+      "identity": "uc://authorities/applications/rpn.seed.json",
+      "path": "seed/applications/rpn.seed.json",
+      "sha256": "cdb8c9a5c61d392a779135c53a40efdcfd03c133d489b464305a4fbfdf63a5c9"
+    },
+    {
+      "identity": "uc://authorities/applications/scientific.seed.json",
+      "path": "seed/applications/scientific.seed.json",
+      "sha256": "b98996fb68bc2572ae02b0668984df233f4145cd3229db1dab6f3da9734dd5e5"
+    },
+    {
+      "identity": "uc://authorities/applications/statistical.seed.json",
+      "path": "seed/applications/statistical.seed.json",
+      "sha256": "301ca471ae772c40e2733ed963a8cdf01f86f88c89789f1a5a90e076b59e0b35"
+    },
+    {
+      "identity": "uc://authorities/applications/todo.seed.json",
+      "path": "seed/applications/todo.seed.json",
+      "sha256": "b42c00124af11dc9a6a2d06833a4b7592570c1476673c017e8cd11c0fc125301"
+    },
+    {
+      "identity": "uc://manual/seeds/בלי_מה@1",
+      "path": "seed/bases/בלי_מה.seed.json",
+      "sha256": "ac0c41637a25a96144b7c1974cdf93e6ba3408cc97c61fc1d44d34252c77e201"
+    },
+    {
+      "identity": "uc://manual/catalogs/application-profiles@1",
+      "path": "seed/catalog.seed.json",
+      "sha256": "fba23729c02ff4d984285966c14a4dbc4e2c220fa1e4fc13d9a5c5dea9993169"
+    },
+    {
+      "identity": "uc://manual/seeds/calculator-family@1",
+      "path": "seed/families/calculator.seed.json",
+      "sha256": "b74bbf1a9a4f815f2461fa72594f8fecbe6a298c955ef426f1bc5fb36be7f811"
+    },
+    {
+      "identity": "uc://manual/seeds/stateful-list-family@1",
+      "path": "seed/families/stateful-list.seed.json",
+      "sha256": "b8039f7aaab178451d29637d4285ebdeaf5c4079dbbf6abcb616832d167c44ee"
+    },
+    {
+      "identity": "uc://manual/registries/calculator-keys@1",
+      "path": "seed/registries/calculator-keys.seed.json",
+      "sha256": "2621799c9f478a97811ad462ecea11b2358556bfb65d7ad545191754957c4f2e"
+    },
+    {
+      "identity": "uc://manual/registries/stateful-interface-controls@1",
+      "path": "seed/registries/stateful-interface-controls.seed.json",
+      "sha256": "f4b4f30506ba3eef04951a74d56fafdf605a5c0ff018ae579ea17864ac6ee852"
+    },
+    {
+      "identity": "uc://authorities/schema.json",
+      "path": "seed/schema.json",
+      "sha256": "aae19957c417f3077fb9ad461df1dbadf4157f6924ad9a03ec0a9017f6f5b65a"
+    },
+    {
+      "identity": "uc://authorities/suite.seed.json",
+      "path": "seed/suite.seed.json",
+      "sha256": "1cd937435ae86e384e2f4924083950b82f785390a1195ed4bfe713ceb198c691"
+    }
+  ],
+  "fixed_point": {
+    "algorithm": "sha256-canonical-json-and-generated-tree",
+    "cycle": "invalid",
+    "maximum_passes": 10,
+    "second_pass_changes": 0
+  },
+  "format": "unified-root-seed-1",
+  "identity": "uc://roots/unified-code@1",
+  "machine": {
+    "host_law": "independent-hosts-one-canonical-interface",
+    "identity": "UEM-16-v0.1"
+  },
+  "open_gaps": [],
+  "operation": {
+    "entrypoint": "tools/single_api.py",
+    "identity": "assemble-all",
+    "required_authorities": [
+      "seed/bases/בלי_מה.seed.json",
+      "seed/suite.seed.json",
+      "seed/catalog.seed.json"
+    ]
+  },
+  "scope": "application-language-convergence",
+  "standard": {
+    "semantic_depths": [
+      "01_identity",
+      "02_authority",
+      "03_declaration",
+      "04_composition",
+      "05_processing",
+      "06_state",
+      "07_boundary",
+      "08_manifestation",
+      "09_evidence",
+      "10_fixed_point"
+    ],
+    "thing_states": [
+      "unknown",
+      "absent",
+      "false",
+      "formed",
+      "valid",
+      "invalid"
+    ],
+    "version": "TEN-1"
+  }
+}

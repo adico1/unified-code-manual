@@ -4,6 +4,9 @@
   "title": "Recursive manual seed graph",
   "oneOf": [
     {
+      "$ref": "#/$defs/root"
+    },
+    {
       "$ref": "#/$defs/base"
     },
     {
@@ -11,6 +14,36 @@
     }
   ],
   "$defs": {
+    "root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "identity",
+        "scope",
+        "standard",
+        "machine",
+        "operation",
+        "authorities",
+        "fixed_point",
+        "open_gaps"
+      ],
+      "properties": {
+        "format": {"const": "unified-root-seed-1"},
+        "identity": {"type": "string", "pattern": "^uc://roots/.+@[1-9][0-9]*$"},
+        "scope": {"const": "application-language-convergence"},
+        "standard": {"type": "object"},
+        "machine": {"type": "object"},
+        "operation": {"type": "object"},
+        "authorities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/reference"}
+        },
+        "fixed_point": {"type": "object"},
+        "open_gaps": {"type": "array", "maxItems": 0}
+      }
+    },
     "reference": {
       "type": "object",
       "additionalProperties": false,
@@ -162,12 +195,10 @@
           "additionalProperties": false,
           "properties": {
             "canonical": {
-              "pattern": "^uc://manual/calculators/.+@[1-9][0-9]*$",
+              "pattern": "^uc://manual/(calculators|applications)/.+@[1-9][0-9]*$",
               "type": "string"
             },
-            "family": {
-              "const": "calculator"
-            },
+            "family": {"type": "string", "minLength": 1},
             "variation": {
               "minLength": 1,
               "type": "string"

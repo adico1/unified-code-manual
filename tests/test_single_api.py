@@ -16,13 +16,17 @@ SPECIFICATION.loader.exec_module(SINGLE_API)
 class SingleApiContractTests(unittest.TestCase):
     def test_single_api_delegates_to_complete_seed_flow_once(self):
         expected = {"verdict": "PASS"}
-        with patch.object(
-            SINGLE_API,
-            "generate_all_from_seeds",
-            return_value=expected,
-        ) as operation:
+        root = {"identity": "uc://roots/unified-code@1", "verdict": "PASS"}
+        with (
+            patch.object(
+                SINGLE_API,
+                "generate_all_from_seeds",
+                return_value=expected,
+            ) as operation,
+            patch.object(SINGLE_API, "verify_root", return_value=root),
+        ):
             result = SINGLE_API.single_api()
-        self.assertEqual(result, expected)
+        self.assertEqual(result, {**expected, "root": root})
         operation.assert_called_once_with(self_test=True)
 
 

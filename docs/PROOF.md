@@ -12,7 +12,7 @@ Application meaning is represented by each leaf seed's semantic contract,
 state, interface, operations, and acceptance cases. Pinned interface registries
 supply reusable controls and argument contracts. Family authorities supply
 shared boundaries, rendering defaults, routes, errors, persistence laws, and
-six ordered build-time stamp identities. The compiler resolves and specializes
+seven ordered build-time stage identities. The compiler resolves and specializes
 calculator and stateful-interface declarations into exact applications.
 
 ## Reproduce
@@ -37,7 +37,7 @@ The operation requires:
 11. rejection of altered, floating, cyclic, conflicting, and escaping base
     authority;
 12. zero stored leaf ASTs and 65 build-time-generated ASTs.
-13. exactly six registered build-time stampers;
+13. exactly seven registered build-time stages;
 14. leaf transition tables, boundaries, reachable errors, and duplicated
     numeric-law indexes are absent and deterministically derived.
 15. all selected Key identities resolve exactly once and unknown, duplicate or
@@ -80,12 +80,14 @@ selected/resolved Key identities = 79/79
 unknown/duplicate/invalid/missing-capability Key rejection = PASS
 callback-contract mutations = 3/3
 generated Key callback wiring checks = 918/918
+canonical Thing acceptance = 165/165
+semantic depths = exactly 10
 application-owned GUI and acceptance self-tests = 943/943
 self-test applications closed = 65/65
 runtime Key-registry access = 0
 stored leaf ASTs = 0
 build-time-generated ASTs = 65/65
-registered build-time stampers = 6
+registered build-time stages = 7
 derived transitions = 918
 derived reachable errors = 161
 generated editable-input checks = 3 per application
@@ -96,13 +98,15 @@ cross-family applications = 1
 cross-family call-resolution mutations = 2/2
 runtime expression-interpreter files = 0
 catalog snapshot =
-09d1673a2a08202ef1339d53a9cc1998034cb5f591d8911679a46b4e46b1c1d8
+dcceebe1c7034685185ef57db5da993b5a036592810eebdc7197e6f60ccb6969
 complete tree =
-31dc886a5b6f23a7ecc19cbc364b9698d602a893bad8f51782b90d65d5e165e0
+e6f809f2fc31fba882ec7d32395fc81e56ff0550d7661f0e8a9fe89b5e9f8568
 Costed Todo artifact =
-1353f60c84385a146287c15cae2c50ee533195f15477d5d72e6cf9cb71102e71
-local full verification = 2.685229 seconds
-local parallel unit + full verification = 2.84 seconds
+a6d5461f2615d9ab5230977afdaba7012a5d1f85aa82dd97f800e0df9ed5a6a4
+ROOT authority =
+c84a6749f38a96cf909bff629b3eb08e8e631b75283715f69ffcd6371cf76cb4
+local full verification = 3.189648 seconds
+local unit suite = 19/19 in 2.104 seconds
 exact-head CI verification budget = PASS (<5 seconds)
 ```
 

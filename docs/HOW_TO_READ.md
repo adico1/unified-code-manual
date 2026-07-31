@@ -69,7 +69,7 @@ Focus on:
 - callback argument contracts;
 - error rules;
 - registered routes;
-- the six ordered build-time stampers;
+- the seven ordered build-time stages;
 - fields required from every application seed.
 
 ### 5. Read one product seed
@@ -141,7 +141,7 @@ route_source
 gui_source
 stamp_01_outer_to_inner
 ...
-stamp_06_inner_to_outer
+stamp_07_inner_to_outer
 ```
 
 The compiler should translate the selected semantic graph into a specialized

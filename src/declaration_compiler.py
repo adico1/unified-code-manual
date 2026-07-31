@@ -623,6 +623,8 @@ def stamp_01_outer_to_inner(seed):
         *(f"import {name}" for name in dict.fromkeys(imports)),
         f"from tkinter import {', '.join(widgets)}",
         f"IDENTITY = {seed['identity']['variation']!r}",
+        "THING_STATES = ('unknown', 'absent', 'false', 'formed', 'valid', 'invalid')",
+        "TEN_DEPTHS = ('01_identity', '02_authority', '03_declaration', '04_composition', '05_processing', '06_state', '07_boundary', '08_manifestation', '09_evidence', '10_fixed_point')",
         "",
     ]
 
@@ -632,8 +634,12 @@ def stamp_02_inner_to_core(seed):
 
 
 def stamp_03_core_prepare(seed):
+    return ["# stamp: 03_core_prepare", ""]
+
+
+def stamp_04_core_processing(seed):
     laws = seed["semantics"]["numeric_laws"]
-    lines = ["# stamp: 03_core_prepare"]
+    lines = ["# stamp: 04_core_processing"]
     if laws["kind"] == "expression":
         lines.extend(expression_runtime(seed))
     elif laws["kind"] == "stack":
@@ -643,17 +649,21 @@ def stamp_03_core_prepare(seed):
     return lines
 
 
-def stamp_04_core_collect(seed):
+def stamp_05_core_collect(seed):
     return [
-        "# stamp: 04_core_collect",
+        "# stamp: 05_core_collect",
         *presenter(seed),
         *case_boundary(seed),
+        "def part(thing):",
+        "    result = run_case(thing['value'])",
+        "    return {'value': result, 'depths': TEN_DEPTHS, 'axes': tuple(thing.get('axes', ())), 'evidence': tuple(thing.get('evidence', ())) + ('boundary:inward', 'part:run_case', 'boundary:outward'), 'state': {True: 'valid', False: 'invalid'}[result.get('error') is None]}",
+        "",
     ]
 
 
-def stamp_05_core_to_inner(seed, routes):
+def stamp_06_core_to_inner(seed, routes):
     laws = seed["semantics"]["numeric_laws"]
-    lines = ["# stamp: 05_core_to_inner"]
+    lines = ["# stamp: 06_core_to_inner"]
     lines.extend(
         [
             "display = None",
@@ -673,9 +683,9 @@ def stamp_05_core_to_inner(seed, routes):
     return lines
 
 
-def stamp_06_inner_to_outer(seed, routes, transitions):
+def stamp_07_inner_to_outer(seed, routes, transitions):
     return [
-            "# stamp: 06_inner_to_outer",
+            "# stamp: 07_inner_to_outer",
             *gui_source(seed, routes, transitions),
             "def main(argv=None):",
             "    arguments = list(sys.argv if argv is None else argv)",
@@ -698,9 +708,10 @@ STAMPS = (
     "01_outer_to_inner",
     "02_inner_to_core",
     "03_core_prepare",
-    "04_core_collect",
-    "05_core_to_inner",
-    "06_inner_to_outer",
+    "04_core_processing",
+    "05_core_collect",
+    "06_core_to_inner",
+    "07_inner_to_outer",
 )
 
 
@@ -715,9 +726,10 @@ def render_calculator_source(seed):
         *stamp_01_outer_to_inner(seed),
         *stamp_02_inner_to_core(seed),
         *stamp_03_core_prepare(seed),
-        *stamp_04_core_collect(seed),
-        *stamp_05_core_to_inner(seed, routes),
-        *stamp_06_inner_to_outer(seed, routes, transitions),
+        *stamp_04_core_processing(seed),
+        *stamp_05_core_collect(seed),
+        *stamp_06_core_to_inner(seed, routes),
+        *stamp_07_inner_to_outer(seed, routes, transitions),
     ]
     return "\n".join(lines) + "\n"
 

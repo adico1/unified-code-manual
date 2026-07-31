@@ -1,11 +1,15 @@
-# From Seeds to Apps — 65 Proven Applications
+# Unified Code Convergence — From Seeds to Apps
 
-This repository is the handwritten learning track beside
-[Unified Code](https://github.com/adico1/unified-code). It is an experimental
-proof of one precise boundary:
+This repository is the current convergence track for
+[Unified Code](https://github.com/adico1/unified-code). The newer manual
+application language is the working base; Standard Ten, canonical Thing,
+ten-depth evidence, UEM identity, ROOT authority, atomic manifestation and
+fixed-point laws are integrated here before one final migration to the public
+Unified Code repository.
 
 ```text
-one pinned בלי_מה authority
+one pinned ROOT authority
+→ one בלי_מה invariant authority
 → canonical interface registries
 → calculator and stateful-list family seeds
 → 14 direct and 51 derived application מה programs
@@ -18,10 +22,11 @@ every possible calculator.
 
 ## One operation
 
-Generate, build, install, execute, exercise, and close all 65 applications:
+Resolve ROOT, generate, build, install, execute, exercise, and close all 65
+applications:
 
 ```bash
-python3 tools/single_api.py
+./uc
 ```
 
 This is the public development boundary. It resolves every seed into a
@@ -50,7 +55,10 @@ authorization boundary. Credentials are never stored in the repository.
 
 - `examples/original_handwritten_calculator.py` is the author's original
   handwritten work. The compiler never reads or edits it.
-- `seed/bases/בלי_מה.seed.json` contains invariant construction authority.
+- `seed/ROOT.seed.json` is the only public semantic operation authority and
+  pins the complete seed graph.
+- `seed/bases/בלי_מה.seed.json` contains invariant construction authority,
+  canonical Thing states, exactly ten depths and Standard Ten laws.
 - `seed/registries/calculator-keys.seed.json` defines every reusable Key once
   under a globally unique identity.
 - `seed/registries/stateful-interface-controls.seed.json` defines reusable
@@ -109,14 +117,14 @@ acceptance cases
 
 The canonical Key registry supplies each selected key's label, action and
 emitted value exactly once. The family base supplies callback argument
-contracts, the six ordered build-time stampers for one body, registered control
+contracts, the seven ordered build-time stages for one body, registered control
 routes, physical boundaries, rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
 selected Keys and operations, so those truths are not repeated in every
 calculator seed.
 
 The resolved declarations are the complete application program. At build time
-the calculator declaration language composes the six stampers around the
+the calculator declaration language composes seven explicit stages around the
 selected computation core and translates the result into a specialized Python
 AST. No leaf seed contains an AST or source blob. The generic compiler writes
 the application and generated tests, records seed-to-source traceability,
@@ -199,5 +207,8 @@ calculator and Todo catalog,
 [the cross-family composition proof](docs/COMPOSITION.md),
 [the multi-family article](docs/TODO_ARTICLE.md), and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
+The merged governing laws are [Standard Ten](STANDARD_TEN.md),
+[ROOT convergence](ROOT_CONVERGENCE.md), and the bounded
+[UEM contract](UEM_SPEC.md).
 Publication-ready article and announcement copy are collected in
 [the publication package](docs/PUBLICATION.md).
