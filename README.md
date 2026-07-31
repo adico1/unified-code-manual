@@ -20,6 +20,20 @@ one pinned ROOT authority
 It does not claim full Standard Ten, UEM, self-hosting, or representation of
 every possible calculator, Todo application or paddle game.
 
+## North Star
+
+Unified Code aims to transform one canonical intention into one complete,
+deterministic and verified manifestation:
+
+```text
+human intention → seed → exact application → interfaces → evidence
+```
+
+The eventual root proof requires the same authority to regenerate the creator
+and complete repository at a byte-identical fixed point. The status-labelled
+goal hierarchy, inner and outer boundaries, and stopping law are maintained in
+[Goals and Boundaries](docs/GOALS_AND_BOUNDARIES.md).
+
 ## One operation
 
 Resolve ROOT, generate, build, install, execute, exercise, and close all 74
