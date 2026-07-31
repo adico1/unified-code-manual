@@ -18,6 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = ROOT / "seed" / "suite.seed.json"
+CATALOG = ROOT / "seed" / "catalog.seed.json"
 COMPILER = ROOT / "src" / "seed_compiler.py"
 COMPILER_SOURCES = tuple(sorted((ROOT / "src").glob("*.py")))
 
@@ -53,6 +54,147 @@ def load_suite():
     if len({item["id"] for item in applications}) != len(applications):
         raise ValueError("duplicate-application")
     return applications
+
+
+def validate_catalog(document):
+    errors = []
+    families = document.get("families", ())
+    family_identities = [item.get("identity") for item in families]
+    if document.get("format") != "manual-application-profile-catalog-1":
+        errors.append("unsupported-catalog")
+    if len(family_identities) != len(set(family_identities)):
+        errors.append("duplicate-family-identity")
+    profiles = [
+        (family.get("profile_namespace"), profile)
+        for family in families
+        for profile in family.get("profiles", ())
+    ]
+    identities = [profile.get("identity") for _family, profile in profiles]
+    if len(identities) != len(set(identities)):
+        errors.append("duplicate-profile-identity")
+    for family, profile in profiles:
+        identity = profile.get("identity")
+        capabilities = profile.get("capabilities", ())
+        status = profile.get("status")
+        if not identity or not profile.get("name") or not profile.get("class"):
+            errors.append(f"incomplete-profile:{identity}")
+        if not capabilities or len(capabilities) != len(set(capabilities)):
+            errors.append(f"invalid-capabilities:{identity}")
+        if status not in {"proven", "catalogued"}:
+            errors.append(f"invalid-status:{identity}")
+        if status == "proven":
+            seed = ROOT / profile.get("seed", "")
+            if not seed.is_file():
+                errors.append(f"missing-proven-seed:{identity}")
+            else:
+                product = json.loads(seed.read_text(encoding="utf-8"))
+                actual = product.get("what", {}).get("identity", {}).get(
+                    "canonical"
+                )
+                if actual != profile.get("product_identity"):
+                    errors.append(f"product-identity-mismatch:{identity}")
+        if status == "catalogued" and (
+            profile.get("seed") or profile.get("product_identity")
+        ):
+            errors.append(f"false-proof-reference:{identity}")
+        if not str(identity).startswith(f"uc://manual/catalog/{family}/"):
+            errors.append(f"family-identity-mismatch:{identity}")
+    normalized = {
+        "format": document.get("format"),
+        "identity": document.get("identity"),
+        "families": [
+            {
+                **{key: value for key, value in family.items() if key != "profiles"},
+                "profiles": sorted(
+                    family.get("profiles", ()),
+                    key=lambda item: item.get("identity", ""),
+                ),
+            }
+            for family in sorted(
+                families,
+                key=lambda item: item.get("identity", ""),
+            )
+        ],
+    }
+    return errors, normalized
+
+
+def verify_catalog():
+    document = json.loads(CATALOG.read_text(encoding="utf-8"))
+    errors, normalized = validate_catalog(document)
+    if errors:
+        raise ValueError("invalid-catalog:" + ",".join(errors))
+    profiles = [
+        profile
+        for family in document["families"]
+        for profile in family["profiles"]
+    ]
+    mutations = []
+
+    duplicate = json.loads(json.dumps(document))
+    duplicate["families"][0]["profiles"].append(
+        duplicate["families"][0]["profiles"][0]
+    )
+    mutations.append(validate_catalog(duplicate)[0])
+
+    false_proof = json.loads(json.dumps(document))
+    target = next(
+        profile
+        for family in false_proof["families"]
+        for profile in family["profiles"]
+        if profile["status"] == "catalogued"
+    )
+    target.update(
+        {
+            "status": "proven",
+            "seed": "seed/applications/not-present.seed.json",
+            "product_identity": "uc://manual/applications/not-present@1",
+        }
+    )
+    mutations.append(validate_catalog(false_proof)[0])
+
+    empty_capabilities = json.loads(json.dumps(document))
+    empty_capabilities["families"][0]["profiles"][0]["capabilities"] = []
+    mutations.append(validate_catalog(empty_capabilities)[0])
+
+    duplicate_capability = json.loads(json.dumps(document))
+    capabilities = duplicate_capability["families"][0]["profiles"][0][
+        "capabilities"
+    ]
+    capabilities.append(capabilities[0])
+    mutations.append(validate_catalog(duplicate_capability)[0])
+
+    if not all(mutations):
+        raise ValueError("catalog-mutation-undetected")
+    reordered = json.loads(json.dumps(document))
+    reordered["families"].reverse()
+    for family in reordered["families"]:
+        family["profiles"].reverse()
+    reordered_errors, reordered_normalized = validate_catalog(reordered)
+    if reordered_errors or canonical(reordered_normalized) != canonical(normalized):
+        raise ValueError("catalog-order-dependent")
+    family_counts = {
+        family["name"]: {
+            "profiles": len(family["profiles"]),
+            "proven": sum(
+                item["status"] == "proven" for item in family["profiles"]
+            ),
+            "catalogued": sum(
+                item["status"] == "catalogued" for item in family["profiles"]
+            ),
+        }
+        for family in document["families"]
+    }
+    return {
+        "identity": document["identity"],
+        "profiles": len(profiles),
+        "proven": sum(item["status"] == "proven" for item in profiles),
+        "catalogued": sum(item["status"] == "catalogued" for item in profiles),
+        "families": family_counts,
+        "mutations": {"passed": len(mutations), "total": len(mutations)},
+        "record_order_independent": True,
+        "snapshot_sha256": digest(canonical(normalized)),
+    }
 
 
 def tree_bytes(path):
@@ -372,6 +514,7 @@ def write_report(
     key_callbacks,
     self_tests,
     declarations,
+    catalog,
 ):
     runner_bytes = Path(__file__).read_bytes()
     single_api_bytes = Path(__file__).with_name("single_api.py").read_bytes()
@@ -426,6 +569,7 @@ def write_report(
         "key_callbacks": key_callbacks,
         "application_self_tests": self_tests,
         "concise_declarations": declarations,
+        "application_profile_catalog": catalog,
     }
     destination = ROOT / "build" / "assembly-report.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -884,7 +1028,7 @@ def generate_all_from_seeds(*, self_test):
             )
         )
     verify_specialization(generated)
-    with ThreadPoolExecutor(max_workers=8) as workers:
+    with ThreadPoolExecutor(max_workers=9) as workers:
         futures = {
             "isolated": workers.submit(verify_isolated, generated),
             "self_tests": workers.submit(
@@ -920,6 +1064,7 @@ def generate_all_from_seeds(*, self_test):
                 applications,
                 compiler,
             ),
+            "catalog": workers.submit(verify_catalog),
         }
         isolated = futures["isolated"].result()
         self_test_reports = (
@@ -931,6 +1076,7 @@ def generate_all_from_seeds(*, self_test):
         key_registry = futures["key_registry"].result()
         control_registry = futures["control_registry"].result()
         declarations = futures["declarations"].result()
+        catalog = futures["catalog"].result()
     key_callbacks = {
         "passed": sum(item["key_callbacks"]["passed"] for item in isolated),
         "total": sum(item["key_callbacks"]["total"] for item in isolated),
@@ -979,6 +1125,7 @@ def generate_all_from_seeds(*, self_test):
         key_callbacks,
         self_test_verification,
         declarations,
+        catalog,
     )
     print(
         "proof: "
@@ -1002,6 +1149,11 @@ def generate_all_from_seeds(*, self_test):
         f"closed={self_test_verification['closed']} "
         f"generated-ast={declarations['generated_ast']}/{len(generated)} "
         f"leaf-ast-files={declarations['leaf_ast_files']} "
+        f"catalog={catalog['profiles']} "
+        f"catalog-proven={catalog['proven']} "
+        f"catalogued={catalog['catalogued']} "
+        f"catalog-mutations={catalog['mutations']['passed']}/"
+        f"{catalog['mutations']['total']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )
@@ -1011,6 +1163,7 @@ def generate_all_from_seeds(*, self_test):
         "acceptance": {"passed": passed, "total": total},
         "key_callbacks": key_callbacks,
         "application_self_tests": self_test_verification,
+        "application_profile_catalog": catalog,
         "deterministic_artifact_hashes": hashes,
         "complete_tree_sha256": complete_tree,
     }
