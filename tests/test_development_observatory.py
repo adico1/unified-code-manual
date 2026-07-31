@@ -49,6 +49,10 @@ class DevelopmentObservatoryTests(unittest.TestCase):
         self.assertIn("Development lifecycle — past, present and future", source)
         self.assertIn("Select an observation", source)
         self.assertIn("webbrowser.open", source)
+        self.assertIn("Archive Request", source)
+        self.assertIn("askyesno", source)
+        self.assertIn("def command_archive", source)
+        self.assertNotIn("def command_remove", source)
         self.assertIn("--case-json", source)
         self.assertNotIn("seed_compiler", source)
 
@@ -176,15 +180,18 @@ class DevelopmentObservatoryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             application.configure_state_path(Path(directory) / "state.json")
             application.launch()
-        self.assertEqual(reports[0]["self_test"], {"passed": 15, "total": 15})
+        self.assertEqual(reports[0]["self_test"], {"passed": 18, "total": 18})
         self.assertEqual(
             reports[0]["interactions"],
             [
                 "ask-ai",
-                "complete-reopen",
-                "reopen",
+                "complete-request",
+                "reopen-request",
+                "protect-system-completion",
                 "open-code",
-                "delete",
+                "decline-archive",
+                "archive-request",
+                "protect-system-archive",
                 "filter-all",
                 "filter-past",
                 "filter-present",

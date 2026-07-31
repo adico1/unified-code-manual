@@ -143,6 +143,15 @@ def value_source(
 
 def guard_source(guard, calculations):
     operation = guard["op"]
+    if operation == "record_field_equals":
+        match = guard["match"]
+        match_value = value_source(match["value"], calculations=calculations)
+        expected = value_source(guard["value"], calculations=calculations)
+        return (
+            f"any(record[{match['field']!r}] == {match_value} and "
+            f"record[{guard['field']!r}] == {expected} for record in "
+            f"state[{guard['collection']!r}])"
+        )
     value = value_source(guard["value"], calculations=calculations)
     if operation == "non_empty":
         return f"(isinstance({value}, str) and bool({value}.strip()))"
@@ -277,14 +286,27 @@ def control_source(control, index):
         for name, argument in control.get("arguments", {}).items()
     )
     route = "command_" + safe_name(control["command"])
-    return [
+    lines = [
         f"def {callback}():",
         "    global _last_outcome",
+    ]
+    confirmation = control.get("confirmation")
+    if confirmation is not None:
+        lines.extend(
+            [
+                f"    if not _confirm({confirmation['title']!r}, {confirmation['message']!r}):",
+                "        _last_outcome = _failure('confirmation-declined')",
+                "        _status.set(_last_outcome['error'])",
+                "        return _last_outcome",
+            ]
+        )
+    lines.extend([
         f"    _last_outcome = {route}({{{arguments}}})",
         "    _status.set(_last_outcome['error'] or 'ok')",
         "    return _last_outcome",
         "",
-    ]
+    ])
+    return lines
 
 
 def render_source(seed):
@@ -307,6 +329,13 @@ def render_source(seed):
         for command in seed["semantics"]["commands"]
         for effect in command.get("effects", ())
     )
+    confirmations = any(control.get("confirmation") for control in controls)
+    if any(
+        set(control["confirmation"]) != {"message", "title"}
+        for control in controls
+        if control.get("confirmation") is not None
+    ):
+        raise ValueError("invalid-control-confirmation")
     projections = set(seed["program"].get("projections", ("API", "APP")))
     if not projections <= {"API", "APP", "CLI"}:
         raise ValueError("unknown-stateful-projection")
@@ -364,6 +393,7 @@ def render_source(seed):
         "import tempfile",
         *(("import webbrowser",) if outward_urls else ()),
         "from tkinter import Button, Entry, Frame, Label, Listbox, StringVar, Text, Tk",
+        *(("from tkinter.messagebox import askyesno",) if confirmations else ()),
         *(("from tkinter.ttk import Notebook, Scrollbar, Treeview",) if table else ()),
         "",
         f"APPLICATION_ID = {seed['identity']['canonical']!r}",
@@ -380,6 +410,7 @@ def render_source(seed):
         *((f"PORTFOLIO_RECORDS = {table['portfolio']['records']!r}",) if table else ()),
         f"FILTER_FIELD = {collection.get('filter_field')!r}",
         f"FILTERS = {filters!r}",
+        f"VISIBILITY = {collection.get('visibility')!r}",
         f"DEFAULT_STATE_PATH = {persistence['default_path']!r}",
         f"STATE_ENVIRONMENT = {persistence['environment']!r}",
         "state = deepcopy(INITIAL_STATE)",
@@ -397,6 +428,7 @@ def render_source(seed):
         "_status = None",
         "_last_outcome = None",
         *(("_open_url = webbrowser.open",) if outward_urls else ()),
+        *(("_confirm = askyesno",) if confirmations else ()),
         "",
         "def state_path():",
         "    selected = os.environ.get(STATE_ENVIRONMENT)",
@@ -462,7 +494,9 @@ def render_source(seed):
             "    return operation(dict(arguments)) if operation else _failure('unknown-command')",
             "",
             "def visible_records():",
-            "    records = state[COLLECTION_FIELD]",
+            "    records = list(state[COLLECTION_FIELD])",
+            "    if VISIBILITY:",
+            "        records = [record for record in records if record.get(VISIBILITY['field'], VISIBILITY['equals']) == VISIBILITY['equals']]",
             "    selected = state.get(FILTER_FIELD) if FILTER_FIELD else None",
             "    rule = FILTERS.get(selected)",
             "    if not rule:",
@@ -672,11 +706,22 @@ def render_source(seed):
             "    return all(checks)",
             "",
             "def self_test_interface():",
-            *(("    global _open_url",) if outward_urls else ()),
+            "    global "
+            + ", ".join(
+                identity
+                for enabled, identity in (
+                    (True, "_state_path"),
+                    (outward_urls, "_open_url"),
+                    (confirmations, "_confirm"),
+                )
+                if enabled
+            ),
             "    checks = []",
             "    closed = False",
             "    outward = []",
+            "    previous_state_path = _state_path",
             *(("    previous_open_url = _open_url", "    _open_url = outward.append") if outward_urls else ()),
+            *(("    previous_confirm = _confirm",) if confirmations else ()),
             "    with tempfile.TemporaryDirectory(prefix='generated-stateful-gui-') as directory:",
             "        configure_state_path(Path(directory) / 'state.json')",
             "        root = build_interface()",
@@ -699,6 +744,7 @@ def render_source(seed):
             f"        cases = {presentation['self_tests']!r}",
             "        for case in cases:",
             "            outward.clear()",
+            *(("            _confirm = lambda _title, _message: case.get('confirmation', True)",) if confirmations else ()),
             "            reset_state()",
             "            for setup in case.get('setup', ()):",
             "                run_command(setup['command'], setup.get('arguments', {}))",
@@ -726,6 +772,8 @@ def render_source(seed):
             "            checks.append(verify_interface_assertions(case['assertions'], outward) if 'assertions' in case else _last_outcome == case['expected']['outcome'] and snapshot() == case['expected']['state'])",
             "        root.destroy()",
             *(("        _open_url = previous_open_url",) if outward_urls else ()),
+            *(("        _confirm = previous_confirm",) if confirmations else ()),
+            "        _state_path = previous_state_path",
             "        closed = True",
             "    return {'self_test': {'passed': sum(checks), 'total': len(checks)}, 'interactions': [case.get('id', case['control']) for case in cases], 'closed': closed}",
             "",

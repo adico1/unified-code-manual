@@ -26,11 +26,16 @@ self-tests.
 Its second generated tab enumerates all 74 proven products with product group,
 variation, canonical identity and proof status. The portfolio is declared in
 the application seed; the generic compiler contains none of those identities.
-All eight controls are exercised through nine generated Tk interaction paths:
-request, both complete and reopen directions, open-code OUTWARD routing,
-delete, and all four temporal filters. The proof asserts selected-record
-effects, visible counts, restart persistence, error outcome and captured
-outward calls rather than counting coverage.
+All eight controls are exercised through twelve generated Tk interaction
+paths: request, complete, reopen, protected-system completion, open-code
+OUTWARD routing, declined archive, confirmed archive, protected-system
+archive, and all four temporal filters. `Archive Request` applies only to
+user-created requests and asks for confirmation. It hides the request from the
+active view while retaining the complete record in persisted state, so the
+operation is recoverable and is not deletion. Seed-owned system evidence
+cannot be completed or archived. The proof asserts selected-record effects,
+visible and persisted counts, restart persistence, exact error outcomes and
+captured outward calls rather than counting coverage.
 Every record carries four observation verdicts:
 
 - `הבט` — physical presence;

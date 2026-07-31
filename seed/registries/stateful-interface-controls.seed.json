@@ -64,6 +64,22 @@
       },
       {
         "arguments": {
+          "id": {
+            "field": "id",
+            "identity": "collection.primary",
+            "source": "selection"
+          }
+        },
+        "command": "archive",
+        "confirmation": {
+          "message": "The request will leave the active view but remain recoverable in persisted state.",
+          "title": "Archive request?"
+        },
+        "identity": "record.archive",
+        "label": "Archive Request"
+      },
+      {
+        "arguments": {
           "mode": {
             "source": "literal",
             "value": "all"

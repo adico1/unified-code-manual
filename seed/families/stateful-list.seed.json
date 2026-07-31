@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/registries/stateful-interface-controls@1",
       "path": "../registries/stateful-interface-controls.seed.json",
-      "sha256": "fc2f783361f57102fc78c0b129fe517b7252f9c70c9cc35ba689b95ce729bb20"
+      "sha256": "960d66a03892467c56ddb1562cc98699aad45b86e19be3966f70aadb8738dd21"
     }
   ],
   "format": "manual-seed-base-1",

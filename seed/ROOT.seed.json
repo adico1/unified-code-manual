@@ -8,12 +8,12 @@
     {
       "identity": "uc://authorities/applications/costed-todo.seed.json",
       "path": "seed/applications/costed-todo.seed.json",
-      "sha256": "13c789ef4033b2502a4e36dc164b87aeb423f83368f339a56ee5940c857d8412"
+      "sha256": "ca604986a8b41e5645e97e52146e252970d5a327ed4bf6c8583ddf95bab50703"
     },
     {
       "identity": "uc://authorities/applications/development-observatory.seed.json",
       "path": "seed/applications/development-observatory.seed.json",
-      "sha256": "2bd65a1effe9088839bf645e14ab83cc3375c5ad48dfcf2aa32765955db078f2"
+      "sha256": "11065421ee01c9d1aafdff24dd1e6659b650939e3950704f9e7444bd1b42ac49"
     },
     {
       "identity": "uc://authorities/applications/engineering-units.seed.json",
@@ -78,7 +78,7 @@
     {
       "identity": "uc://authorities/applications/todo.seed.json",
       "path": "seed/applications/todo.seed.json",
-      "sha256": "a72ffb1962b750a1dfa5a672d287ca44ac24f14f036b4bd3ccbffeef30266e5f"
+      "sha256": "412ec9d100b741ff957b9bb37c65227f378cdbeda9aea34b973a3dbf6d723f18"
     },
     {
       "identity": "uc://manual/seeds/בלי_מה@1",
@@ -88,7 +88,7 @@
     {
       "identity": "uc://manual/catalogs/application-profiles@1",
       "path": "seed/catalog.seed.json",
-      "sha256": "41b132bfd003e060be1b30eae14b07268caefa9711f1392ac8da82619219eb7b"
+      "sha256": "709d1ec4aff9a0932bd0c7394507cb1e313bcbc8109eb90ba8130b401be45c6b"
     },
     {
       "identity": "uc://manual/seeds/bounded-simulation-family@1",
@@ -103,7 +103,7 @@
     {
       "identity": "uc://manual/seeds/stateful-list-family@1",
       "path": "seed/families/stateful-list.seed.json",
-      "sha256": "4b2481643bb8cb9a9f7c11da58d25ada9a85944107787c78987b9af0fc2ac504"
+      "sha256": "7fe5eed2d365ba4d7ef2ea5b5530a74392d76e1007fe62636ff6a0c8dbc17f24"
     },
     {
       "identity": "uc://manual/registries/calculator-keys@1",
@@ -118,7 +118,7 @@
     {
       "identity": "uc://manual/registries/stateful-interface-controls@1",
       "path": "seed/registries/stateful-interface-controls.seed.json",
-      "sha256": "fc2f783361f57102fc78c0b129fe517b7252f9c70c9cc35ba689b95ce729bb20"
+      "sha256": "960d66a03892467c56ddb1562cc98699aad45b86e19be3966f70aadb8738dd21"
     },
     {
       "identity": "uc://authorities/schema.json",
@@ -178,7 +178,7 @@
       "identity": "uc://manual/creator/src/seed_compiler.py",
       "path": "src/seed_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "2c752cec0ad8d172c210a8c432610ad76991536bc531954dba499756154a41cb"
+      "sha256": "e9643ee79f72d76d8f07b9064dc22fb9b4ffeb072d0cc091a17940087086b5d9"
     },
     {
       "identity": "uc://manual/creator/src/semantic_expression.py",
@@ -196,7 +196,7 @@
       "identity": "uc://manual/creator/src/stateful_compiler.py",
       "path": "src/stateful_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "755465bc8585f1e9dc65d8d573db719df53fbdb2974db6cff4664f450b6b66ee"
+      "sha256": "c14cc9a8b45e8dfcb673bebb8c60e2fc473b43a633fd1eec05198fc89e589fd0"
     }
   ],
   "fixed_point": {

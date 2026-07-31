@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/stateful-list-family@1",
       "path": "../families/stateful-list.seed.json",
-      "sha256": "4b2481643bb8cb9a9f7c11da58d25ada9a85944107787c78987b9af0fc2ac504"
+      "sha256": "7fe5eed2d365ba4d7ef2ea5b5530a74392d76e1007fe62636ff6a0c8dbc17f24"
     }
   ],
   "format": "manual-what-seed-4",
@@ -19,6 +19,7 @@
                 "next_id": 6,
                 "observations": [
                   {
+                    "archived": false,
                     "completed": true,
                     "id": 1,
                     "kind": "achievement",
@@ -39,6 +40,7 @@
                     "ראה": "The seed and generated product resolve to one identity."
                   },
                   {
+                    "archived": false,
                     "completed": false,
                     "id": 2,
                     "kind": "review",
@@ -59,6 +61,7 @@
                     "ראה": "Every product identity is derived from registered seed data."
                   },
                   {
+                    "archived": false,
                     "completed": false,
                     "id": 3,
                     "kind": "gap",
@@ -79,6 +82,7 @@
                     "ראה": "Authority remains divided between ROOT and handwritten creator code."
                   },
                   {
+                    "archived": false,
                     "completed": false,
                     "id": 4,
                     "kind": "direction",
@@ -99,6 +103,7 @@
                     "ראה": "Required root-generation dependencies remain open."
                   },
                   {
+                    "archived": false,
                     "completed": false,
                     "id": 5,
                     "kind": "request",
@@ -127,6 +132,7 @@
             "next_id": 6,
             "observations": [
               {
+                "archived": false,
                 "completed": true,
                 "id": 1,
                 "kind": "achievement",
@@ -147,6 +153,7 @@
                 "ראה": "The seed and generated product resolve to one identity."
               },
               {
+                "archived": false,
                 "completed": false,
                 "id": 2,
                 "kind": "review",
@@ -167,6 +174,7 @@
                 "ראה": "Every product identity is derived from registered seed data."
               },
               {
+                "archived": false,
                 "completed": false,
                 "id": 3,
                 "kind": "gap",
@@ -187,6 +195,7 @@
                 "ראה": "Authority remains divided between ROOT and handwritten creator code."
               },
               {
+                "archived": false,
                 "completed": false,
                 "id": 4,
                 "kind": "direction",
@@ -207,6 +216,7 @@
                 "ראה": "Required root-generation dependencies remain open."
               },
               {
+                "archived": false,
                 "completed": false,
                 "id": 5,
                 "kind": "request",
@@ -881,6 +891,10 @@
             }
           }
         },
+        "visibility": {
+          "equals": false,
+          "field": "archived"
+        },
         "width": 150
       },
       "geometry": "1400x720+40+40",
@@ -912,7 +926,7 @@
         },
         {
           "column": 3,
-          "key": "record.remove",
+          "key": "record.archive",
           "row": 2
         },
         {
@@ -944,6 +958,7 @@
             "outward": [],
             "record": {
               "fields": {
+                "archived": false,
                 "completed": false,
                 "observer": "user",
                 "temporal": "future"
@@ -968,39 +983,92 @@
         },
         {
           "assertions": {
-            "collection_count": 4,
+            "collection_count": 5,
             "error": null,
             "outward": [],
             "record": {
               "fields": {
+                "archived": false,
                 "completed": true
               },
               "match": {
-                "equals": 2,
-                "field": "id"
+                "equals": "Complete this request",
+                "field": "title"
               },
               "present": true
             },
             "state_fields": {
               "filter": "all"
             },
-            "visible_count": 4
+            "visible_count": 5
           },
           "control": "record.toggle",
-          "id": "complete-reopen",
+          "id": "complete-request",
           "restart": true,
           "selection": {
             "identity": "collection.primary",
-            "index": 1
-          }
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Complete this request"
+              },
+              "command": "create"
+            }
+          ]
         },
         {
           "assertions": {
-            "collection_count": 4,
+            "collection_count": 5,
             "error": null,
             "outward": [],
             "record": {
               "fields": {
+                "archived": false,
+                "completed": false
+              },
+              "match": {
+                "equals": "Reopen this request",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 5
+          },
+          "control": "record.toggle",
+          "id": "reopen-request",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Reopen this request"
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "id": 5
+              },
+              "command": "toggle"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": "protected-observation",
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false,
                 "completed": false
               },
               "match": {
@@ -1015,20 +1083,11 @@
             "visible_count": 4
           },
           "control": "record.toggle",
-          "id": "reopen",
-          "restart": true,
+          "id": "protect-system-completion",
           "selection": {
             "identity": "collection.primary",
             "index": 1
-          },
-          "setup": [
-            {
-              "arguments": {
-                "id": 2
-              },
-              "command": "toggle"
-            }
-          ]
+          }
         },
         {
           "assertions": {
@@ -1039,6 +1098,7 @@
             ],
             "record": {
               "fields": {
+                "archived": false,
                 "completed": true
               },
               "match": {
@@ -1061,25 +1121,101 @@
         },
         {
           "assertions": {
-            "collection_count": 3,
-            "error": null,
+            "collection_count": 5,
+            "error": "confirmation-declined",
             "outward": [],
             "record": {
-              "fields": {},
-              "match": {
-                "equals": 1,
-                "field": "id"
+              "fields": {
+                "archived": false
               },
-              "present": false
+              "match": {
+                "equals": "Keep this request",
+                "field": "title"
+              },
+              "present": true
             },
             "state_fields": {
               "filter": "all"
             },
-            "visible_count": 3
+            "visible_count": 5
           },
-          "control": "record.remove",
-          "id": "delete",
+          "confirmation": false,
+          "control": "record.archive",
+          "id": "decline-archive",
           "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Keep this request"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 5,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": true
+              },
+              "match": {
+                "equals": "Archive this request",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "confirmation": true,
+          "control": "record.archive",
+          "id": "archive-request",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Archive this request"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": "protected-observation",
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false
+              },
+              "match": {
+                "equals": 1,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "confirmation": true,
+          "control": "record.archive",
+          "id": "protect-system-archive",
           "selection": {
             "identity": "collection.primary",
             "index": 0
@@ -1180,7 +1316,8 @@
         "invalid-link",
         "מלך_עולם",
         "אדון_הכל",
-        "UC_MANUAL_DEVELOPMENT_OBSERVATORY_STATE"
+        "UC_MANUAL_DEVELOPMENT_OBSERVATORY_STATE",
+        "protected-observation"
       ],
       "commands": [
         {
@@ -1196,6 +1333,9 @@
               "op": "append",
               "value": {
                 "object": {
+                  "archived": {
+                    "literal": false
+                  },
                   "completed": {
                     "literal": false
                   },
@@ -1314,6 +1454,21 @@
               "value": {
                 "argument": "id"
               }
+            },
+            {
+              "collection": "observations",
+              "error": "protected-observation",
+              "field": "observer",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "record_field_equals",
+              "value": {
+                "literal": "user"
+              }
             }
           ],
           "id": "toggle",
@@ -1328,6 +1483,11 @@
           ],
           "effects": [
             {
+              "changes": {
+                "archived": {
+                  "literal": true
+                }
+              },
               "collection": "observations",
               "match": {
                 "field": "id",
@@ -1335,7 +1495,7 @@
                   "argument": "id"
                 }
               },
-              "op": "remove"
+              "op": "update"
             }
           ],
           "guards": [
@@ -1347,9 +1507,24 @@
               "value": {
                 "argument": "id"
               }
+            },
+            {
+              "collection": "observations",
+              "error": "protected-observation",
+              "field": "observer",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "record_field_equals",
+              "value": {
+                "literal": "user"
+              }
             }
           ],
-          "id": "remove",
+          "id": "archive",
           "persist": true
         },
         {
@@ -1419,6 +1594,7 @@
           "id",
           "title",
           "completed",
+          "archived",
           "kind",
           "temporal",
           "phase",
@@ -1459,6 +1635,7 @@
         "next_id": 5,
         "observations": [
           {
+            "archived": false,
             "completed": true,
             "id": 1,
             "kind": "achievement",
@@ -1478,6 +1655,7 @@
             "ראה": "The seed and generated product resolve to one identity."
           },
           {
+            "archived": false,
             "completed": false,
             "id": 2,
             "kind": "review",
@@ -1497,6 +1675,7 @@
             "ראה": "Every product identity is derived from registered seed data."
           },
           {
+            "archived": false,
             "completed": false,
             "id": 3,
             "kind": "gap",
@@ -1516,6 +1695,7 @@
             "ראה": "Authority remains divided between ROOT and handwritten creator code."
           },
           {
+            "archived": false,
             "completed": false,
             "id": 4,
             "kind": "direction",

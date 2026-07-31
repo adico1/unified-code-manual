@@ -407,11 +407,24 @@ def materialize_stateful(
         any(
             not isinstance(item, dict)
             or not {"identity", "label", "command"} <= set(item)
-            or set(item) - {"identity", "label", "command", "arguments"}
+            or set(item)
+            - {"identity", "label", "command", "arguments", "confirmation"}
             or not isinstance(item["identity"], str)
             or not isinstance(item["label"], str)
             or not isinstance(item["command"], str)
             or not isinstance(item.get("arguments", {}), dict)
+            or (
+                "confirmation" in item
+                and (
+                    not isinstance(item["confirmation"], dict)
+                    or set(item["confirmation"]) != {"title", "message"}
+                    or not all(
+                        isinstance(item["confirmation"][field], str)
+                        and item["confirmation"][field]
+                        for field in ("title", "message")
+                    )
+                )
+            )
             for item in control_registry
         )
         or len(identities) != len(set(identities))
