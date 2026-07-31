@@ -30,7 +30,7 @@ The operation requires:
 3. all seed-declared and derived negative acceptance cases to pass;
 4. generated tests for every application;
 5. copied execution without seed, compiler, or repository access;
-6. byte-identical second builds in independent directories;
+6. byte-identical, independently resolved builds in sibling directories;
 7. no seed or compiler loading path in generated runtime source;
 8. zero selected application vocabulary in the compiler;
 9. exact seed, compiler, file, and tree hashes;
@@ -66,6 +66,14 @@ The operation requires:
 25. eight bounded paddle-simulation profiles specialize clock, controllers,
     motion, boundaries, collisions, thresholds, Canvas projection and tests;
     six unsupported market categories remain explicitly catalogued.
+26. every product passes four named watchers: behold for physical presence,
+    see for canonical identity, investigate for executable hashes and results,
+    and understand for authority and provenance.
+27. the product-first README and index are regenerated exactly, every declared
+    path resolves, and the complete-tree identity changes with every generated
+    file except its own identity carrier.
+28. ROOT rejects a missing or altered trusted creator while honestly retaining
+    `gap.root-creator-not-generated`.
 
 Current measured result:
 
@@ -101,10 +109,12 @@ catalogued = 6
 cross-family applications = 1
 cross-family call-resolution mutations = 2/2
 runtime expression-interpreter files = 0
+product watchers = 292/292
 catalog snapshot =
 93daa3146944e87a046bd89a23a3ecf0556e913755608dab5649b03c8a14ddd2
-complete tree =
+product tree =
 305c451c998d079d68fc767fc8496b80eeb883821847c57937015635773ba9d2
+complete tree = emitted by `build/complete-tree.sha256`
 Costed Todo artifact =
 a6d5461f2615d9ab5230977afdaba7012a5d1f85aa82dd97f800e0df9ed5a6a4
 ROOT authority =
@@ -131,6 +141,9 @@ classified build layout = 3 groups / 73 products / 0 cache files
   only a seed change.
 - A genuinely new semantic primitive requires a generic language extension.
 - A new target language requires a generic compiler projection.
+- The trusted creator is content-addressed but still handwritten. ROOT reports
+  `gap.root-creator-not-generated`; this application proof is not a root
+  self-hosting proof.
 - The Todo profiles are schema-specialized persistent record managers. Fields
   named for reminders, collaboration, encryption boundaries, scheduling, and
   similar concerns are stored application data; no notification, network,

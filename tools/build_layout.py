@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 import shutil
 from pathlib import Path
@@ -17,6 +18,7 @@ LAYERS = (
     "verification",
     "manifest",
 )
+TREE_IDENTITY = "complete-tree.sha256"
 
 
 def canonical(value):
@@ -24,6 +26,20 @@ def canonical(value):
         json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         + "\n"
     ).encode()
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def complete_tree_digest(root):
+    root = Path(root)
+    files = {
+        path.relative_to(root).as_posix(): digest(path.read_bytes())
+        for path in sorted(root.rglob("*"))
+        if path.is_file() and path.name != TREE_IDENTITY
+    }
+    return digest(canonical(files))
 
 
 def coordinates(document):

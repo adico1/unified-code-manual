@@ -40,6 +40,21 @@ class DynamicSuiteTests(unittest.TestCase):
             context = VERIFY_ALL.safe_process_context()
         self.assertEqual(context.get_start_method(), "fork")
 
+    def test_worker_permission_failure_is_not_retried_as_threads(self):
+        context = unittest.mock.Mock()
+        workers = unittest.mock.MagicMock()
+        workers.__enter__.return_value.map.side_effect = PermissionError(
+            "application-boundary-denied"
+        )
+        with (
+            patch.object(VERIFY_ALL, "safe_process_context", return_value=context),
+            patch.object(VERIFY_ALL, "ProcessPoolExecutor", return_value=workers),
+            patch.object(VERIFY_ALL, "ThreadPoolExecutor") as threads,
+        ):
+            with self.assertRaisesRegex(PermissionError, "application-boundary-denied"):
+                VERIFY_ALL.compile_application_pairs(({},))
+        threads.assert_not_called()
+
     def test_suite_size_is_declared_by_enabled_applications(self):
         applications = [
             {

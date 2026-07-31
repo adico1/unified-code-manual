@@ -314,7 +314,7 @@ class KeyRegistryContractTests(unittest.TestCase):
     def test_generated_application_self_test_rejects_broken_route(self):
         operation = self.generated_application.clear
 
-        def broken_route(_value):
+        def broken_route():
             raise RuntimeError("broken-route")
 
         self.generated_application.clear = broken_route

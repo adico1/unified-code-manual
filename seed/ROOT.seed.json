@@ -126,6 +126,74 @@
       "sha256": "04370962eda487fb7b391f0912ef642367b5084f561e4a7c543652b08688dd7b"
     }
   ],
+  "creator_authorities": [
+    {
+      "identity": "uc://manual/creator/uc",
+      "path": "uc",
+      "provenance": "trusted-manual",
+      "sha256": "16ed3b548b2ce579a4cc1ecbd51485b7cc9630bf3867db3777bbfe5566aefb5c"
+    },
+    {
+      "identity": "uc://manual/creator/tools/build_layout.py",
+      "path": "tools/build_layout.py",
+      "provenance": "trusted-manual",
+      "sha256": "e0b88cf8e9adc529efc4f5a7b6e409681b69b902956059258c90f70ec8e68318"
+    },
+    {
+      "identity": "uc://manual/creator/tools/catalog_materializer.py",
+      "path": "tools/catalog_materializer.py",
+      "provenance": "trusted-manual",
+      "sha256": "fd2c28f5b3ace9783cf8cad5b192a0f3d9ceb266abe11e5add80e3e79c23b9c3"
+    },
+    {
+      "identity": "uc://manual/creator/tools/single_api.py",
+      "path": "tools/single_api.py",
+      "provenance": "trusted-manual",
+      "sha256": "7179a4fda9c239b309cfc33c64c5a819ef4a4708b7da89e4ecef570af48d28c5"
+    },
+    {
+      "identity": "uc://manual/creator/tools/verify_all.py",
+      "path": "tools/verify_all.py",
+      "provenance": "trusted-manual",
+      "sha256": "65f644ac93a5e18b1480f8ec60379f1795a2c5255f3ff1682535dca8f65dca6e"
+    },
+    {
+      "identity": "uc://manual/creator/src/declaration_compiler.py",
+      "path": "src/declaration_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "aa09b37ef26b0575e730ad5c871db85843df5f0035314394cc66f324d8944464"
+    },
+    {
+      "identity": "uc://manual/creator/src/root_authority.py",
+      "path": "src/root_authority.py",
+      "provenance": "trusted-manual",
+      "sha256": "3e75aeffe595e0e7a0fb3850ad2fceca4417f2d84efcbd421a5e867877cabf67"
+    },
+    {
+      "identity": "uc://manual/creator/src/seed_compiler.py",
+      "path": "src/seed_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "b56c40db0c0418d3c79ae3b962d8337a2283ef4d3ecbbe01c0650f76725ce313"
+    },
+    {
+      "identity": "uc://manual/creator/src/semantic_expression.py",
+      "path": "src/semantic_expression.py",
+      "provenance": "trusted-manual",
+      "sha256": "437b82a56fa01296d06d5140c13bd34e6496a8eeda13db643055a8f54fef3323"
+    },
+    {
+      "identity": "uc://manual/creator/src/simulation_compiler.py",
+      "path": "src/simulation_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "e6e225639959a1f1c523bbdcca9f4e9b43fcbc7e8179fbbf358760cd37eb3a31"
+    },
+    {
+      "identity": "uc://manual/creator/src/stateful_compiler.py",
+      "path": "src/stateful_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "cb9e3dece33bacffcd4f857a4c5d469b22e884dcd89a76b8551e12d721f182a8"
+    }
+  ],
   "fixed_point": {
     "algorithm": "sha256-canonical-json-and-generated-tree",
     "cycle": "invalid",
@@ -138,7 +206,9 @@
     "host_law": "independent-hosts-one-canonical-interface",
     "identity": "UEM-16-v0.1"
   },
-  "open_gaps": [],
+  "open_gaps": [
+    "gap.root-creator-not-generated"
+  ],
   "operation": {
     "entrypoint": "tools/single_api.py",
     "identity": "assemble-all",
@@ -146,6 +216,19 @@
       "seed/bases/בלי_מה.seed.json",
       "seed/suite.seed.json",
       "seed/catalog.seed.json"
+    ],
+    "required_creator_authorities": [
+      "uc",
+      "tools/build_layout.py",
+      "tools/catalog_materializer.py",
+      "tools/single_api.py",
+      "tools/verify_all.py",
+      "src/declaration_compiler.py",
+      "src/root_authority.py",
+      "src/seed_compiler.py",
+      "src/semantic_expression.py",
+      "src/simulation_compiler.py",
+      "src/stateful_compiler.py"
     ]
   },
   "scope": "application-language-convergence",

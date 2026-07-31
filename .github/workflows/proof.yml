@@ -15,8 +15,4 @@ jobs:
       - name: Resolve the Tk runtime boundary
         run: brew install python-tk@3.14
       - name: Run unit and seed-to-application proofs within one budget
-        run: |
-          python3 -m unittest discover -s tests -v &
-          unit_pid=$!
-          python3 tools/single_api.py
-          wait "$unit_pid"
+        run: python3 tools/single_api.py

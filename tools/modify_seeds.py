@@ -23,6 +23,14 @@ CALCULATOR_FAMILY = SEED_ROOT / "families" / "calculator.seed.json"
 LEAF_FORMAT = "manual-what-seed-4"
 BASE_FORMAT = "manual-seed-base-1"
 ROOT_FORMAT = "unified-root-seed-1"
+CREATOR_PATHS = (
+    ROOT / "uc",
+    ROOT / "tools" / "build_layout.py",
+    ROOT / "tools" / "catalog_materializer.py",
+    ROOT / "tools" / "single_api.py",
+    ROOT / "tools" / "verify_all.py",
+    *sorted((ROOT / "src").glob("*.py")),
+)
 
 
 def canonical(value):
@@ -280,15 +288,30 @@ def expected_documents():
                 "seed/suite.seed.json",
                 "seed/catalog.seed.json",
             ],
+            "required_creator_authorities": [
+                path.relative_to(ROOT).as_posix()
+                for path in CREATOR_PATHS
+            ],
         },
         "authorities": root_authorities,
+        "creator_authorities": [
+            {
+                "identity": (
+                    "uc://manual/creator/" + path.relative_to(ROOT).as_posix()
+                ),
+                "path": path.relative_to(ROOT).as_posix(),
+                "provenance": "trusted-manual",
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in CREATOR_PATHS
+        ],
         "fixed_point": {
             "algorithm": "sha256-canonical-json-and-generated-tree",
             "cycle": "invalid",
             "maximum_passes": 10,
             "second_pass_changes": 0,
         },
-        "open_gaps": [],
+        "open_gaps": ["gap.root-creator-not-generated"],
     }
     documents[ROOT_SEED] = root
     return documents

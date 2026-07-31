@@ -23,7 +23,7 @@ TOOLS = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS))
 
 from build_layout import canonical as layout_canonical
-from build_layout import classify, coordinates, install_tree
+from build_layout import classify, complete_tree_digest, coordinates, install_tree
 from catalog_materializer import materialize_catalog, materialize_profile
 
 
@@ -340,51 +340,47 @@ def safe_process_context():
 
 
 def compile_application_pair_worker(request):
-    application, build_root = request
+    first_application, first_root, second_application, second_root = request
     compiler = load_compiler()
-    seed_path = application["seed_path"]
-    resolved_seed, authorities = compiler.load_seed(seed_path)
-    manifest, first_files = compiler.assemble_resolved(
-        resolved_seed,
-        authorities,
+
+    def compile_one(application, build_root):
+        seed_path = application["seed_path"]
+        resolved_seed, authorities = compiler.load_seed(seed_path)
+        manifest, files = compiler.assemble_resolved(resolved_seed, authorities)
+        leaf = json.loads(seed_path.read_text(encoding="utf-8"))
+        identity, destinations = classify(
+            build_root,
+            leaf,
+            resolved_seed,
+            files,
+            application["identity"]["group"],
+        )
+        return {
+            **application,
+            "identity": identity,
+            "output_path": destinations["product"],
+            "application": destinations["product"] / "main.py",
+            "source_path": destinations["source"],
+            "test_path": destinations["test"],
+            "traceability_path": destinations["traceability"],
+            "manifest_path": destinations["manifest"],
+            "authority_path": destinations["authority"],
+            "specification_path": destinations["specification"],
+            "evidence": manifest,
+            "resolved_seed": resolved_seed,
+            "leaf_document": leaf,
+        }
+
+    return (
+        compile_one(first_application, first_root),
+        compile_one(second_application, second_root),
     )
-    identity, destinations = classify(
-        build_root,
-        json.loads(seed_path.read_text(encoding="utf-8")),
-        resolved_seed,
-        first_files,
-        application["identity"]["group"],
-    )
-    first = {
-        **application,
-        "identity": identity,
-        "output_path": destinations["product"],
-        "application": destinations["product"] / "main.py",
-        "source_path": destinations["source"],
-        "test_path": destinations["test"],
-        "traceability_path": destinations["traceability"],
-        "manifest_path": destinations["manifest"],
-        "authority_path": destinations["authority"],
-        "specification_path": destinations["specification"],
-        "evidence": manifest,
-        "resolved_seed": resolved_seed,
-        "leaf_document": json.loads(
-            seed_path.read_text(encoding="utf-8")
-        ),
-    }
-    _manifest, second = compiler.assemble_resolved(
-        resolved_seed,
-        authorities,
-    )
-    return first, second
 
 
 def compile_application_pairs(requests):
     requests = list(requests)
-    try:
-        context = safe_process_context()
-        if context is None:
-            raise PermissionError("fork-from-worker-thread")
+    context = safe_process_context()
+    if context is not None:
         with ProcessPoolExecutor(
             max_workers=min(8, len(requests)),
             mp_context=context,
@@ -396,13 +392,8 @@ def compile_application_pairs(requests):
                     chunksize=max(1, len(requests) // 16),
                 )
             )
-    except PermissionError:
-        with ThreadPoolExecutor(
-            max_workers=min(16, len(requests))
-        ) as workers:
-            return list(
-                workers.map(compile_application_pair_worker, requests)
-            )
+    with ThreadPoolExecutor(max_workers=min(16, len(requests))) as workers:
+        return list(workers.map(compile_application_pair_worker, requests))
 
 
 def verify_isolated(generated):
@@ -819,7 +810,7 @@ def write_report(
     generated,
     hashes,
     separation,
-    complete_tree,
+    product_tree,
     seed_graph,
     key_registry,
     control_registry,
@@ -828,6 +819,7 @@ def write_report(
     declarations,
     catalog,
     cross_family,
+    product_watchers,
 ):
     runner_bytes = Path(__file__).read_bytes()
     single_api_bytes = Path(__file__).with_name("single_api.py").read_bytes()
@@ -885,7 +877,7 @@ def write_report(
         },
         "generated_source": source_churn(generated),
         "deterministic_artifact_hashes": hashes,
-        "complete_tree_sha256": complete_tree,
+        "product_tree_sha256": product_tree,
         "compiler_application_vocabulary": separation,
         "manual_application_code": 0,
         "manual_application_tests": 0,
@@ -912,6 +904,7 @@ def write_report(
         "concise_declarations": declarations,
         "application_profile_catalog": catalog,
         "cross_family_composition": cross_family,
+        "product_watchers": product_watchers,
     }
     destination = Path(build_root) / "reports" / "assembly-report.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -921,10 +914,10 @@ def write_report(
     return report
 
 
-def write_index(build_root, generated, complete_tree):
-    index = {
+def build_index(generated, build_root, product_tree):
+    return {
         "format": "manual-build-index-1",
-        "complete_tree_sha256": complete_tree,
+        "product_tree_sha256": product_tree,
         "products": [
             {
                 "canonical_identity": item["identity"]["canonical_identity"],
@@ -951,12 +944,13 @@ def write_index(build_root, generated, complete_tree):
             )
         ],
     }
-    destination = Path(build_root) / "index.json"
-    destination.write_bytes(canonical(index))
+
+
+def render_build_readme(index):
     groups = {}
     for item in index["products"]:
         groups.setdefault(item["build_group"], []).append(item)
-    readme = [
+    lines = [
         "# Generated applications",
         "",
         "Choose a product family first, then a product. Inside each product,",
@@ -965,21 +959,28 @@ def write_index(build_root, generated, complete_tree):
         "",
     ]
     for group, products in sorted(groups.items()):
-        readme.extend((f"## {group}", ""))
-        readme.extend(
+        lines.extend((f"## {group}", ""))
+        lines.extend(
             f"- [{item['variation']}@{item['version']}]"
             f"({group}/{item['variation']}@{item['version']}/)"
             for item in products
         )
-        readme.append("")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def write_index(build_root, generated, product_tree):
+    index = build_index(generated, build_root, product_tree)
+    destination = Path(build_root) / "index.json"
+    destination.write_bytes(canonical(index))
     (Path(build_root) / "README.md").write_text(
-        "\n".join(readme),
+        render_build_readme(index),
         encoding="utf-8",
     )
     return index
 
 
-def verify_product_first_layout(build_root, generated):
+def verify_product_first_layout(build_root, generated, complete_tree):
     build_root = Path(build_root)
     groups = {item["identity"]["group"] for item in generated}
     top_directories = {
@@ -987,6 +988,36 @@ def verify_product_first_layout(build_root, generated):
     }
     if top_directories != {*groups, "reports"}:
         raise ValueError("build-top-level-not-product-first")
+    top_files = {path.name for path in build_root.iterdir() if path.is_file()}
+    if top_files != {"README.md", "complete-tree.sha256", "index.json"}:
+        raise ValueError("build-top-level-files-incomplete")
+    try:
+        index = json.loads((build_root / "index.json").read_text(encoding="utf-8"))
+        expected_index = build_index(
+            generated,
+            build_root,
+            index["product_tree_sha256"],
+        )
+    except (KeyError, TypeError, json.JSONDecodeError) as error:
+        raise ValueError("build-index-invalid") from error
+    if index != expected_index:
+        raise ValueError("build-index-invalid")
+    if (build_root / "README.md").read_text(encoding="utf-8") != render_build_readme(
+        index
+    ):
+        raise ValueError("build-readme-invalid")
+    for record in index["products"]:
+        for declared in record["paths"].values():
+            relative = Path(declared)
+            if not relative.parts or relative.parts[0] != "build":
+                raise ValueError("build-index-path-invalid")
+            if not (build_root.joinpath(*relative.parts[1:])).exists():
+                raise ValueError("build-index-target-missing")
+    recorded_tree = (build_root / "complete-tree.sha256").read_text(
+        encoding="utf-8"
+    ).strip()
+    if recorded_tree != complete_tree or complete_tree_digest(build_root) != complete_tree:
+        raise ValueError("complete-tree-identity-mismatch")
     for item in generated:
         product_root = item["output_path"].parent
         if {path.name for path in product_root.iterdir()} != {
@@ -1012,6 +1043,91 @@ def verify_product_first_layout(build_root, generated):
         "products": len(generated),
         "product_runtime_files": len(generated),
         "cache_files": 0,
+    }
+
+
+def observe_products(generated):
+    def observed(operation):
+        try:
+            return bool(operation())
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+            return False
+
+    observations = []
+    for item in generated:
+        try:
+            manifest = json.loads(
+                item["manifest_path"].read_text(encoding="utf-8")
+            )
+        except (KeyError, json.JSONDecodeError, OSError):
+            manifest = {}
+        try:
+            trace = json.loads(
+                item["traceability_path"].read_text(encoding="utf-8")
+            )
+        except (KeyError, json.JSONDecodeError, OSError):
+            trace = {}
+        files = {
+            "main.py": item["application"],
+            "test_generated.py": item["test_path"],
+            "traceability.json": item["traceability_path"],
+        }
+        verdicts = {
+            "behold": observed(
+                lambda: all(
+                    path.is_file() and path.stat().st_size > 0
+                    for path in (
+                        item["authority_path"],
+                        item["specification_path"],
+                        item["source_path"],
+                        item["application"],
+                        item["test_path"],
+                        item["traceability_path"],
+                        item["manifest_path"],
+                    )
+                )
+            ),
+            "see": observed(
+                lambda: manifest["identity"]
+                == item["leaf_document"]["what"]["identity"]
+                and coordinates(item["leaf_document"])["canonical_identity"]
+                == item["identity"]["canonical_identity"]
+            ),
+            "investigate": observed(
+                lambda: all(
+                    manifest["files"].get(name) == digest(path.read_bytes())
+                    for name, path in files.items()
+                )
+                and manifest["verification"]["passed"]
+                == manifest["verification"]["total"]
+            ),
+            "understand": observed(
+                lambda: trace["seed_sha256"] == manifest["seed_sha256"]
+                and trace["authorities"] == manifest["authorities"]
+                and manifest["runtime_seed_files"] == 0
+                and manifest["manual_application_files"] == 0
+                and manifest["manual_test_files"] == 0
+            ),
+        }
+        failed = [name for name, passed in verdicts.items() if not passed]
+        if failed:
+            raise ValueError(
+                "product-watcher:" + item["id"] + ":" + ",".join(failed)
+            )
+        observations.append(
+            {
+                "canonical_identity": item["identity"]["canonical_identity"],
+                "verdicts": verdicts,
+            }
+        )
+    return {
+        "products": len(observations),
+        "watchers_per_product": 4,
+        "passed": sum(
+            sum(record["verdicts"].values()) for record in observations
+        ),
+        "total": len(observations) * 4,
+        "observations": observations,
     }
 
 
@@ -1433,13 +1549,26 @@ def verify_control_registry(applications, compiler):
 
 
 def generate_in_stage(*, self_test, build_root):
+    build_root = Path(build_root)
+    repeat_root = build_root.parent / "second"
     applications = load_suite(build_root)
+    repeated_applications = load_suite(repeat_root)
+    repeated_by_identity = {
+        item["identity"]["canonical_identity"]: item
+        for item in repeated_applications
+    }
     compiler = load_compiler()
     pairs = compile_application_pairs(
-        (application, build_root)
+        (
+            application,
+            build_root,
+            repeated_by_identity[application["identity"]["canonical_identity"]],
+            repeat_root,
+        )
         for application in applications
     )
     generated = [first for first, _second in pairs]
+    repeated_generated = [second for _first, second in pairs]
     calculator_applications = [
         item
         for item in generated
@@ -1456,11 +1585,15 @@ def generate_in_stage(*, self_test, build_root):
         for item in generated
     }
     second_trees = {
-        first["id"]: expected_classified_tree(first, second)
-        for first, second in pairs
+        item["id"]: classified_tree(item)
+        for item in repeated_generated
     }
     if first_trees != second_trees:
         raise ValueError("non-deterministic-output")
+    product_watchers = observe_products(generated)
+    repeated_watchers = observe_products(repeated_generated)
+    if product_watchers != repeated_watchers:
+        raise ValueError("independent-build-watcher-mismatch")
     product_trees = {
         item["id"]: tree_bytes(item["output_path"])
         for item in generated
@@ -1568,7 +1701,7 @@ def generate_in_stage(*, self_test, build_root):
         item["evidence"]["verification"]["total"]
         for item in generated
     )
-    complete_tree = digest(
+    product_tree = digest(
         canonical(
             {
                 identity: {
@@ -1579,14 +1712,15 @@ def generate_in_stage(*, self_test, build_root):
             }
         )
     )
-    shutil.rmtree(Path(build_root) / ".materialized")
+    shutil.rmtree(build_root / ".materialized")
+    shutil.rmtree(repeat_root / ".materialized")
     write_report(
         build_root,
         applications,
         generated,
         hashes,
         separation,
-        complete_tree,
+        product_tree,
         seed_graph,
         key_registry,
         control_registry,
@@ -1595,9 +1729,46 @@ def generate_in_stage(*, self_test, build_root):
         declarations,
         catalog,
         cross_family,
+        product_watchers,
     )
-    write_index(build_root, generated, complete_tree)
-    layout = verify_product_first_layout(build_root, generated)
+    write_index(build_root, generated, product_tree)
+    write_report(
+        repeat_root,
+        repeated_applications,
+        repeated_generated,
+        hashes,
+        separation,
+        product_tree,
+        seed_graph,
+        key_registry,
+        control_registry,
+        key_callbacks,
+        self_test_verification,
+        declarations,
+        catalog,
+        cross_family,
+        repeated_watchers,
+    )
+    write_index(repeat_root, repeated_generated, product_tree)
+    repeated_complete_tree = complete_tree_digest(repeat_root)
+    (repeat_root / "complete-tree.sha256").write_text(
+        repeated_complete_tree + "\n",
+        encoding="utf-8",
+    )
+    verify_product_first_layout(
+        repeat_root,
+        repeated_generated,
+        repeated_complete_tree,
+    )
+    shutil.rmtree(repeat_root)
+    complete_tree = complete_tree_digest(build_root)
+    (build_root / "complete-tree.sha256").write_text(
+        complete_tree + "\n",
+        encoding="utf-8",
+    )
+    if complete_tree != repeated_complete_tree:
+        raise ValueError("independent-build-tree-mismatch")
+    layout = verify_product_first_layout(build_root, generated, complete_tree)
     print(
         "proof: "
         f"applications={len(generated)} "
@@ -1630,6 +1801,8 @@ def generate_in_stage(*, self_test, build_root):
         f"cross-family={len(cross_family['applications'])} "
         f"cross-family-mutations={cross_family['mutations']['passed']}/"
         f"{cross_family['mutations']['total']} "
+        f"product-watchers={product_watchers['passed']}/"
+        f"{product_watchers['total']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )
@@ -1643,19 +1816,24 @@ def generate_in_stage(*, self_test, build_root):
         "application_profile_catalog": catalog,
         "cross_family_composition": cross_family,
         "deterministic_artifact_hashes": hashes,
+        "independent_tree_hashes": [complete_tree, repeated_complete_tree],
         "complete_tree_sha256": complete_tree,
         "build_layout": layout,
+        "product_watchers": product_watchers,
     }
 
 
 def generate_all_from_seeds(*, self_test):
-    stage = Path(tempfile.mkdtemp(prefix=".build-", dir=ROOT))
+    container = Path(tempfile.mkdtemp(prefix=".build-", dir=ROOT))
+    stage = container / "first"
+    stage.mkdir()
     try:
         result = generate_in_stage(self_test=self_test, build_root=stage)
         install_tree(stage, BUILD)
+        container.rmdir()
         return result
     except BaseException:
-        shutil.rmtree(stage, ignore_errors=True)
+        shutil.rmtree(container, ignore_errors=True)
         raise
 
 

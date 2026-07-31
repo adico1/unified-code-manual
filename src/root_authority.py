@@ -24,6 +24,10 @@ def digest(value):
     return hashlib.sha256(canonical(value)).hexdigest()
 
 
+def raw_digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
 def load_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -65,6 +69,22 @@ def verify_root(path):
     required = set(root.get("operation", {}).get("required_authorities", ()))
     if not required <= set(paths):
         errors.append("operation-authority-missing")
+    creator_authorities = root.get("creator_authorities", ())
+    creator_paths = [item.get("path") for item in creator_authorities]
+    if not creator_authorities or len(creator_paths) != len(set(creator_paths)):
+        errors.append("creator-authority-invalid")
+    for reference in creator_authorities:
+        target = (repository / reference.get("path", "")).resolve(strict=False)
+        if repository not in target.parents or not target.is_file():
+            errors.append("creator-authority-missing:" + str(reference.get("path")))
+            continue
+        if raw_digest(target) != reference.get("sha256"):
+            errors.append("creator-authority-hash:" + reference["path"])
+    required_creators = set(
+        root.get("operation", {}).get("required_creator_authorities", ())
+    )
+    if not required_creators <= set(creator_paths):
+        errors.append("creator-authority-required")
     if errors:
         raise ValueError("invalid-root:" + ",".join(sorted(set(errors))))
     return {
@@ -75,6 +95,7 @@ def verify_root(path):
         "semantic_depths": 10,
         "canonical_states": list(STATES),
         "authorities": len(verified),
+        "creator_authorities": len(creator_authorities),
         "verified_authorities": verified,
         "open_gaps": list(root.get("open_gaps", ())),
         "verdict": "PASS",

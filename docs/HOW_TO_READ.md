@@ -323,7 +323,12 @@ A generated location alone is not proof of provenance.
 - Normal launch self-tests once, resets state, and then enters the lazy Tk
   event loop.
 - CI executes the same public operation.
-- Total verification obeys the five-second law.
+- The one public operation starts the unit suite and application proof together;
+  one outer clock enforces the five-second law across both.
+- Every product is observed through four verdicts: `behold`, `see`,
+  `investigate`, and `understand`.
+- `complete-tree.sha256` covers the generated README, index, report, and every
+  product byte; only the identity file itself is excluded to avoid recursion.
 
 ### Failure behavior
 
