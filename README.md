@@ -181,6 +181,8 @@ application without the repository or seed and runs its generated tests again.
 
 Start with [how to read and review the project](docs/HOW_TO_READ.md), then see
 [the proof](docs/PROOF.md) for measured evidence,
+[the 64-profile application catalog](docs/CATALOG.md) for the distinction
+between 13 proven applications and 51 catalogued variations,
 [the multi-family article](docs/TODO_ARTICLE.md), and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
 Publication-ready article and announcement copy are collected in
