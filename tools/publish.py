@@ -45,6 +45,58 @@ def frontmatter(source):
     return metadata, match.group(2).strip() + "\n"
 
 
+def words(value):
+    return {
+        item
+        for item in re.findall(r"[a-z0-9]+", value.casefold())
+        if item
+        not in {
+            "a",
+            "an",
+            "and",
+            "app",
+            "article",
+            "for",
+            "from",
+            "publish",
+            "the",
+            "to",
+            "with",
+        }
+    }
+
+
+def resolve_article(query):
+    requested = words(query)
+    candidates = []
+    for path in sorted((ROOT / "docs").glob("*ARTICLE.md")):
+        metadata, article = frontmatter(path.read_text(encoding="utf-8"))
+        vocabulary = words(
+            " ".join(
+                (
+                    metadata.get("title", ""),
+                    metadata.get("slug", ""),
+                    metadata.get("keywords", ""),
+                )
+            )
+        )
+        candidates.append(
+            (len(requested & vocabulary), path, metadata, article)
+        )
+    score = max(item[0] for item in candidates)
+    selected = [item for item in candidates if item[0] == score]
+    if score == 0 or len(selected) != 1:
+        raise ValueError("article-resolution")
+    _score, path, metadata, article = selected[0]
+    evidence = ROOT / "docs" / metadata.get(
+        "evidence",
+        PACKAGE.name if path == ARTICLE else "",
+    )
+    if not evidence.is_file():
+        raise ValueError("article-evidence")
+    return path, evidence, metadata, article
+
+
 def inline(source):
     escaped = html.escape(source, quote=False)
     escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
@@ -237,7 +289,7 @@ def publish_wordpress_browser(bundle, site):
 def verify(query):
     if not query.strip():
         raise ValueError("empty-publication-query")
-    metadata, article = frontmatter(ARTICLE.read_text(encoding="utf-8"))
+    article_path, evidence_path, metadata, article = resolve_article(query)
     if metadata.get("status") != "ready":
         raise ValueError("article-not-ready")
     proof = run(
@@ -250,10 +302,15 @@ def verify(query):
         raise ValueError("publication-worktree-not-clean")
     run(["git", "merge-base", "--is-ancestor", "origin/main", "HEAD"])
     match = re.search(r"complete-tree=([0-9a-f]{64})", proof.stdout)
-    if match is None or match.group(1) not in PACKAGE.read_text(encoding="utf-8"):
+    if (
+        match is None
+        or match.group(1)
+        not in evidence_path.read_text(encoding="utf-8")
+    ):
         raise ValueError("publication-evidence-mismatch")
     return {
         "query": query,
+        "article_path": article_path.relative_to(ROOT).as_posix(),
         "metadata": metadata,
         "article": article,
         "html": markdown_html(article),
@@ -312,6 +369,7 @@ def main(argv=None):
         "query": bundle["query"],
         "head": bundle["head"],
         "tree_sha256": bundle["tree_sha256"],
+        "article": bundle["article_path"],
         "targets": ["github", "wordpress"],
         "linkedin_copy": "docs/PUBLICATION.md",
     }

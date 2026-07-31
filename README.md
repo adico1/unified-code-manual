@@ -1,4 +1,4 @@
-# From Seeds to Apps — Twelve Calculators
+# From Seeds to Apps — Twelve Calculators and Todo
 
 This repository is the handwritten learning track beside
 [Unified Code](https://github.com/adico1/unified-code). It is an experimental
@@ -6,11 +6,11 @@ proof of one precise boundary:
 
 ```text
 one pinned בלי_מה authority
-→ one canonical Key registry
-→ one calculator-family base seed
-→ twelve application מה seeds
+→ canonical interface registries
+→ calculator and stateful-list family seeds
+→ thirteen application מה seeds
 → one generic build-time assembly compiler
-→ twelve exact specialized applications
+→ thirteen exact specialized applications
 ```
 
 It does not claim full Standard Ten, UEM, self-hosting, or representation of
@@ -18,7 +18,7 @@ every possible calculator.
 
 ## One operation
 
-Generate, build, install, execute, exercise, and close all twelve applications:
+Generate, build, install, execute, exercise, and close all thirteen applications:
 
 ```bash
 python3 tools/single_api.py
@@ -35,13 +35,13 @@ Publish the verified repository and article through one words-in operation:
 
 ```bash
 python3 tools/publish.py \
-  "publish From Seeds to Apps with the proven technical claim" \
+  "publish Todo application-family proof" \
   --execute
 ```
 
 The operation verifies everything before its first external write, pushes the
-exact verified commit to GitHub `main`, and idempotently creates or updates the
-canonical adico.tech article through WordPress REST. It uses
+exact verified commit to GitHub `main`, resolves one article from the words,
+and idempotently creates or updates it through WordPress REST. It uses
 `ADICO_WORDPRESS_USER` and `ADICO_WORDPRESS_APP_PASSWORD` when supplied;
 otherwise it uses the authenticated WordPress session in Brave as the REST
 authorization boundary. Credentials are never stored in the repository.
@@ -53,13 +53,17 @@ authorization boundary. Credentials are never stored in the repository.
 - `seed/bases/בלי_מה.seed.json` contains invariant construction authority.
 - `seed/registries/calculator-keys.seed.json` defines every reusable Key once
   under a globally unique identity.
+- `seed/registries/stateful-interface-controls.seed.json` defines reusable
+  stateful-interface controls and their argument sources.
 - `seed/families/calculator.seed.json` specializes that authority for the
   calculator family.
-- `seed/applications/*.seed.json` are twelve application-specific מה seeds.
+- `seed/families/stateful-list.seed.json` supplies domain-neutral state,
+  collection, persistence, and interface boundaries.
+- `seed/applications/*.seed.json` are thirteen application-specific מה seeds.
 - `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
 - `src/seed_compiler.py` is the generic structured-program compiler.
-- `seed/suite.seed.json` lists the twelve seed paths and output paths; it
+- `seed/suite.seed.json` lists the thirteen seed paths and output paths; it
   contains no application behavior.
 - `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
   rebuilding, source-separation checks, and parallel application self-starts
@@ -67,7 +71,7 @@ authorization boundary. Credentials are never stored in the repository.
 - `tools/single_api.py` is the one public seed-to-closed-GUI operation.
 - `build/` contains disposable applications and evidence and is ignored.
 
-The twelve applications are:
+The thirteen applications are:
 
 ```text
 normal
@@ -82,6 +86,7 @@ engineering-units
 rpn
 ohms-law
 quadratic-polynomial
+todo
 ```
 
 ## Seed authority
@@ -102,7 +107,7 @@ contracts, the six ordered build-time stampers for one body, registered control
 routes, physical boundaries, rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
 selected Keys and operations, so those truths are not repeated in every
-application seed.
+calculator seed.
 
 The resolved declarations are the complete application program. At build time
 the calculator declaration language composes the six stampers around the
@@ -111,6 +116,14 @@ AST. No leaf seed contains an AST or source blob. The generic compiler writes
 the application and generated tests, records seed-to-source traceability,
 verifies positive and derived negative acceptance, and installs the result
 atomically.
+
+The Todo seed uses the same authority resolver, assembly operation, atomic
+emitter, generated-test boundary, traceability, deterministic rebuild, and
+clean-room verifier. Its stateful-interface declaration selects generic
+commands, guards, collection transformations, persistence, controls, and
+acceptance sequences. The compiler contains no Todo application vocabulary.
+The generated application persists its exact state atomically and proves the
+same state after restart without loading its seed at runtime.
 
 Generated tests structurally verify every emitted Key callback against its
 generated route signature. Traceability records both the leaf placement and
@@ -167,7 +180,8 @@ tree and requires byte-identical outputs. It then copies each generated
 application without the repository or seed and runs its generated tests again.
 
 Start with [how to read and review the project](docs/HOW_TO_READ.md), then see
-[the proof](docs/PROOF.md) for measured evidence and
+[the proof](docs/PROOF.md) for measured evidence,
+[the multi-family article](docs/TODO_ARTICLE.md), and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
 Publication-ready article and announcement copy are collected in
 [the publication package](docs/PUBLICATION.md).
