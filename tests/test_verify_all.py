@@ -17,6 +17,16 @@ SPECIFICATION.loader.exec_module(VERIFY_ALL)
 
 
 class DynamicSuiteTests(unittest.TestCase):
+    def test_catalog_defines_user_facing_product_groups(self):
+        groups = VERIFY_ALL.catalog_product_groups()
+        counts = {}
+        for group in groups.values():
+            counts[group] = counts.get(group, 0) + 1
+        self.assertEqual(
+            counts,
+            {"calculators": 32, "pong-games": 8, "todos": 33},
+        )
+
     def test_macos_worker_thread_cannot_select_fork_context(self):
         with (
             patch.object(VERIFY_ALL.sys, "platform", "darwin"),
@@ -39,7 +49,7 @@ class DynamicSuiteTests(unittest.TestCase):
             for index in range(11)
         ]
         document = {
-            "format": "manual-seed-program-suite-3",
+            "format": "manual-seed-program-suite-4",
             "applications": applications,
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -48,6 +58,21 @@ class DynamicSuiteTests(unittest.TestCase):
             with (
                 patch.object(VERIFY_ALL, "SUITE", suite),
                 patch.object(VERIFY_ALL, "materialize_catalog", return_value=[]),
+                patch.object(
+                    VERIFY_ALL,
+                    "application_descriptor",
+                    side_effect=lambda item, _groups: {
+                        **item,
+                        "identity": {
+                            "canonical_identity": "uc://test/" + item["id"]
+                        },
+                    },
+                ),
+                patch.object(
+                    VERIFY_ALL,
+                    "catalog_product_groups",
+                    return_value={},
+                ),
             ):
                 loaded = VERIFY_ALL.load_suite()
         self.assertEqual(

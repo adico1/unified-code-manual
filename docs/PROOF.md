@@ -95,23 +95,21 @@ registered build-time stages = 7
 derived transitions = 946
 derived reachable errors = 182
 generated editable-input checks = 3 per application
-catalog profiles = 78
-catalog proven = 72
+catalog profiles = 79
+catalog proven = 73
 catalogued = 6
 cross-family applications = 1
 cross-family call-resolution mutations = 2/2
 runtime expression-interpreter files = 0
 catalog snapshot =
-d0bf974898aa3acef36a12af1567bc6cd9aee719a7ef2d1bec4ab4db3ba57dd9
+93daa3146944e87a046bd89a23a3ecf0556e913755608dab5649b03c8a14ddd2
 complete tree =
-071aba11d8e2ff029bc4096bc982f006ba1bf94989b68865453ad8fdd723abed
+305c451c998d079d68fc767fc8496b80eeb883821847c57937015635773ba9d2
 Costed Todo artifact =
 a6d5461f2615d9ab5230977afdaba7012a5d1f85aa82dd97f800e0df9ed5a6a4
 ROOT authority =
-8218cd0272948bf4e862fc3e8d2c8b1f1937c8feb2498d0488b6a621a336eb7e
-local full verification = 2.937887 seconds
-local unit suite = 24/24 in 2.093 seconds
-exact-head CI verification budget = PASS (<5 seconds)
+367313f62af026b9c322ab619bfe9f983a9a009d59bb96c69d47ca171ac383fd
+classified build layout = 3 groups / 73 products / 0 cache files
 ```
 
 ## Honest boundary
@@ -137,7 +135,7 @@ exact-head CI verification budget = PASS (<5 seconds)
   named for reminders, collaboration, encryption boundaries, scheduling, and
   similar concerns are stored application data; no notification, network,
   cryptographic, or scheduling engine is claimed where none was generated.
-- This proves 72 catalog profiles plus one bounded cross-family application,
+- This proves 73 catalog profiles, including the bounded cross-family application,
   not every calculator, Todo application or paddle game,
   arbitrary applications, every GUI toolkit, full Standard Ten conformance,
   generated parallelism, or root-seed self-hosting.

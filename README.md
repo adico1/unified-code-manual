@@ -74,7 +74,7 @@ authorization boundary. Credentials are never stored in the repository.
 - `seed/applications/*.seed.json` are 15 direct application-specific מה seeds.
 - `seed/catalog.seed.json` contains 58 complete, pinned derived-seed programs.
 - `tools/catalog_materializer.py` applies only generic, content-addressed JSON
-  merge declarations and emits disposable complete seeds under `build/`.
+  merge declarations before each product is classified.
 - `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
 - `src/seed_compiler.py` is the generic structured-program compiler.
@@ -85,7 +85,10 @@ authorization boundary. Credentials are never stored in the repository.
   rebuilding, source-separation checks, and parallel application self-starts
   behind the single API.
 - `tools/single_api.py` is the one public seed-to-closed-GUI operation.
-- `build/` contains disposable applications and evidence and is ignored.
+- `build/` is product-first and ignored: open `build/README.md`, then choose
+  `calculators/`, `todos/`, or `pong-games/`. Each product keeps its runnable
+  application separate from authority, specification, source, verification,
+  and manifest evidence.
 
 The direct applications are:
 

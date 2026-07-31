@@ -63,24 +63,24 @@ class SimulationFamilyTests(unittest.TestCase):
             )
 
     def test_every_proven_paddle_profile_executes_generated_tests(self):
-        applications = {
-            item["id"]: item
-            for item in materialize_catalog()
-        }
         identities = (
-            "solo-opponent",
-            "wall-training",
-            "doubles",
-            "multiball",
-            "power-up",
-            "obstacle",
-            "timed-score-attack",
+            "solo-paddle-opponent",
+            "wall-return-training",
+            "doubles-paddle-duel",
+            "multiball-paddle-duel",
+            "power-up-paddle-arena",
+            "obstacle-paddle-arena",
+            "timed-paddle-score-attack",
         )
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            applications = {
+                item["id"]: item
+                for item in materialize_catalog(Path(directory) / "authority")
+            }
             for identity in identities:
                 application = applications[identity]
                 output = Path(directory) / identity
-                COMPILER.generate(ROOT / application["seed"], output)
+                COMPILER.generate(application["seed_path"], output)
                 specification = importlib.util.spec_from_file_location(
                     "generated_" + identity.replace("-", "_"),
                     output / "test_generated.py",

@@ -1,6 +1,7 @@
 {
   "families": [
     {
+      "build_group": "calculators",
       "identity": "uc://manual/catalog-families/calculator@1",
       "name": "calculator",
       "profile_namespace": "calculators",
@@ -2375,6 +2376,7 @@
       ]
     },
     {
+      "build_group": "todos",
       "identity": "uc://manual/catalog-families/todo@1",
       "name": "todo",
       "profile_namespace": "todo",
@@ -26794,10 +26796,24 @@
           "name": "Collaboration and sync planning record manager",
           "product_identity": "uc://manual/applications/collaboration-sync-plan@1",
           "status": "proven"
+        },
+        {
+          "capabilities": [
+            "persistent-records",
+            "generated-calculation",
+            "cross-family-composition"
+          ],
+          "class": "calculated-stateful-list",
+          "identity": "uc://manual/catalog/todo/costed-todo@1",
+          "name": "Costed Todo",
+          "product_identity": "uc://manual/applications/costed-todo@1",
+          "seed": "seed/applications/costed-todo.seed.json",
+          "status": "proven"
         }
       ]
     },
     {
+      "build_group": "pong-games",
       "identity": "uc://manual/catalog-families/paddle-simulation@1",
       "name": "paddle-simulation",
       "profile_namespace": "paddle-simulation",

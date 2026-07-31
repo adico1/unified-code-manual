@@ -25,6 +25,30 @@ by starting with generated Python.
 A generated file is not an authority. When generated output is wrong, correct
 the seed, registry, family contract, or generic compiler and regenerate it.
 
+## Read the generated products as a user
+
+Open [`build/README.md`](../build/README.md) after running `./uc`. The first
+choice is the product family:
+
+```text
+build/
+├── calculators/
+├── todos/
+└── pong-games/
+```
+
+Inside one named product, read only the layer you need:
+
+```text
+normal@1/
+├── application/main.py             runnable product
+├── authority/seed.json             exact resolved leaf authority
+├── specification/specification.json complete semantic structure
+├── source/main.py                  generated source before installation
+├── verification/                   generated test and trace
+└── manifest.json                   hashes and provenance
+```
+
 ## Reading order
 
 ### 1. Begin with the public contract
@@ -176,7 +200,8 @@ Then read the third family in this order:
 5. [`docs/PADDLE_GAMES.md`](PADDLE_GAMES.md)
 
 Trace one control path, one motion rule, one collision and one threshold from
-the seed into `build/classic-paddle-duel/main.py`. Confirm that the generated
+the seed into
+`build/pong-games/classic-paddle-duel@1/application/main.py`. Confirm that the generated
 runtime contains the selected entities and exact rules but does not import or
 parse the seed.
 - [`src/semantic_expression.py`](../src/semantic_expression.py)
@@ -200,7 +225,7 @@ declaration language; product words and error identities belong to the leaf
 seed.
 
 Finally trace `line_total` from the Costed Todo seed into
-`build/costed-todo/traceability.json` and the generated `_calculation_0`
+`build/todos/costed-todo@1/verification/traceability.json` and the generated `_calculation_0`
 function. Confirm that the stateful and calculator compilers import the same
 build-time expression authority and that the generated runtime imports neither.
 
@@ -231,9 +256,9 @@ jq '.what.presentation.keys[] | select(.key == "digit.7")' \
 python3 tools/single_api.py
 
 jq '.controls[] | select(.identity == "digit.7")' \
-  build/normal/traceability.json
+  build/calculators/normal@1/verification/traceability.json
 
-python3 build/normal/main.py --self-test
+python3 build/calculators/normal@1/application/main.py --self-test
 ```
 
 Repeat with `operator.expression.add`. Verify that:

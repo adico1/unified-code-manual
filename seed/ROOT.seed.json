@@ -83,7 +83,7 @@
     {
       "identity": "uc://manual/catalogs/application-profiles@1",
       "path": "seed/catalog.seed.json",
-      "sha256": "f1707e3be1d2bb3d85454bbbb2e58d86d0ed0d4d15d6ad6ac6a1140af5d5e57e"
+      "sha256": "2c5c35d1691bc03b09957cf1e3c5cbfb0458dedff144952b8e06eb212dcecec3"
     },
     {
       "identity": "uc://manual/seeds/bounded-simulation-family@1",
@@ -123,7 +123,7 @@
     {
       "identity": "uc://authorities/suite.seed.json",
       "path": "seed/suite.seed.json",
-      "sha256": "24f86c00d5317f4ea42798267d7d4559d9bad4146361cc93360e6bbbb0816163"
+      "sha256": "04370962eda487fb7b391f0912ef642367b5084f561e4a7c543652b08688dd7b"
     }
   ],
   "fixed_point": {

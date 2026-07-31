@@ -1,11 +1,11 @@
 # Application Profile Catalog
 
-This catalog maps 78 bounded application variations and currently proves 72.
+This catalog maps 79 bounded application variations and currently proves 73.
 
 ```text
-78 named profiles
+79 named profiles
 ├── 32 calculator profiles
-├── 32 Todo profiles
+├── 33 Todo profiles
 └── 14 paddle-simulation profiles
 ```
 
@@ -22,9 +22,9 @@ The current counts are:
 | Family | Profiles | Proven | Catalogued |
 | --- | ---: | ---: | ---: |
 | Calculator | 32 | 32 | 0 |
-| Todo | 32 | 32 | 0 |
+| Todo | 33 | 33 | 0 |
 | Paddle simulation | 14 | 8 | 6 |
-| Total | 78 | 72 | 6 |
+| Total | 79 | 73 | 6 |
 
 ## What the catalog measures
 
