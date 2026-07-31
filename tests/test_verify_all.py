@@ -2,6 +2,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
@@ -16,6 +17,19 @@ SPECIFICATION.loader.exec_module(VERIFY_ALL)
 
 
 class DynamicSuiteTests(unittest.TestCase):
+    def test_macos_worker_thread_cannot_select_fork_context(self):
+        with (
+            patch.object(VERIFY_ALL.sys, "platform", "darwin"),
+            ThreadPoolExecutor(max_workers=1) as worker,
+        ):
+            context = worker.submit(VERIFY_ALL.safe_process_context).result()
+        self.assertIsNone(context)
+
+    def test_main_thread_retains_fast_fork_before_gui_startup(self):
+        with patch.object(VERIFY_ALL.sys, "platform", "darwin"):
+            context = VERIFY_ALL.safe_process_context()
+        self.assertEqual(context.get_start_method(), "fork")
+
     def test_suite_size_is_declared_by_enabled_applications(self):
         applications = [
             {

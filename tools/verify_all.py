@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
 
 from catalog_materializer import materialize_catalog
@@ -237,6 +238,15 @@ def compile_application_worker(request):
     return compile_app(load_compiler(), application, output)
 
 
+def safe_process_context():
+    if (
+        sys.platform == "darwin"
+        and threading.current_thread() is not threading.main_thread()
+    ):
+        return None
+    return multiprocessing.get_context("fork")
+
+
 def compile_application_pair_worker(request):
     application, second_output = request
     compiler = load_compiler()
@@ -268,9 +278,12 @@ def compile_application_pair_worker(request):
 def compile_applications(requests):
     requests = list(requests)
     try:
+        context = safe_process_context()
+        if context is None:
+            raise PermissionError("fork-from-worker-thread")
         with ProcessPoolExecutor(
             max_workers=min(8, len(requests)),
-            mp_context=multiprocessing.get_context("fork"),
+            mp_context=context,
         ) as workers:
             return list(
                 workers.map(
@@ -289,9 +302,12 @@ def compile_applications(requests):
 def compile_application_pairs(requests):
     requests = list(requests)
     try:
+        context = safe_process_context()
+        if context is None:
+            raise PermissionError("fork-from-worker-thread")
         with ProcessPoolExecutor(
             max_workers=min(8, len(requests)),
-            mp_context=multiprocessing.get_context("fork"),
+            mp_context=context,
         ) as workers:
             return list(
                 workers.map(

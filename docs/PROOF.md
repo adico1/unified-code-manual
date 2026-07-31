@@ -105,8 +105,8 @@ Costed Todo artifact =
 a6d5461f2615d9ab5230977afdaba7012a5d1f85aa82dd97f800e0df9ed5a6a4
 ROOT authority =
 c84a6749f38a96cf909bff629b3eb08e8e631b75283715f69ffcd6371cf76cb4
-local full verification = 3.189648 seconds
-local unit suite = 19/19 in 2.104 seconds
+local full verification = 4.400469 seconds
+local unit suite = 21/21 in 2.602 seconds
 exact-head CI verification budget = PASS (<5 seconds)
 ```
 
