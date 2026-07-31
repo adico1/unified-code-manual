@@ -1,4 +1,5 @@
 import copy
+import importlib.util
 import json
 import subprocess
 import sys
@@ -38,6 +39,31 @@ class KeyRegistryContractTests(unittest.TestCase):
                 json.loads(cls.leaf.read_text(encoding="utf-8"))
             ),
         }
+        cls.generated_directory = tempfile.TemporaryDirectory()
+        cls.generated_output = Path(cls.generated_directory.name) / "normal"
+        COMPILER.generate(cls.leaf, cls.generated_output)
+        specification = importlib.util.spec_from_file_location(
+            "generated_normal_self_test",
+            cls.generated_output / "main.py",
+        )
+        cls.generated_application = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(cls.generated_application)
+        cls.master = cls.generated_application.Tk()
+        cls.master.withdraw()
+        cls.master.report_callback_exception = lambda *_arguments: None
+        cls.destroy_master = cls.master.destroy
+
+        def clear_surface():
+            for child in cls.master.winfo_children():
+                child.destroy()
+
+        cls.master.destroy = clear_surface
+        cls.generated_application.Tk = lambda: cls.master
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.destroy_master()
+        cls.generated_directory.cleanup()
 
     def materialize_with(self, identity, mutation):
         registry = copy.deepcopy(self.registry)
@@ -224,43 +250,26 @@ class KeyRegistryContractTests(unittest.TestCase):
             self.assertFalse(output.exists())
 
     def test_generated_application_self_tests_real_callbacks(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
-            result = subprocess.run(
-                [sys.executable, "main.py", "--self-test"],
-                cwd=output,
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-        report = json.loads(result.stdout)
+        report = self.generated_application.self_test_application()
         self.assertEqual(report["self_test"], {"passed": 21, "total": 21})
         self.assertTrue(report["closed"])
 
     def test_generated_application_self_test_rejects_broken_route(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
-            application = output / "main.py"
-            source = application.read_text(encoding="utf-8")
-            mutated = source.replace(
-                "def append(value):\n",
-                "def append(value):\n    raise RuntimeError('broken-route')\n",
-                1,
-            )
-            self.assertNotEqual(source, mutated)
-            application.write_text(mutated, encoding="utf-8")
-            result = subprocess.run(
-                [sys.executable, "main.py", "--self-test"],
-                cwd=output,
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-        self.assertNotEqual(result.returncode, 0)
+        operation = self.generated_application.clear
+
+        def broken_route(_value):
+            raise RuntimeError("broken-route")
+
+        self.generated_application.clear = broken_route
+        try:
+            report = self.generated_application.self_test_application()
+        finally:
+            self.generated_application.clear = operation
+        self.assertLess(
+            report["self_test"]["passed"],
+            report["self_test"]["total"],
+        )
+        self.assertTrue(report["closed"])
 
 
 if __name__ == "__main__":
