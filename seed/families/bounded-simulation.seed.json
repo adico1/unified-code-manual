@@ -1,0 +1,82 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/registries/simulation-controls@1",
+      "path": "../registries/simulation-controls.seed.json",
+      "sha256": "6fa0cd589e1aaf5d99f3956811624b1db7f568a79c5b657b3c204d38ed90233f"
+    }
+  ],
+  "format": "manual-seed-base-1",
+  "identity": "uc://manual/seeds/bounded-simulation-family@1",
+  "kind": "family-authority",
+  "provides": {
+    "assembly": {
+      "boundaries": [
+        {
+          "direction": "inward",
+          "effect": "registered participant control",
+          "identity": "tk.input"
+        },
+        {
+          "direction": "inward",
+          "effect": "monotonic scheduled tick",
+          "identity": "tk.clock"
+        },
+        {
+          "direction": "outward",
+          "effect": "generated geometric projection",
+          "identity": "tk.canvas"
+        },
+        {
+          "direction": "inward-outward",
+          "effect": "canonical deterministic scenario",
+          "identity": "process.case"
+        }
+      ],
+      "stamps": [
+        {
+          "identity": "יה.inward.outer_to_inner",
+          "stage": "01_outer_to_inner"
+        },
+        {
+          "identity": "יהוה.inner_to_core",
+          "stage": "02_inner_to_core"
+        },
+        {
+          "identity": "יהוה.core_prepare",
+          "stage": "03_core_prepare"
+        },
+        {
+          "identity": "יהוה.core_processing",
+          "stage": "04_core_processing"
+        },
+        {
+          "identity": "יהוה.core_collect",
+          "stage": "05_core_collect"
+        },
+        {
+          "identity": "יהוה.core_to_inner",
+          "stage": "06_core_to_inner"
+        },
+        {
+          "identity": "יה.outward.inner_to_outer",
+          "stage": "07_inner_to_outer"
+        }
+      ]
+    },
+    "family": "bounded-simulation",
+    "program_language": "bounded-simulation-declaration-1",
+    "required_meaning": [
+      "identity",
+      "semantics",
+      "state",
+      "presentation",
+      "program",
+      "acceptance"
+    ],
+    "runtime_contract": {
+      "case_entrypoint": "run_case",
+      "launch_entrypoint": "launch"
+    }
+  }
+}

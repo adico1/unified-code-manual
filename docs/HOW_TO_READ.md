@@ -166,6 +166,19 @@ After understanding one calculator, read:
 - [`seed/families/stateful-list.seed.json`](../seed/families/stateful-list.seed.json)
 - [`seed/applications/todo.seed.json`](../seed/applications/todo.seed.json)
 - [`seed/applications/costed-todo.seed.json`](../seed/applications/costed-todo.seed.json)
+
+Then read the third family in this order:
+
+1. [`seed/registries/simulation-controls.seed.json`](../seed/registries/simulation-controls.seed.json)
+2. [`seed/families/bounded-simulation.seed.json`](../seed/families/bounded-simulation.seed.json)
+3. [`seed/applications/classic-paddle-duel.seed.json`](../seed/applications/classic-paddle-duel.seed.json)
+4. [`src/simulation_compiler.py`](../src/simulation_compiler.py)
+5. [`docs/PADDLE_GAMES.md`](PADDLE_GAMES.md)
+
+Trace one control path, one motion rule, one collision and one threshold from
+the seed into `build/classic-paddle-duel/main.py`. Confirm that the generated
+runtime contains the selected entities and exact rules but does not import or
+parse the seed.
 - [`src/semantic_expression.py`](../src/semantic_expression.py)
 - [`src/stateful_compiler.py`](../src/stateful_compiler.py)
 

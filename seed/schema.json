@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "uc://schemas/manual-seed-graph@4",
+    "$id": "uc://schemas/manual-seed-graph@5",
   "title": "Recursive manual seed graph",
   "oneOf": [
     {
@@ -219,6 +219,10 @@
         "presentation": {
           "additionalProperties": false,
           "properties": {
+            "collection": {"type": "object"},
+            "control_arguments": {"type": "object"},
+            "entities": {"type": "array", "items": {"type": "object"}},
+            "inputs": {"type": "array", "items": {"type": "object"}},
             "keys": {
               "items": {
                 "additionalProperties": false,
@@ -256,6 +260,11 @@
             "mode_label": {
               "type": "string"
             },
+            "score_text": {"type": "string"},
+            "self_tests": {"type": "array", "items": {"type": "object"}},
+            "status": {"type": "object"},
+            "surface": {"type": "object"},
+            "text_fill": {"type": "string"},
             "theme": {
               "type": "object"
             },
@@ -267,9 +276,6 @@
           "required": [
             "title",
             "geometry",
-            "mode_label",
-            "layout",
-            "theme",
             "keys"
           ],
           "type": "object"
@@ -282,7 +288,11 @@
               "type": "string"
             },
             "language": {
-              "const": "calculator-declaration-1"
+              "enum": [
+                "calculator-declaration-1",
+                "stateful-interface-declaration-1",
+                "bounded-simulation-declaration-1"
+              ]
             },
             "launch_entrypoint": {
               "minLength": 1,
@@ -299,6 +309,14 @@
         "semantics": {
           "additionalProperties": false,
           "properties": {
+            "application_vocabulary": {"type": "array", "items": {"type": "string"}},
+            "boundaries": {"type": "array", "items": {"type": "object"}},
+            "calculations": {"type": "object"},
+            "clock": {"type": "object"},
+            "collisions": {"type": "array", "items": {"type": "object"}},
+            "commands": {"type": "array", "items": {"type": "object"}},
+            "controllers": {"type": "array", "items": {"type": "object"}},
+            "motion": {"type": "array", "items": {"type": "object"}},
             "numeric_laws": {
               "type": "object"
             },
@@ -313,12 +331,13 @@
             },
             "validation": {
               "type": "object"
-            }
+            },
+            "thresholds": {"type": "array", "items": {"type": "object"}}
           },
-          "required": [
-            "numeric_laws",
-            "operations",
-            "validation"
+          "anyOf": [
+            {"required": ["numeric_laws", "operations"]},
+            {"required": ["commands"]},
+            {"required": ["clock", "motion", "validation"]}
           ],
           "type": "object"
         },

@@ -1,0 +1,411 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/bounded-simulation-family@1",
+      "path": "../families/bounded-simulation.seed.json",
+      "sha256": "29f65ad0c7fa4c6fcf451735767ccf4489e22c7163f4ec9844ffc5695653316c"
+    }
+  ],
+  "format": "manual-what-seed-4",
+  "what": {
+    "acceptance": [
+      {
+        "expected": {
+          "entities": {
+            "left-bat": {
+              "height": 60,
+              "vx": 0,
+              "vy": 0,
+              "width": 10,
+              "x": 20,
+              "y": 90
+            },
+            "orb": {
+              "height": 10,
+              "vx": 5,
+              "vy": 3,
+              "width": 10,
+              "x": 200,
+              "y": 118
+            },
+            "right-bat": {
+              "height": 60,
+              "vx": 0,
+              "vy": 0,
+              "width": 10,
+              "x": 370,
+              "y": 90
+            }
+          },
+          "left_score": 0,
+          "right_score": 0,
+          "status": "playing",
+          "tick": 1
+        },
+        "id": "classic.motion",
+        "input": {
+          "steps": [
+            {
+              "ticks": 1
+            }
+          ]
+        }
+      },
+      {
+        "expected": {
+          "entities": {
+            "left-bat": {
+              "height": 60,
+              "vx": 0,
+              "vy": 0,
+              "width": 10,
+              "x": 20,
+              "y": 72
+            },
+            "orb": {
+              "height": 10,
+              "vx": 5,
+              "vy": 3,
+              "width": 10,
+              "x": 195,
+              "y": 115
+            },
+            "right-bat": {
+              "height": 60,
+              "vx": 0,
+              "vy": 0,
+              "width": 10,
+              "x": 370,
+              "y": 90
+            }
+          },
+          "left_score": 0,
+          "right_score": 0,
+          "status": "playing",
+          "tick": 0
+        },
+        "id": "classic.control",
+        "input": {
+          "steps": [
+            {
+              "control": "participant.left.up"
+            }
+          ]
+        }
+      }
+    ],
+    "identity": {
+      "canonical": "uc://manual/applications/classic-paddle-duel@1",
+      "family": "bounded-simulation",
+      "variation": "classic-paddle-duel",
+      "version": 1
+    },
+    "presentation": {
+      "entities": [
+        {
+          "fill": "white",
+          "identity": "left-bat"
+        },
+        {
+          "fill": "white",
+          "identity": "right-bat"
+        },
+        {
+          "fill": "white",
+          "identity": "orb"
+        }
+      ],
+      "geometry": "420x330+80+80",
+      "keys": [
+        {
+          "column": 0,
+          "key": "participant.left.up",
+          "row": 1
+        },
+        {
+          "column": 1,
+          "key": "participant.left.down",
+          "row": 1
+        },
+        {
+          "column": 2,
+          "key": "participant.right.up",
+          "row": 1
+        },
+        {
+          "column": 3,
+          "key": "participant.right.down",
+          "row": 1
+        }
+      ],
+      "layout": {
+        "kind": "bounded-two-dimensional-arena"
+      },
+      "mode_label": "local two-participant · first to 11",
+      "score_text": "{left_score} : {right_score}",
+      "self_tests": [
+        {
+          "expected": {
+            "entities": {
+              "left-bat": {
+                "height": 60,
+                "vx": 0,
+                "vy": 0,
+                "width": 10,
+                "x": 20,
+                "y": 72
+              },
+              "orb": {
+                "height": 10,
+                "vx": 5,
+                "vy": 3,
+                "width": 10,
+                "x": 195,
+                "y": 115
+              },
+              "right-bat": {
+                "height": 60,
+                "vx": 0,
+                "vy": 0,
+                "width": 10,
+                "x": 370,
+                "y": 90
+              }
+            },
+            "left_score": 0,
+            "right_score": 0,
+            "status": "playing",
+            "tick": 0
+          },
+          "input": {
+            "steps": [
+              {
+                "control": "participant.left.up"
+              }
+            ]
+          }
+        }
+      ],
+      "status": {
+        "row": 2
+      },
+      "surface": {
+        "background": "black",
+        "height": 240,
+        "width": 400
+      },
+      "text_fill": "white",
+      "theme": {
+        "identity": "monochrome"
+      },
+      "title": "Classic Paddle Duel"
+    },
+    "program": {
+      "case_entrypoint": "run_case",
+      "language": "bounded-simulation-declaration-1",
+      "launch_entrypoint": "launch"
+    },
+    "semantics": {
+      "application_vocabulary": [
+        "classic-paddle-duel",
+        "left-bat",
+        "right-bat",
+        "orb"
+      ],
+      "boundaries": [
+        {
+          "entity": "orb",
+          "maximum": 230,
+          "minimum": 0,
+          "position": "y",
+          "velocity": "vy"
+        },
+        {
+          "entity": "left-bat",
+          "maximum": 180,
+          "minimum": 0,
+          "position": "y",
+          "velocity": "vy"
+        },
+        {
+          "entity": "right-bat",
+          "maximum": 180,
+          "minimum": 0,
+          "position": "y",
+          "velocity": "vy"
+        }
+      ],
+      "clock": {
+        "mode": "real-time",
+        "tick_milliseconds": 16
+      },
+      "collisions": [
+        {
+          "moving": "orb",
+          "scale": 1,
+          "target": "left-bat",
+          "velocity": "vx"
+        },
+        {
+          "moving": "orb",
+          "scale": 1,
+          "target": "right-bat",
+          "velocity": "vx"
+        }
+      ],
+      "controllers": [],
+      "motion": [
+        {
+          "entity": "orb",
+          "position": "x",
+          "velocity": "vx"
+        },
+        {
+          "entity": "orb",
+          "position": "y",
+          "velocity": "vy"
+        }
+      ],
+      "thresholds": [
+        {
+          "changes": [
+            {
+              "operation": "increment",
+              "path": [
+                "right_score"
+              ],
+              "value": 1
+            },
+            {
+              "operation": "set",
+              "path": [
+                "entities",
+                "orb",
+                "x"
+              ],
+              "value": 195
+            },
+            {
+              "operation": "set",
+              "path": [
+                "entities",
+                "orb",
+                "y"
+              ],
+              "value": 115
+            },
+            {
+              "operation": "set",
+              "path": [
+                "entities",
+                "orb",
+                "vx"
+              ],
+              "value": 5
+            }
+          ],
+          "path": [
+            "entities",
+            "orb",
+            "x"
+          ],
+          "relation": "below",
+          "value": 0
+        },
+        {
+          "changes": [
+            {
+              "operation": "increment",
+              "path": [
+                "left_score"
+              ],
+              "value": 1
+            },
+            {
+              "operation": "set",
+              "path": [
+                "entities",
+                "orb",
+                "x"
+              ],
+              "value": 195
+            },
+            {
+              "operation": "set",
+              "path": [
+                "entities",
+                "orb",
+                "y"
+              ],
+              "value": 115
+            },
+            {
+              "operation": "set",
+              "path": [
+                "entities",
+                "orb",
+                "vx"
+              ],
+              "value": -5
+            }
+          ],
+          "path": [
+            "entities",
+            "orb",
+            "x"
+          ],
+          "relation": "above",
+          "value": 390
+        }
+      ],
+      "validation": {
+        "errors": [
+          "unknown-control",
+          "invalid-step"
+        ]
+      }
+    },
+    "state": {
+      "authority": "declarations",
+      "fields": [
+        "entities",
+        "tick",
+        "left_score",
+        "right_score",
+        "status"
+      ],
+      "initial": {
+        "entities": {
+          "left-bat": {
+            "height": 60,
+            "vx": 0,
+            "vy": 0,
+            "width": 10,
+            "x": 20,
+            "y": 90
+          },
+          "orb": {
+            "height": 10,
+            "vx": 5,
+            "vy": 3,
+            "width": 10,
+            "x": 195,
+            "y": 115
+          },
+          "right-bat": {
+            "height": 60,
+            "vx": 0,
+            "vy": 0,
+            "width": 10,
+            "x": 370,
+            "y": 90
+          }
+        },
+        "left_score": 0,
+        "right_score": 0,
+        "status": "playing",
+        "tick": 0
+      }
+    }
+  }
+}

@@ -26796,6 +26796,1835 @@
           "status": "proven"
         }
       ]
+    },
+    {
+      "identity": "uc://manual/catalog-families/paddle-simulation@1",
+      "name": "paddle-simulation",
+      "profile_namespace": "paddle-simulation",
+      "profiles": [
+        {
+          "capabilities": [
+            "two-participant",
+            "bounded-arena",
+            "deterministic-physics"
+          ],
+          "class": "classic-duel",
+          "identity": "uc://manual/catalog/paddle-simulation/classic-paddle-duel@1",
+          "name": "Classic local paddle duel",
+          "product_identity": "uc://manual/applications/classic-paddle-duel@1",
+          "seed": "seed/applications/classic-paddle-duel.seed.json",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "single-participant",
+            "deterministic-opponent",
+            "difficulty"
+          ],
+          "class": "solo-opponent",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "left-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 90
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": 5,
+                          "vy": 3,
+                          "width": 10,
+                          "x": 200,
+                          "y": 118
+                        },
+                        "right-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 94
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "playing",
+                      "tick": 1
+                    },
+                    "id": "solo.opponent-motion",
+                    "input": {
+                      "steps": [
+                        {
+                          "ticks": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/solo-paddle-opponent@1",
+                  "family": "bounded-simulation",
+                  "variation": "solo-paddle-opponent",
+                  "version": 1
+                },
+                "presentation": {
+                  "keys": [
+                    {
+                      "column": 0,
+                      "key": "participant.left.up",
+                      "row": 1
+                    },
+                    {
+                      "column": 1,
+                      "key": "participant.left.down",
+                      "row": 1
+                    }
+                  ],
+                  "mode_label": "single participant · deterministic opponent",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "left-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 90
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": 5,
+                            "vy": 3,
+                            "width": 10,
+                            "x": 200,
+                            "y": 118
+                          },
+                          "right-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 94
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "playing",
+                        "tick": 1
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "ticks": 1
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Solo Paddle Opponent"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "solo-paddle-opponent",
+                    "left-bat",
+                    "right-bat",
+                    "orb"
+                  ],
+                  "controllers": [
+                    {
+                      "maximum": 180,
+                      "minimum": 0,
+                      "observed": [
+                        "entities",
+                        "orb",
+                        "y"
+                      ],
+                      "step": 4,
+                      "target": [
+                        "entities",
+                        "right-bat",
+                        "y"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/solo-opponent@1",
+          "name": "Solo paddle duel against a deterministic opponent",
+          "product_identity": "uc://manual/applications/solo-paddle-opponent@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "single-participant",
+            "reflecting-wall",
+            "survival-score"
+          ],
+          "class": "wall-training",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "left-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 90
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": -5,
+                          "vy": -3,
+                          "width": 10,
+                          "x": 390,
+                          "y": 227
+                        },
+                        "right-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 90
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "playing",
+                      "tick": 40
+                    },
+                    "id": "wall-training.reflection",
+                    "input": {
+                      "steps": [
+                        {
+                          "ticks": 40
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/wall-return-training@1",
+                  "family": "bounded-simulation",
+                  "variation": "wall-return-training",
+                  "version": 1
+                },
+                "presentation": {
+                  "entities": [
+                    {
+                      "fill": "white",
+                      "identity": "left-bat"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "orb"
+                    }
+                  ],
+                  "keys": [
+                    {
+                      "column": 0,
+                      "key": "participant.left.up",
+                      "row": 1
+                    },
+                    {
+                      "column": 1,
+                      "key": "participant.left.down",
+                      "row": 1
+                    }
+                  ],
+                  "mode_label": "single participant · reflecting wall",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "left-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 90
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": -5,
+                            "vy": -3,
+                            "width": 10,
+                            "x": 390,
+                            "y": 227
+                          },
+                          "right-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 90
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "playing",
+                        "tick": 40
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "ticks": 40
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Wall-return Training"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "wall-return-training",
+                    "left-bat",
+                    "right-bat",
+                    "orb"
+                  ],
+                  "boundaries": [
+                    {
+                      "entity": "orb",
+                      "maximum": 230,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "orb",
+                      "maximum": 390,
+                      "minimum": 0,
+                      "position": "x",
+                      "velocity": "vx"
+                    },
+                    {
+                      "entity": "left-bat",
+                      "maximum": 180,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    }
+                  ],
+                  "collisions": [
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "left-bat",
+                      "velocity": "vx"
+                    }
+                  ],
+                  "thresholds": []
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/wall-training@1",
+          "name": "Wall-return survival training",
+          "product_identity": "uc://manual/applications/wall-return-training@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "four-participant",
+            "team-controls",
+            "shared-goal"
+          ],
+          "class": "doubles",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "left-bat-a": {
+                          "height": 45,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 22
+                        },
+                        "left-bat-b": {
+                          "height": 45,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 132
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": 5,
+                          "vy": 3,
+                          "width": 10,
+                          "x": 195,
+                          "y": 115
+                        },
+                        "right-bat-a": {
+                          "height": 45,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 40
+                        },
+                        "right-bat-b": {
+                          "height": 45,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 150
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "playing",
+                      "tick": 0
+                    },
+                    "id": "doubles.team-control",
+                    "input": {
+                      "steps": [
+                        {
+                          "control": "team.left.up"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/doubles-paddle-duel@1",
+                  "family": "bounded-simulation",
+                  "variation": "doubles-paddle-duel",
+                  "version": 1
+                },
+                "presentation": {
+                  "entities": [
+                    {
+                      "fill": "white",
+                      "identity": "left-bat-a"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "left-bat-b"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "right-bat-a"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "right-bat-b"
+                    },
+                    {
+                      "fill": "yellow",
+                      "identity": "orb"
+                    }
+                  ],
+                  "keys": [
+                    {
+                      "column": 0,
+                      "key": "team.left.up",
+                      "row": 1
+                    },
+                    {
+                      "column": 1,
+                      "key": "team.left.down",
+                      "row": 1
+                    },
+                    {
+                      "column": 2,
+                      "key": "team.right.up",
+                      "row": 1
+                    },
+                    {
+                      "column": 3,
+                      "key": "team.right.down",
+                      "row": 1
+                    }
+                  ],
+                  "mode_label": "two coordinated participants per side",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "left-bat-a": {
+                            "height": 45,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 22
+                          },
+                          "left-bat-b": {
+                            "height": 45,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 132
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": 5,
+                            "vy": 3,
+                            "width": 10,
+                            "x": 195,
+                            "y": 115
+                          },
+                          "right-bat-a": {
+                            "height": 45,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 40
+                          },
+                          "right-bat-b": {
+                            "height": 45,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 150
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "playing",
+                        "tick": 0
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "control": "team.left.up"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Doubles Paddle Duel"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "doubles-paddle-duel",
+                    "left-bat-a",
+                    "left-bat-b",
+                    "right-bat-a",
+                    "right-bat-b",
+                    "orb"
+                  ],
+                  "boundaries": [
+                    {
+                      "entity": "orb",
+                      "maximum": 230,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "left-bat-a",
+                      "maximum": 195,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "left-bat-b",
+                      "maximum": 195,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "right-bat-a",
+                      "maximum": 195,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "right-bat-b",
+                      "maximum": 195,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    }
+                  ],
+                  "collisions": [
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "left-bat-a",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "left-bat-b",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "right-bat-a",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "right-bat-b",
+                      "velocity": "vx"
+                    }
+                  ]
+                },
+                "state": {
+                  "initial": {
+                    "entities": {
+                      "left-bat": null,
+                      "left-bat-a": {
+                        "height": 45,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 20,
+                        "y": 40
+                      },
+                      "left-bat-b": {
+                        "height": 45,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 20,
+                        "y": 150
+                      },
+                      "orb": {
+                        "height": 10,
+                        "vx": 5,
+                        "vy": 3,
+                        "width": 10,
+                        "x": 195,
+                        "y": 115
+                      },
+                      "right-bat": null,
+                      "right-bat-a": {
+                        "height": 45,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 370,
+                        "y": 40
+                      },
+                      "right-bat-b": {
+                        "height": 45,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 370,
+                        "y": 150
+                      }
+                    },
+                    "left_score": 0,
+                    "right_score": 0,
+                    "status": "playing",
+                    "tick": 0
+                  }
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/doubles@1",
+          "name": "Two-versus-two paddle duel",
+          "product_identity": "uc://manual/applications/doubles-paddle-duel@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "four-sided-arena",
+            "four-participant",
+            "elimination"
+          ],
+          "class": "four-way",
+          "identity": "uc://manual/catalog/paddle-simulation/four-way@1",
+          "name": "Four-way paddle arena",
+          "status": "catalogued"
+        },
+        {
+          "capabilities": [
+            "multiple-projectiles",
+            "simultaneous-collisions",
+            "weighted-scoring"
+          ],
+          "class": "multiball",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "left-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 90
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": 5,
+                          "vy": 3,
+                          "width": 10,
+                          "x": 200,
+                          "y": 118
+                        },
+                        "orb-2": {
+                          "height": 10,
+                          "vx": -4,
+                          "vy": -2,
+                          "width": 10,
+                          "x": 216,
+                          "y": 138
+                        },
+                        "right-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 90
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "playing",
+                      "tick": 1
+                    },
+                    "id": "multiball.parallel-motion",
+                    "input": {
+                      "steps": [
+                        {
+                          "ticks": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/multiball-paddle-duel@1",
+                  "family": "bounded-simulation",
+                  "variation": "multiball-paddle-duel",
+                  "version": 1
+                },
+                "presentation": {
+                  "entities": [
+                    {
+                      "fill": "white",
+                      "identity": "left-bat"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "right-bat"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "orb"
+                    },
+                    {
+                      "fill": "cyan",
+                      "identity": "orb-2"
+                    }
+                  ],
+                  "mode_label": "two simultaneous projectiles",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "left-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 90
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": 5,
+                            "vy": 3,
+                            "width": 10,
+                            "x": 200,
+                            "y": 118
+                          },
+                          "orb-2": {
+                            "height": 10,
+                            "vx": -4,
+                            "vy": -2,
+                            "width": 10,
+                            "x": 216,
+                            "y": 138
+                          },
+                          "right-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 90
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "playing",
+                        "tick": 1
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "ticks": 1
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Multiball Paddle Duel"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "multiball-paddle-duel",
+                    "left-bat",
+                    "right-bat",
+                    "orb",
+                    "orb-2"
+                  ],
+                  "boundaries": [
+                    {
+                      "entity": "orb",
+                      "maximum": 230,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "orb-2",
+                      "maximum": 230,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "left-bat",
+                      "maximum": 180,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "right-bat",
+                      "maximum": 180,
+                      "minimum": 0,
+                      "position": "y",
+                      "velocity": "vy"
+                    }
+                  ],
+                  "collisions": [
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "left-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "right-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb-2",
+                      "scale": 1,
+                      "target": "left-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb-2",
+                      "scale": 1,
+                      "target": "right-bat",
+                      "velocity": "vx"
+                    }
+                  ],
+                  "motion": [
+                    {
+                      "entity": "orb",
+                      "position": "x",
+                      "velocity": "vx"
+                    },
+                    {
+                      "entity": "orb",
+                      "position": "y",
+                      "velocity": "vy"
+                    },
+                    {
+                      "entity": "orb-2",
+                      "position": "x",
+                      "velocity": "vx"
+                    },
+                    {
+                      "entity": "orb-2",
+                      "position": "y",
+                      "velocity": "vy"
+                    }
+                  ],
+                  "thresholds": [
+                    {
+                      "changes": [
+                        {
+                          "operation": "increment",
+                          "path": [
+                            "right_score"
+                          ],
+                          "value": 1
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "x"
+                          ],
+                          "value": 195
+                        }
+                      ],
+                      "path": [
+                        "entities",
+                        "orb",
+                        "x"
+                      ],
+                      "relation": "below",
+                      "value": 0
+                    },
+                    {
+                      "changes": [
+                        {
+                          "operation": "increment",
+                          "path": [
+                            "left_score"
+                          ],
+                          "value": 1
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "x"
+                          ],
+                          "value": 195
+                        }
+                      ],
+                      "path": [
+                        "entities",
+                        "orb",
+                        "x"
+                      ],
+                      "relation": "above",
+                      "value": 390
+                    },
+                    {
+                      "changes": [
+                        {
+                          "operation": "increment",
+                          "path": [
+                            "right_score"
+                          ],
+                          "value": 1
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb-2",
+                            "x"
+                          ],
+                          "value": 220
+                        }
+                      ],
+                      "path": [
+                        "entities",
+                        "orb-2",
+                        "x"
+                      ],
+                      "relation": "below",
+                      "value": 0
+                    },
+                    {
+                      "changes": [
+                        {
+                          "operation": "increment",
+                          "path": [
+                            "left_score"
+                          ],
+                          "value": 1
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb-2",
+                            "x"
+                          ],
+                          "value": 220
+                        }
+                      ],
+                      "path": [
+                        "entities",
+                        "orb-2",
+                        "x"
+                      ],
+                      "relation": "above",
+                      "value": 390
+                    }
+                  ]
+                },
+                "state": {
+                  "initial": {
+                    "entities": {
+                      "left-bat": {
+                        "height": 60,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 20,
+                        "y": 90
+                      },
+                      "orb": {
+                        "height": 10,
+                        "vx": 5,
+                        "vy": 3,
+                        "width": 10,
+                        "x": 195,
+                        "y": 115
+                      },
+                      "orb-2": {
+                        "height": 10,
+                        "vx": -4,
+                        "vy": -2,
+                        "width": 10,
+                        "x": 220,
+                        "y": 140
+                      },
+                      "right-bat": {
+                        "height": 60,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 370,
+                        "y": 90
+                      }
+                    },
+                    "left_score": 0,
+                    "right_score": 0,
+                    "status": "playing",
+                    "tick": 0
+                  }
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/multiball@1",
+          "name": "Multiball paddle duel",
+          "product_identity": "uc://manual/applications/multiball-paddle-duel@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "power-up-zones",
+            "temporary-modifiers",
+            "deterministic-spawn"
+          ],
+          "class": "power-up",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "left-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 90
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": 7.5,
+                          "vy": 3,
+                          "width": 10,
+                          "x": 195,
+                          "y": 124
+                        },
+                        "power-zone": {
+                          "height": 100,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 20,
+                          "x": 200,
+                          "y": 70
+                        },
+                        "right-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 90
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "playing",
+                      "tick": 3
+                    },
+                    "id": "power-up.speed-zone",
+                    "input": {
+                      "steps": [
+                        {
+                          "ticks": 3
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/power-up-paddle-arena@1",
+                  "family": "bounded-simulation",
+                  "variation": "power-up-paddle-arena",
+                  "version": 1
+                },
+                "presentation": {
+                  "entities": [
+                    {
+                      "fill": "white",
+                      "identity": "left-bat"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "right-bat"
+                    },
+                    {
+                      "fill": "purple",
+                      "identity": "power-zone"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "orb"
+                    }
+                  ],
+                  "mode_label": "deterministic speed modifier zone",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "left-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 90
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": 7.5,
+                            "vy": 3,
+                            "width": 10,
+                            "x": 195,
+                            "y": 124
+                          },
+                          "power-zone": {
+                            "height": 100,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 20,
+                            "x": 200,
+                            "y": 70
+                          },
+                          "right-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 90
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "playing",
+                        "tick": 3
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "ticks": 3
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Power-up Paddle Arena"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "power-up-paddle-arena",
+                    "power-zone",
+                    "left-bat",
+                    "right-bat",
+                    "orb"
+                  ],
+                  "collisions": [
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "left-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "right-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "changes": [
+                        {
+                          "operation": "multiply",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "vx"
+                          ],
+                          "value": 1.5
+                        }
+                      ],
+                      "moving": "orb",
+                      "scale": -1,
+                      "target": "power-zone",
+                      "velocity": "vx"
+                    }
+                  ]
+                },
+                "state": {
+                  "initial": {
+                    "entities": {
+                      "left-bat": {
+                        "height": 60,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 20,
+                        "y": 90
+                      },
+                      "orb": {
+                        "height": 10,
+                        "vx": 5,
+                        "vy": 3,
+                        "width": 10,
+                        "x": 180,
+                        "y": 115
+                      },
+                      "power-zone": {
+                        "height": 100,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 20,
+                        "x": 200,
+                        "y": 70
+                      },
+                      "right-bat": {
+                        "height": 60,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 370,
+                        "y": 90
+                      }
+                    },
+                    "left_score": 0,
+                    "right_score": 0,
+                    "status": "playing",
+                    "tick": 0
+                  }
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/power-up@1",
+          "name": "Power-up paddle arena",
+          "product_identity": "uc://manual/applications/power-up-paddle-arena@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "arena-obstacles",
+            "collision-surfaces",
+            "level-layout"
+          ],
+          "class": "obstacle",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "center-wall": {
+                          "height": 100,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 200,
+                          "y": 70
+                        },
+                        "left-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 90
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": -5,
+                          "vy": 3,
+                          "width": 10,
+                          "x": 195,
+                          "y": 124
+                        },
+                        "right-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 90
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "playing",
+                      "tick": 3
+                    },
+                    "id": "obstacle.center-reflection",
+                    "input": {
+                      "steps": [
+                        {
+                          "ticks": 3
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/obstacle-paddle-arena@1",
+                  "family": "bounded-simulation",
+                  "variation": "obstacle-paddle-arena",
+                  "version": 1
+                },
+                "presentation": {
+                  "entities": [
+                    {
+                      "fill": "white",
+                      "identity": "left-bat"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "right-bat"
+                    },
+                    {
+                      "fill": "orange",
+                      "identity": "center-wall"
+                    },
+                    {
+                      "fill": "white",
+                      "identity": "orb"
+                    }
+                  ],
+                  "mode_label": "center collision surface",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "center-wall": {
+                            "height": 100,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 200,
+                            "y": 70
+                          },
+                          "left-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 90
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": -5,
+                            "vy": 3,
+                            "width": 10,
+                            "x": 195,
+                            "y": 124
+                          },
+                          "right-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 90
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "playing",
+                        "tick": 3
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "ticks": 3
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Obstacle Paddle Arena"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "obstacle-paddle-arena",
+                    "center-wall",
+                    "left-bat",
+                    "right-bat",
+                    "orb"
+                  ],
+                  "collisions": [
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "left-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "right-bat",
+                      "velocity": "vx"
+                    },
+                    {
+                      "moving": "orb",
+                      "scale": 1,
+                      "target": "center-wall",
+                      "velocity": "vx"
+                    }
+                  ]
+                },
+                "state": {
+                  "initial": {
+                    "entities": {
+                      "center-wall": {
+                        "height": 100,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 200,
+                        "y": 70
+                      },
+                      "left-bat": {
+                        "height": 60,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 20,
+                        "y": 90
+                      },
+                      "orb": {
+                        "height": 10,
+                        "vx": 5,
+                        "vy": 3,
+                        "width": 10,
+                        "x": 180,
+                        "y": 115
+                      },
+                      "right-bat": {
+                        "height": 60,
+                        "vx": 0,
+                        "vy": 0,
+                        "width": 10,
+                        "x": 370,
+                        "y": 90
+                      }
+                    },
+                    "left_score": 0,
+                    "right_score": 0,
+                    "status": "playing",
+                    "tick": 0
+                  }
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/obstacle@1",
+          "name": "Obstacle paddle arena",
+          "product_identity": "uc://manual/applications/obstacle-paddle-arena@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "deadline",
+            "score-at-time",
+            "deterministic-clock"
+          ],
+          "class": "timed-score-attack",
+          "derivation": {
+            "patch": {
+              "what": {
+                "acceptance": [
+                  {
+                    "expected": {
+                      "entities": {
+                        "left-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 20,
+                          "y": 90
+                        },
+                        "orb": {
+                          "height": 10,
+                          "vx": 5,
+                          "vy": 3,
+                          "width": 10,
+                          "x": 250,
+                          "y": 148
+                        },
+                        "right-bat": {
+                          "height": 60,
+                          "vx": 0,
+                          "vy": 0,
+                          "width": 10,
+                          "x": 370,
+                          "y": 90
+                        }
+                      },
+                      "left_score": 0,
+                      "right_score": 0,
+                      "status": "finished",
+                      "tick": 11
+                    },
+                    "id": "timed.deadline",
+                    "input": {
+                      "steps": [
+                        {
+                          "ticks": 11
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "identity": {
+                  "canonical": "uc://manual/applications/timed-paddle-score-attack@1",
+                  "family": "bounded-simulation",
+                  "variation": "timed-paddle-score-attack",
+                  "version": 1
+                },
+                "presentation": {
+                  "mode_label": "deterministic 11-tick match",
+                  "self_tests": [
+                    {
+                      "expected": {
+                        "entities": {
+                          "left-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 20,
+                            "y": 90
+                          },
+                          "orb": {
+                            "height": 10,
+                            "vx": 5,
+                            "vy": 3,
+                            "width": 10,
+                            "x": 250,
+                            "y": 148
+                          },
+                          "right-bat": {
+                            "height": 60,
+                            "vx": 0,
+                            "vy": 0,
+                            "width": 10,
+                            "x": 370,
+                            "y": 90
+                          }
+                        },
+                        "left_score": 0,
+                        "right_score": 0,
+                        "status": "finished",
+                        "tick": 11
+                      },
+                      "input": {
+                        "steps": [
+                          {
+                            "ticks": 11
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "title": "Timed Paddle Score Attack"
+                },
+                "semantics": {
+                  "application_vocabulary": [
+                    "timed-paddle-score-attack",
+                    "left-bat",
+                    "right-bat",
+                    "orb"
+                  ],
+                  "thresholds": [
+                    {
+                      "changes": [
+                        {
+                          "operation": "increment",
+                          "path": [
+                            "right_score"
+                          ],
+                          "value": 1
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "x"
+                          ],
+                          "value": 195
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "y"
+                          ],
+                          "value": 115
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "vx"
+                          ],
+                          "value": 5
+                        }
+                      ],
+                      "path": [
+                        "entities",
+                        "orb",
+                        "x"
+                      ],
+                      "relation": "below",
+                      "value": 0
+                    },
+                    {
+                      "changes": [
+                        {
+                          "operation": "increment",
+                          "path": [
+                            "left_score"
+                          ],
+                          "value": 1
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "x"
+                          ],
+                          "value": 195
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "y"
+                          ],
+                          "value": 115
+                        },
+                        {
+                          "operation": "set",
+                          "path": [
+                            "entities",
+                            "orb",
+                            "vx"
+                          ],
+                          "value": -5
+                        }
+                      ],
+                      "path": [
+                        "entities",
+                        "orb",
+                        "x"
+                      ],
+                      "relation": "above",
+                      "value": 390
+                    },
+                    {
+                      "changes": [
+                        {
+                          "operation": "set",
+                          "path": [
+                            "status"
+                          ],
+                          "value": "finished"
+                        }
+                      ],
+                      "path": [
+                        "tick"
+                      ],
+                      "relation": "above",
+                      "value": 9
+                    }
+                  ]
+                }
+              }
+            },
+            "prototype": {
+              "path": "seed/applications/classic-paddle-duel.seed.json",
+              "sha256": "99789873b89ddd698efdfa2f275c690971d852f4cf5eebcc04900d0f12438011"
+            }
+          },
+          "identity": "uc://manual/catalog/paddle-simulation/timed-score-attack@1",
+          "name": "Timed paddle score attack",
+          "product_identity": "uc://manual/applications/timed-paddle-score-attack@1",
+          "status": "proven"
+        },
+        {
+          "capabilities": [
+            "authoritative-server",
+            "network-input",
+            "latency-contract"
+          ],
+          "class": "online-multiplayer",
+          "identity": "uc://manual/catalog/paddle-simulation/online-multiplayer@1",
+          "name": "Authoritative online paddle duel",
+          "status": "catalogued"
+        },
+        {
+          "capabilities": [
+            "progression",
+            "special-projectiles",
+            "boss-encounters"
+          ],
+          "class": "progression",
+          "identity": "uc://manual/catalog/paddle-simulation/progression@1",
+          "name": "Progression and boss paddle game",
+          "status": "catalogued"
+        },
+        {
+          "capabilities": [
+            "ball-control",
+            "environmental-puzzles",
+            "level-progression"
+          ],
+          "class": "puzzle",
+          "identity": "uc://manual/catalog/paddle-simulation/puzzle@1",
+          "name": "Paddle-derived ball puzzle",
+          "status": "catalogued"
+        },
+        {
+          "capabilities": [
+            "three-dimensional-arena",
+            "depth-axis",
+            "perspective-projection"
+          ],
+          "class": "three-dimensional",
+          "identity": "uc://manual/catalog/paddle-simulation/three-dimensional@1",
+          "name": "Three-dimensional paddle arena",
+          "status": "catalogued"
+        },
+        {
+          "capabilities": [
+            "non-rectangular-arena",
+            "curved-boundary",
+            "continuous-angle"
+          ],
+          "class": "alternate-geometry",
+          "identity": "uc://manual/catalog/paddle-simulation/alternate-geometry@1",
+          "name": "Alternate-geometry paddle arena",
+          "status": "catalogued"
+        }
+      ]
     }
   ],
   "format": "manual-application-profile-catalog-1",

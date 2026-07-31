@@ -11,10 +11,13 @@ from semantic_expression import function_source
 from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
 from stateful_compiler import compile_declaration as compile_stateful_declaration
 from stateful_compiler import render_source as render_stateful_source
+from simulation_compiler import LANGUAGE as SIMULATION_LANGUAGE
+from simulation_compiler import compile_declaration as compile_simulation_declaration
+from simulation_compiler import render_source as render_simulation_source
 
 
 LANGUAGE = "calculator-declaration-1"
-LANGUAGES = (LANGUAGE, STATEFUL_LANGUAGE)
+LANGUAGES = (LANGUAGE, STATEFUL_LANGUAGE, SIMULATION_LANGUAGE)
 def semantic_body(value):
     return expression(value)
 
@@ -745,6 +748,7 @@ def compile_declaration(seed):
     compilers = {
         LANGUAGE: compile_calculator_declaration,
         STATEFUL_LANGUAGE: compile_stateful_declaration,
+        SIMULATION_LANGUAGE: compile_simulation_declaration,
     }
     compiler = compilers.get(language)
     if compiler is None:
@@ -756,6 +760,7 @@ def render_declaration_source(seed):
     renderers = {
         LANGUAGE: render_calculator_source,
         STATEFUL_LANGUAGE: render_stateful_source,
+        SIMULATION_LANGUAGE: render_simulation_source,
     }
     renderer = renderers.get(seed["program"].get("language"))
     if renderer is None:

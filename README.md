@@ -11,18 +11,18 @@ Unified Code repository.
 one pinned ROOT authority
 → one בלי_מה invariant authority
 → canonical interface registries
-→ calculator and stateful-list family seeds
-→ 14 direct and 51 derived application מה programs
+→ calculator, stateful-list and bounded-simulation family seeds
+→ 15 direct and 58 derived application מה programs
 → one generic build-time assembly compiler
-→ 65 exact specialized applications
+→ 73 exact specialized applications
 ```
 
 It does not claim full Standard Ten, UEM, self-hosting, or representation of
-every possible calculator.
+every possible calculator, Todo application or paddle game.
 
 ## One operation
 
-Resolve ROOT, generate, build, install, execute, exercise, and close all 65
+Resolve ROOT, generate, build, install, execute, exercise, and close all 73
 applications:
 
 ```bash
@@ -63,20 +63,23 @@ authorization boundary. Credentials are never stored in the repository.
   under a globally unique identity.
 - `seed/registries/stateful-interface-controls.seed.json` defines reusable
   stateful-interface controls and their argument sources.
+- `seed/registries/simulation-controls.seed.json` defines reusable participant
+  controls and their exact state changes.
 - `seed/families/calculator.seed.json` specializes that authority for the
   calculator family.
 - `seed/families/stateful-list.seed.json` supplies domain-neutral state,
   collection, persistence, and interface boundaries.
-- `seed/applications/*.seed.json` are 14 direct application-specific מה seeds.
-- `seed/catalog.seed.json` contains 51 complete, pinned derived-seed programs
-  in addition to the 13 direct catalog profile references.
+- `seed/families/bounded-simulation.seed.json` supplies clock, geometric
+  projection and deterministic scenario boundaries.
+- `seed/applications/*.seed.json` are 15 direct application-specific מה seeds.
+- `seed/catalog.seed.json` contains 58 complete, pinned derived-seed programs.
 - `tools/catalog_materializer.py` applies only generic, content-addressed JSON
   merge declarations and emits disposable complete seeds under `build/`.
 - `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
 - `src/seed_compiler.py` is the generic structured-program compiler.
-- `seed/suite.seed.json` lists the 14 direct seeds; the catalog supplies the
-  remaining 51 programs and output identities without adding behavior to the
+- `seed/suite.seed.json` lists the 15 direct seeds; the catalog supplies the
+  remaining 58 programs and output identities without adding behavior to the
   suite.
 - `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
   rebuilding, source-separation checks, and parallel application self-starts
@@ -101,22 +104,27 @@ ohms-law
 quadratic-polynomial
 todo
 costed-todo
+classic-paddle-duel
 ```
+
+The paddle-game family currently proves eight generated variations and records
+six additional market categories without falsely claiming them as complete.
+See [Paddle-game application family](docs/PADDLE_GAMES.md).
 
 ## Seed authority
 
 Each application מה seed declares:
 
 ```text
-canonical identity and calculator variation
-numeric laws and operations
+canonical identity, family and variation
+numeric, stateful or simulation laws and operations
 state fields
 GUI title, theme, layout, Key identities and positions
 acceptance cases
 ```
 
-The canonical Key registry supplies each selected key's label, action and
-emitted value exactly once. The family base supplies callback argument
+The canonical interface registries supply each selected control's label,
+binding, action and emitted value exactly once. The family base supplies callback argument
 contracts, the seven ordered build-time stages for one body, registered control
 routes, physical boundaries, rendering defaults, and error rules.
 Transitions, reachable errors, and negative cases are derived from each leaf's
@@ -145,6 +153,12 @@ declares one bounded multiplication function and calls it from record creation
 and update. Build-time specialization emits only that function, while generated
 acceptance and real-GUI tests prove recalculation and persistence. The compiler
 contains neither calculator nor Costed Todo vocabulary.
+
+The bounded-simulation seed language specializes registered controls, a
+monotonic tick, entity motion, deterministic controllers, axis-aligned
+boundaries, collisions, thresholds and Canvas projection. Eight paddle-game
+profiles are runnable; product and entity vocabulary remains in their seeds,
+not in `src/simulation_compiler.py`.
 
 Generated tests structurally verify every emitted Key callback against its
 generated route signature. Traceability records both the leaf placement and

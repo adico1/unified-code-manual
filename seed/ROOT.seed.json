@@ -1,6 +1,11 @@
 {
   "authorities": [
     {
+      "identity": "uc://authorities/applications/classic-paddle-duel.seed.json",
+      "path": "seed/applications/classic-paddle-duel.seed.json",
+      "sha256": "c907b86b8a0873e1d21d2561f588383cd2687ed8f65e82991e68938dba620b9e"
+    },
+    {
       "identity": "uc://authorities/applications/costed-todo.seed.json",
       "path": "seed/applications/costed-todo.seed.json",
       "sha256": "4986caba643844580ed9f6cd3c59a1de2789fd827e1037a0c141f143d83cc37c"
@@ -78,7 +83,12 @@
     {
       "identity": "uc://manual/catalogs/application-profiles@1",
       "path": "seed/catalog.seed.json",
-      "sha256": "fba23729c02ff4d984285966c14a4dbc4e2c220fa1e4fc13d9a5c5dea9993169"
+      "sha256": "f1707e3be1d2bb3d85454bbbb2e58d86d0ed0d4d15d6ad6ac6a1140af5d5e57e"
+    },
+    {
+      "identity": "uc://manual/seeds/bounded-simulation-family@1",
+      "path": "seed/families/bounded-simulation.seed.json",
+      "sha256": "29f65ad0c7fa4c6fcf451735767ccf4489e22c7163f4ec9844ffc5695653316c"
     },
     {
       "identity": "uc://manual/seeds/calculator-family@1",
@@ -96,6 +106,11 @@
       "sha256": "2621799c9f478a97811ad462ecea11b2358556bfb65d7ad545191754957c4f2e"
     },
     {
+      "identity": "uc://manual/registries/simulation-controls@1",
+      "path": "seed/registries/simulation-controls.seed.json",
+      "sha256": "6fa0cd589e1aaf5d99f3956811624b1db7f568a79c5b657b3c204d38ed90233f"
+    },
+    {
       "identity": "uc://manual/registries/stateful-interface-controls@1",
       "path": "seed/registries/stateful-interface-controls.seed.json",
       "sha256": "f4b4f30506ba3eef04951a74d56fafdf605a5c0ff018ae579ea17864ac6ee852"
@@ -103,12 +118,12 @@
     {
       "identity": "uc://authorities/schema.json",
       "path": "seed/schema.json",
-      "sha256": "aae19957c417f3077fb9ad461df1dbadf4157f6924ad9a03ec0a9017f6f5b65a"
+      "sha256": "c62b7f21a39938ec928242b50e71656d3ccab0565c4b4ec6e0f3c1c05aa1db5f"
     },
     {
       "identity": "uc://authorities/suite.seed.json",
       "path": "seed/suite.seed.json",
-      "sha256": "1cd937435ae86e384e2f4924083950b82f785390a1195ed4bfe713ceb198c691"
+      "sha256": "24f86c00d5317f4ea42798267d7d4559d9bad4146361cc93360e6bbbb0816163"
     }
   ],
   "fixed_point": {

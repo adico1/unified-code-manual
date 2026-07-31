@@ -97,6 +97,13 @@
       "output": "build/costed-todo",
       "seed": "seed/applications/costed-todo.seed.json",
       "title": "Costed Todo"
+    },
+    {
+      "enabled": true,
+      "id": "classic-paddle-duel",
+      "output": "build/classic-paddle-duel",
+      "seed": "seed/applications/classic-paddle-duel.seed.json",
+      "title": "Classic Paddle Duel"
     }
   ],
   "format": "manual-seed-program-suite-3"
