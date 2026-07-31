@@ -185,6 +185,29 @@ class DevelopmentObservatoryTests(unittest.TestCase):
                 ("temporal", "observer", "phase", "progress", "title"),
             )
             self.assertEqual(len(table.get_children()), 4)
+            self.assertEqual(
+                tuple(application._metric_cards),
+                (
+                    "generated products",
+                    "product families",
+                    "acceptance cases",
+                    "generated GUI checks",
+                    "verification budget",
+                ),
+            )
+            self.assertEqual(len(application._portfolio.get_children()), 74)
+            portfolio_groups = {
+                application._portfolio.set(item, "group")
+                for item in application._portfolio.get_children()
+            }
+            self.assertEqual(
+                portfolio_groups,
+                {"calculators", "dashboards", "pong-games", "todos"},
+            )
+            application._tabs.select(1)
+            root.update_idletasks()
+            self.assertEqual(application._tabs.index(application._tabs.select()), 1)
+            application._tabs.select(0)
             self.assertIn("4 shown / 4 total", application._summary.get())
             detail = application._details["collection.primary"].get("1.0", "end")
             self.assertIn("Milestone 1 seed-to-application proof", detail)

@@ -31,12 +31,12 @@
                     "temporal": "past",
                     "title": "Milestone 1 seed-to-application proof",
                     "total": 13,
-                    "אדון_הכל": "APP:verified API:verified CLI:verified",
-                    "הבט": "artifact-present",
-                    "הבן": "bounded-application-proof",
-                    "חקור": "L1-L13-pass",
-                    "מלך_עולם": "seed-authority-verified",
-                    "ראה": "identity-resolved"
+                    "אדון_הכל": "Manifested and verified: application, API and CLI.",
+                    "הבט": "A runnable generated application artifact exists.",
+                    "הבן": "This proves bounded seed-to-application generation, not root self-hosting.",
+                    "חקור": "Every L1-L13 verification gate passed.",
+                    "מלך_עולם": "The application seed is the verified canonical authority.",
+                    "ראה": "The seed and generated product resolve to one identity."
                   },
                   {
                     "completed": false,
@@ -51,12 +51,12 @@
                     "temporal": "present",
                     "title": "Manual compiler: 74 products in four groups",
                     "total": 292,
-                    "אדון_הכל": "APP:verified API:verified GUI:verified",
-                    "הבט": "PR-present",
-                    "הבן": "stacked-PR-required",
-                    "חקור": "local-complete-proof-pass",
-                    "מלך_עולם": "ROOT-pinned",
-                    "ראה": "seed-derived-identity"
+                    "אדון_הכל": "Manifested and verified: application, API and GUI.",
+                    "הבט": "A public review branch and pull request exist.",
+                    "הבן": "Review and merge the product-family dependency before this stacked change.",
+                    "חקור": "The complete local proof passed within the five-second law.",
+                    "מלך_עולם": "ROOT pins every current creator authority.",
+                    "ראה": "Every product identity is derived from registered seed data."
                   },
                   {
                     "completed": false,
@@ -71,12 +71,12 @@
                     "temporal": "present",
                     "title": "ROOT creator is pinned but not root-generated",
                     "total": 1,
-                    "אדון_הכל": "repository:partial",
-                    "הבט": "trusted-creator-present",
-                    "הבן": "gap.root-creator-not-generated",
-                    "חקור": "root-fixed-point-open",
-                    "מלך_עולם": "ROOT:engraved",
-                    "ראה": "authority-divided"
+                    "אדון_הכל": "Manifested: partial repository; the root-generated repository is absent.",
+                    "הבט": "The trusted creator exists as handwritten infrastructure.",
+                    "הבן": "The creator must still be generated from ROOT before Milestone 2 can close.",
+                    "חקור": "The repository-wide fixed-point proof remains open.",
+                    "מלך_עולם": "ROOT is pinned but does not yet generate its creator.",
+                    "ראה": "Authority remains divided between ROOT and handwritten creator code."
                   },
                   {
                     "completed": false,
@@ -91,12 +91,12 @@
                     "temporal": "future",
                     "title": "Clean-room whole-repository fixed point",
                     "total": 1,
-                    "אדון_הכל": "repository:absent",
-                    "הבט": "issue-present",
-                    "הבן": "first-ready-after-provenance",
-                    "חקור": "acceptance-declared",
-                    "מלך_עולם": "contract:engraved",
-                    "ראה": "dependencies-open"
+                    "אדון_הכל": "No clean-room root-generated repository has manifested yet.",
+                    "הבט": "The clean-room integration issue and contract exist.",
+                    "הבן": "Begin only after dependency provenance and root generation are complete.",
+                    "חקור": "Acceptance is declared; the clean-room result is not yet proven.",
+                    "מלך_עולם": "The completion contract is recorded as authority.",
+                    "ראה": "Required root-generation dependencies remain open."
                   },
                   {
                     "completed": false,
@@ -111,12 +111,12 @@
                     "temporal": "future",
                     "title": "Expose approved AI request",
                     "total": 1,
-                    "אדון_הכל": "APP:absent API:absent",
-                    "הבט": "request-present",
-                    "הבן": "user-decision-required",
-                    "חקור": "unverified",
-                    "מלך_עולם": "seed:required",
-                    "ראה": "request-resolved"
+                    "אדון_הכל": "Requested application and API projections have not manifested.",
+                    "הבט": "A user request is stored in the local queue.",
+                    "הבן": "The user must authorize the external destination before delivery.",
+                    "חקור": "No external AI or GitHub delivery has been executed.",
+                    "מלך_עולם": "A future seed must declare the audited external delivery boundary.",
+                    "ראה": "The request is identified but not yet authorized for external delivery."
                   }
                 ]
               }
@@ -139,12 +139,12 @@
                 "temporal": "past",
                 "title": "Milestone 1 seed-to-application proof",
                 "total": 13,
-                "אדון_הכל": "APP:verified API:verified CLI:verified",
-                "הבט": "artifact-present",
-                "הבן": "bounded-application-proof",
-                "חקור": "L1-L13-pass",
-                "מלך_עולם": "seed-authority-verified",
-                "ראה": "identity-resolved"
+                "אדון_הכל": "Manifested and verified: application, API and CLI.",
+                "הבט": "A runnable generated application artifact exists.",
+                "הבן": "This proves bounded seed-to-application generation, not root self-hosting.",
+                "חקור": "Every L1-L13 verification gate passed.",
+                "מלך_עולם": "The application seed is the verified canonical authority.",
+                "ראה": "The seed and generated product resolve to one identity."
               },
               {
                 "completed": false,
@@ -159,12 +159,12 @@
                 "temporal": "present",
                 "title": "Manual compiler: 74 products in four groups",
                 "total": 292,
-                "אדון_הכל": "APP:verified API:verified GUI:verified",
-                "הבט": "PR-present",
-                "הבן": "stacked-PR-required",
-                "חקור": "local-complete-proof-pass",
-                "מלך_עולם": "ROOT-pinned",
-                "ראה": "seed-derived-identity"
+                "אדון_הכל": "Manifested and verified: application, API and GUI.",
+                "הבט": "A public review branch and pull request exist.",
+                "הבן": "Review and merge the product-family dependency before this stacked change.",
+                "חקור": "The complete local proof passed within the five-second law.",
+                "מלך_עולם": "ROOT pins every current creator authority.",
+                "ראה": "Every product identity is derived from registered seed data."
               },
               {
                 "completed": false,
@@ -179,12 +179,12 @@
                 "temporal": "present",
                 "title": "ROOT creator is pinned but not root-generated",
                 "total": 1,
-                "אדון_הכל": "repository:partial",
-                "הבט": "trusted-creator-present",
-                "הבן": "gap.root-creator-not-generated",
-                "חקור": "root-fixed-point-open",
-                "מלך_עולם": "ROOT:engraved",
-                "ראה": "authority-divided"
+                "אדון_הכל": "Manifested: partial repository; the root-generated repository is absent.",
+                "הבט": "The trusted creator exists as handwritten infrastructure.",
+                "הבן": "The creator must still be generated from ROOT before Milestone 2 can close.",
+                "חקור": "The repository-wide fixed-point proof remains open.",
+                "מלך_עולם": "ROOT is pinned but does not yet generate its creator.",
+                "ראה": "Authority remains divided between ROOT and handwritten creator code."
               },
               {
                 "completed": false,
@@ -199,12 +199,12 @@
                 "temporal": "future",
                 "title": "Clean-room whole-repository fixed point",
                 "total": 1,
-                "אדון_הכל": "repository:absent",
-                "הבט": "issue-present",
-                "הבן": "first-ready-after-provenance",
-                "חקור": "acceptance-declared",
-                "מלך_עולם": "contract:engraved",
-                "ראה": "dependencies-open"
+                "אדון_הכל": "No clean-room root-generated repository has manifested yet.",
+                "הבט": "The clean-room integration issue and contract exist.",
+                "הבן": "Begin only after dependency provenance and root generation are complete.",
+                "חקור": "Acceptance is declared; the clean-room result is not yet proven.",
+                "מלך_עולם": "The completion contract is recorded as authority.",
+                "ראה": "Required root-generation dependencies remain open."
               },
               {
                 "completed": false,
@@ -219,12 +219,12 @@
                 "temporal": "future",
                 "title": "Expose approved AI request",
                 "total": 1,
-                "אדון_הכל": "APP:absent API:absent",
-                "הבט": "request-present",
-                "הבן": "user-decision-required",
-                "חקור": "unverified",
-                "מלך_עולם": "seed:required",
-                "ראה": "request-resolved"
+                "אדון_הכל": "Requested application and API projections have not manifested.",
+                "הבט": "A user request is stored in the local queue.",
+                "הבן": "The user must authorize the external destination before delivery.",
+                "חקור": "No external AI or GitHub delivery has been executed.",
+                "מלך_עולם": "A future seed must declare the audited external delivery boundary.",
+                "ראה": "The request is identified but not yet authorized for external delivery."
               }
             ]
           }
@@ -330,22 +330,556 @@
             }
           ],
           "detail_fields": [
-            "title",
-            "temporal",
-            "observer",
-            "phase",
-            "progress",
-            "kind",
-            "observed_ref",
-            "הבט",
-            "ראה",
-            "חקור",
-            "הבן",
-            "מלך_עולם",
-            "אדון_הכל",
-            "link"
+            {
+              "field": "title",
+              "label": "Development item"
+            },
+            {
+              "field": "temporal",
+              "label": "Time horizon"
+            },
+            {
+              "field": "observer",
+              "label": "Observer"
+            },
+            {
+              "field": "phase",
+              "label": "SDLC phase"
+            },
+            {
+              "field": "progress",
+              "label": "Measured progress (%)"
+            },
+            {
+              "field": "הבט",
+              "label": "Physical presence — הבט"
+            },
+            {
+              "field": "ראה",
+              "label": "Identity and relation — ראה"
+            },
+            {
+              "field": "חקור",
+              "label": "Measured evidence — חקור"
+            },
+            {
+              "field": "הבן",
+              "label": "Meaning and next decision — הבן"
+            },
+            {
+              "field": "מלך_עולם",
+              "label": "Canonical authority — מלך_עולם"
+            },
+            {
+              "field": "אדון_הכל",
+              "label": "Manifested projections — אדון_הכל"
+            },
+            {
+              "field": "observed_ref",
+              "label": "Evidence identity"
+            },
+            {
+              "field": "link",
+              "label": "Related code or issue"
+            }
           ],
-          "heading": "Development lifecycle — past, present and future"
+          "heading": "Development lifecycle — past, present and future",
+          "metrics": [
+            {
+              "label": "generated products",
+              "value": "74"
+            },
+            {
+              "label": "product families",
+              "value": "4"
+            },
+            {
+              "label": "acceptance cases",
+              "value": "175 / 175"
+            },
+            {
+              "label": "generated GUI checks",
+              "value": "PASS"
+            },
+            {
+              "label": "verification budget",
+              "value": "≤ 5 seconds"
+            }
+          ],
+          "portfolio": {
+            "columns": [
+              {
+                "field": "group",
+                "label": "Product family",
+                "width": 150
+              },
+              {
+                "field": "product",
+                "label": "Generated product",
+                "width": 240
+              },
+              {
+                "field": "identity",
+                "label": "Canonical identity",
+                "width": 520
+              },
+              {
+                "field": "status",
+                "label": "Proof status",
+                "width": 110
+              }
+            ],
+            "records": [
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/approvals@1",
+                "product": "approvals",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/bug-tracker@1",
+                "product": "bug-tracker",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/calendar-tasks@1",
+                "product": "calendar-tasks",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/care-plan@1",
+                "product": "care-plan",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/classic-paddle-duel@1",
+                "product": "classic-paddle-duel",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/collaboration-sync-plan@1",
+                "product": "collaboration-sync-plan",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/costed-todo@1",
+                "product": "costed-todo",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/crm-follow-up@1",
+                "product": "crm-follow-up",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/daily-planner@1",
+                "product": "daily-planner",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/dependency-plan@1",
+                "product": "dependency-plan",
+                "status": "proven"
+              },
+              {
+                "group": "dashboards",
+                "identity": "uc://manual/applications/development-observatory@1",
+                "product": "development-observatory",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/doubles-paddle-duel@1",
+                "product": "doubles-paddle-duel",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/editorial-calendar@1",
+                "product": "editorial-calendar",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/eisenhower@1",
+                "product": "eisenhower",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/errands@1",
+                "product": "errands",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/event-planning@1",
+                "product": "event-planning",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/grocery@1",
+                "product": "grocery",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/gtd@1",
+                "product": "gtd",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/habits@1",
+                "product": "habits",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/inventory-restock@1",
+                "product": "inventory-restock",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/issue-tracker@1",
+                "product": "issue-tracker",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/kanban@1",
+                "product": "kanban",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/maintenance-work-orders@1",
+                "product": "maintenance-work-orders",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/multiball-paddle-duel@1",
+                "product": "multiball-paddle-duel",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/obstacle-paddle-arena@1",
+                "product": "obstacle-paddle-arena",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/offline-security-plan@1",
+                "product": "offline-security-plan",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/power-up-paddle-arena@1",
+                "product": "power-up-paddle-arena",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/product-roadmap@1",
+                "product": "product-roadmap",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/project-work-breakdown@1",
+                "product": "project-work-breakdown",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/recurring-chores@1",
+                "product": "recurring-chores",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/reminders@1",
+                "product": "reminders",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/research-pipeline@1",
+                "product": "research-pipeline",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/solo-paddle-opponent@1",
+                "product": "solo-paddle-opponent",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/sprint-backlog@1",
+                "product": "sprint-backlog",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/study-homework@1",
+                "product": "study-homework",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/support-queue@1",
+                "product": "support-queue",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/team-assignments@1",
+                "product": "team-assignments",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/timed-paddle-score-attack@1",
+                "product": "timed-paddle-score-attack",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/todo@1",
+                "product": "todo",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/travel-checklist@1",
+                "product": "travel-checklist",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/wall-return-training@1",
+                "product": "wall-return-training",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/weekly-planner@1",
+                "product": "weekly-planner",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/arbitrary-precision@1",
+                "product": "arbitrary-precision",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/calculus@1",
+                "product": "calculus",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/chemistry@1",
+                "product": "chemistry",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/complex-number@1",
+                "product": "complex-number",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/construction@1",
+                "product": "construction",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/cooking@1",
+                "product": "cooking",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/currency@1",
+                "product": "currency",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/date-time@1",
+                "product": "date-time",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/engineering-units@1",
+                "product": "engineering-units",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/financial@1",
+                "product": "financial",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/fraction@1",
+                "product": "fraction",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/geometry@1",
+                "product": "geometry",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/graphing@1",
+                "product": "graphing",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/health@1",
+                "product": "health",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/investment@1",
+                "product": "investment",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/loan-mortgage@1",
+                "product": "loan-mortgage",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/matrix-vector@1",
+                "product": "matrix-vector",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/navigation@1",
+                "product": "navigation",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/normal@1",
+                "product": "normal",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/ohms-law@1",
+                "product": "ohms-law",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/physics@1",
+                "product": "physics",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/polynomial-algebra@1",
+                "product": "polynomial-algebra",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/probability@1",
+                "product": "probability",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/programmer@1",
+                "product": "programmer",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/quadratic-polynomial@1",
+                "product": "quadratic-polynomial",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/regression@1",
+                "product": "regression",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/regular@1",
+                "product": "regular",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/rpn@1",
+                "product": "rpn",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/scientific@1",
+                "product": "scientific",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/statistical@1",
+                "product": "statistical",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/subnet@1",
+                "product": "subnet",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/tax@1",
+                "product": "tax",
+                "status": "proven"
+              }
+            ],
+            "tab_labels": {
+              "overview": "Development direction",
+              "portfolio": "All generated products"
+            }
+          }
         },
         "width": 150
       },
@@ -528,22 +1062,22 @@
                     "literal": 1
                   },
                   "אדון_הכל": {
-                    "literal": "APP:absent API:absent"
+                    "literal": "Requested application and API projections have not manifested."
                   },
                   "הבט": {
-                    "literal": "request-present"
+                    "literal": "A user request is stored in the local queue."
                   },
                   "הבן": {
-                    "literal": "user-decision-required"
+                    "literal": "The user must authorize the external destination before delivery."
                   },
                   "חקור": {
-                    "literal": "unverified"
+                    "literal": "No external AI or GitHub delivery has been executed."
                   },
                   "מלך_עולם": {
-                    "literal": "seed:required"
+                    "literal": "A future seed must declare the audited external delivery boundary."
                   },
                   "ראה": {
-                    "literal": "request-resolved"
+                    "literal": "The request is identified but not yet authorized for external delivery."
                   }
                 }
               }
@@ -768,12 +1302,12 @@
             "temporal": "past",
             "title": "Milestone 1 seed-to-application proof",
             "total": 13,
-            "אדון_הכל": "APP:verified API:verified CLI:verified",
-            "הבט": "artifact-present",
-            "הבן": "bounded-application-proof",
-            "חקור": "L1-L13-pass",
-            "מלך_עולם": "seed-authority-verified",
-            "ראה": "identity-resolved"
+            "אדון_הכל": "Manifested and verified: application, API and CLI.",
+            "הבט": "A runnable generated application artifact exists.",
+            "הבן": "This proves bounded seed-to-application generation, not root self-hosting.",
+            "חקור": "Every L1-L13 verification gate passed.",
+            "מלך_עולם": "The application seed is the verified canonical authority.",
+            "ראה": "The seed and generated product resolve to one identity."
           },
           {
             "completed": false,
@@ -787,12 +1321,12 @@
             "temporal": "present",
             "title": "Manual compiler: 74 products in four groups",
             "total": 292,
-            "אדון_הכל": "APP:verified API:verified GUI:verified",
-            "הבט": "PR-present",
-            "הבן": "stacked-PR-required",
-            "חקור": "local-complete-proof-pass",
-            "מלך_עולם": "ROOT-pinned",
-            "ראה": "seed-derived-identity"
+            "אדון_הכל": "Manifested and verified: application, API and GUI.",
+            "הבט": "A public review branch and pull request exist.",
+            "הבן": "Review and merge the product-family dependency before this stacked change.",
+            "חקור": "The complete local proof passed within the five-second law.",
+            "מלך_עולם": "ROOT pins every current creator authority.",
+            "ראה": "Every product identity is derived from registered seed data."
           },
           {
             "completed": false,
@@ -806,12 +1340,12 @@
             "temporal": "present",
             "title": "ROOT creator is pinned but not root-generated",
             "total": 1,
-            "אדון_הכל": "repository:partial",
-            "הבט": "trusted-creator-present",
-            "הבן": "gap.root-creator-not-generated",
-            "חקור": "root-fixed-point-open",
-            "מלך_עולם": "ROOT:engraved",
-            "ראה": "authority-divided"
+            "אדון_הכל": "Manifested: partial repository; the root-generated repository is absent.",
+            "הבט": "The trusted creator exists as handwritten infrastructure.",
+            "הבן": "The creator must still be generated from ROOT before Milestone 2 can close.",
+            "חקור": "The repository-wide fixed-point proof remains open.",
+            "מלך_עולם": "ROOT is pinned but does not yet generate its creator.",
+            "ראה": "Authority remains divided between ROOT and handwritten creator code."
           },
           {
             "completed": false,
@@ -825,12 +1359,12 @@
             "temporal": "future",
             "title": "Clean-room whole-repository fixed point",
             "total": 1,
-            "אדון_הכל": "repository:absent",
-            "הבט": "issue-present",
-            "הבן": "first-ready-after-provenance",
-            "חקור": "acceptance-declared",
-            "מלך_עולם": "contract:engraved",
-            "ראה": "dependencies-open"
+            "אדון_הכל": "No clean-room root-generated repository has manifested yet.",
+            "הבט": "The clean-room integration issue and contract exist.",
+            "הבן": "Begin only after dependency provenance and root generation are complete.",
+            "חקור": "Acceptance is declared; the clean-room result is not yet proven.",
+            "מלך_עולם": "The completion contract is recorded as authority.",
+            "ראה": "Required root-generation dependencies remain open."
           }
         ]
       }

@@ -313,14 +313,24 @@ def render_source(seed):
     rendering = presentation.get("rendering", {})
     table = collection.get("table")
     if table is not None:
-        if set(table) != {"columns", "detail_fields", "heading"}:
+        if set(table) != {"columns", "detail_fields", "heading", "metrics", "portfolio"}:
             raise ValueError("invalid-stateful-table")
+        portfolio = table["portfolio"]
         if (
             not table["columns"]
             or not table["detail_fields"]
+            or not table["metrics"]
             or any(set(column) != {"field", "label", "width"} for column in table["columns"])
+            or any(set(field) != {"field", "label"} for field in table["detail_fields"])
+            or any(set(metric) != {"label", "value"} for metric in table["metrics"])
+            or set(portfolio) != {"columns", "records", "tab_labels"}
+            or not portfolio["columns"]
+            or not portfolio["records"]
+            or any(set(column) != {"field", "label", "width"} for column in portfolio["columns"])
+            or any(set(record) != {column["field"] for column in portfolio["columns"]} for record in portfolio["records"])
+            or set(portfolio["tab_labels"]) != {"overview", "portfolio"}
             or any(column["field"] not in collection["display_fields"] for column in table["columns"])
-            or any(field not in collection["display_fields"] for field in table["detail_fields"])
+            or any(field["field"] not in collection["display_fields"] for field in table["detail_fields"])
         ):
             raise ValueError("invalid-stateful-table")
     calculations = {
@@ -343,7 +353,7 @@ def render_source(seed):
         "import tempfile",
         *(("import webbrowser",) if outward_urls else ()),
         "from tkinter import Button, Entry, Frame, Label, Listbox, StringVar, Text, Tk",
-        *(("from tkinter.ttk import Scrollbar, Treeview",) if table else ()),
+        *(("from tkinter.ttk import Notebook, Scrollbar, Treeview",) if table else ()),
         "",
         f"APPLICATION_ID = {seed['identity']['canonical']!r}",
         "THING_STATES = ('unknown', 'absent', 'false', 'formed', 'valid', 'invalid')",
@@ -354,6 +364,9 @@ def render_source(seed):
         f"DISPLAY_FIELDS = {collection['display_fields']!r}",
         *((f"TABLE_COLUMNS = {table['columns']!r}",) if table else ()),
         *((f"DETAIL_FIELDS = {table['detail_fields']!r}",) if table else ()),
+        *((f"DASHBOARD_METRICS = {table['metrics']!r}",) if table else ()),
+        *((f"PORTFOLIO_COLUMNS = {table['portfolio']['columns']!r}",) if table else ()),
+        *((f"PORTFOLIO_RECORDS = {table['portfolio']['records']!r}",) if table else ()),
         f"FILTER_FIELD = {collection.get('filter_field')!r}",
         f"FILTERS = {filters!r}",
         f"DEFAULT_STATE_PATH = {persistence['default_path']!r}",
@@ -366,6 +379,9 @@ def render_source(seed):
         "_details = {}",
         "_record_by_row = {}",
         "_buttons = {}",
+        "_metric_cards = {}",
+        "_portfolio = None",
+        "_tabs = None",
         "_summary = None",
         "_status = None",
         "_last_outcome = None",
@@ -455,7 +471,7 @@ def render_source(seed):
                     "    detail = _details[identity]",
                     "    record = selected_record(identity)",
                     "    detail.delete('1.0', 'end')",
-                    "    detail.insert('1.0', '\\n'.join(f'{field}\\n  {record[field]}' for field in DETAIL_FIELDS) if record else 'Select an observation')",
+                    "    detail.insert('1.0', '\\n\\n'.join(f'{item[\"label\"]}\\n{record[item[\"field\"]]}' for item in DETAIL_FIELDS) if record else 'Select an observation')",
                     "",
                     "def present_state():",
                     "    records = visible_records()",
@@ -501,11 +517,12 @@ def render_source(seed):
     lines.extend(
         [
             "def build_interface():",
-            "    global _root, _status, _summary",
+            "    global _root, _status, _summary, _portfolio, _tabs",
             "    _inputs.clear()",
             "    _collections.clear()",
             "    _details.clear()",
             "    _buttons.clear()",
+            "    _metric_cards.clear()",
             "    _root = Tk()",
             f"    _root.title({presentation['title']!r})",
             f"    _root.geometry({presentation['geometry']!r})",
@@ -535,23 +552,53 @@ def render_source(seed):
                 f"    surface.grid(row={collection['row']!r}, column={collection['column']!r}, columnspan={collection.get('columnspan', 4)!r}, sticky='nsew')",
                 "    surface.columnconfigure(0, weight=3)",
                 "    surface.columnconfigure(2, weight=2)",
-                "    surface.rowconfigure(2, weight=1)",
+                "    surface.rowconfigure(3, weight=1)",
                 f"    Label(surface, text={table['heading']!r}, font=('Helvetica', 18, 'bold')).grid(row=0, column=0, columnspan=3, sticky='w', pady=(0, 4))",
                 "    _summary = StringVar(value='')",
                 "    Label(surface, textvariable=_summary, foreground='#4a5568').grid(row=1, column=0, columnspan=3, sticky='w', pady=(0, 8))",
-                f"    _collections[{collection['identity']!r}] = Treeview(surface, columns=tuple(column['field'] for column in TABLE_COLUMNS), show='headings', selectmode='browse')",
+                "    metrics = Frame(surface)",
+                "    metrics.grid(row=2, column=0, columnspan=3, sticky='ew', pady=(0, 10))",
+                "    for index, metric in enumerate(DASHBOARD_METRICS):",
+                "        metrics.columnconfigure(index, weight=1)",
+                "        card = Frame(metrics, highlightbackground='#cbd5e0', highlightthickness=1, padx=12, pady=8)",
+                "        card.grid(row=0, column=index, sticky='nsew', padx=(0, 8))",
+                "        _metric_cards[metric['label']] = card",
+                "        Label(card, text=metric['value'], font=('Helvetica', 18, 'bold')).pack(anchor='w')",
+                "        Label(card, text=metric['label'], foreground='#4a5568').pack(anchor='w')",
+                "    _tabs = Notebook(surface)",
+                "    _tabs.grid(row=3, column=0, columnspan=3, sticky='nsew')",
+                "    overview_surface = Frame(_tabs)",
+                "    overview_surface.columnconfigure(0, weight=3)",
+                "    overview_surface.columnconfigure(2, weight=2)",
+                "    overview_surface.rowconfigure(0, weight=1)",
+                "    portfolio_surface = Frame(_tabs)",
+                "    portfolio_surface.columnconfigure(0, weight=1)",
+                "    portfolio_surface.rowconfigure(0, weight=1)",
+                f"    _tabs.add(overview_surface, text={table['portfolio']['tab_labels']['overview']!r})",
+                f"    _tabs.add(portfolio_surface, text={table['portfolio']['tab_labels']['portfolio']!r})",
+                f"    _collections[{collection['identity']!r}] = Treeview(overview_surface, columns=tuple(column['field'] for column in TABLE_COLUMNS), show='headings', selectmode='browse')",
                 f"    table_widget = _collections[{collection['identity']!r}]",
                 "    for column in TABLE_COLUMNS:",
                 "        table_widget.heading(column['field'], text=column['label'])",
                 "        table_widget.column(column['field'], width=column['width'], minwidth=70, stretch=True)",
-                "    table_widget.grid(row=2, column=0, sticky='nsew')",
-                "    table_scroll = Scrollbar(surface, orient='vertical', command=table_widget.yview)",
-                "    table_scroll.grid(row=2, column=1, sticky='ns')",
+                "    table_widget.grid(row=0, column=0, sticky='nsew')",
+                "    table_scroll = Scrollbar(overview_surface, orient='vertical', command=table_widget.yview)",
+                "    table_scroll.grid(row=0, column=1, sticky='ns')",
                 "    table_widget.configure(yscrollcommand=table_scroll.set)",
-                f"    _details[{collection['identity']!r}] = Text(surface, width=46, wrap='word', padx=12, pady=10)",
-                f"    _details[{collection['identity']!r}].grid(row=2, column=2, sticky='nsew', padx=(12, 0))",
+                f"    _details[{collection['identity']!r}] = Text(overview_surface, width=46, wrap='word', padx=12, pady=10)",
+                f"    _details[{collection['identity']!r}].grid(row=0, column=2, sticky='nsew', padx=(12, 0))",
                 f"    _details[{collection['identity']!r}].bind('<Key>', lambda _event: 'break')",
                 f"    table_widget.bind('<<TreeviewSelect>>', lambda _event: present_detail({collection['identity']!r}))",
+                "    _portfolio = Treeview(portfolio_surface, columns=tuple(column['field'] for column in PORTFOLIO_COLUMNS), show='headings')",
+                "    for column in PORTFOLIO_COLUMNS:",
+                "        _portfolio.heading(column['field'], text=column['label'])",
+                "        _portfolio.column(column['field'], width=column['width'], minwidth=80, stretch=True)",
+                "    for index, record in enumerate(PORTFOLIO_RECORDS):",
+                "        _portfolio.insert('', 'end', iid=str(index), values=tuple(record[column['field']] for column in PORTFOLIO_COLUMNS))",
+                "    _portfolio.grid(row=0, column=0, sticky='nsew')",
+                "    portfolio_scroll = Scrollbar(portfolio_surface, orient='vertical', command=_portfolio.yview)",
+                "    portfolio_scroll.grid(row=0, column=1, sticky='ns')",
+                "    _portfolio.configure(yscrollcommand=portfolio_scroll.set)",
             ]
         )
     else:
@@ -609,6 +656,11 @@ def render_source(seed):
                     f"        table_widget = _collections[{collection['identity']!r}]",
                     "        checks.append(tuple(table_widget['columns']) == tuple(column['field'] for column in TABLE_COLUMNS))",
                     "        checks.append(all(table_widget.heading(column['field'], 'text') == column['label'] for column in TABLE_COLUMNS))",
+                    "        checks.append(tuple(_metric_cards) == tuple(metric['label'] for metric in DASHBOARD_METRICS))",
+                    "        checks.append(len(_portfolio.get_children()) == len(PORTFOLIO_RECORDS))",
+                    "        _tabs.select(1)",
+                    "        checks.append(_tabs.index(_tabs.select()) == 1)",
+                    "        _tabs.select(0)",
                     f"        checks.append(bool(table_widget.get_children()) and bool(_details[{collection['identity']!r}].get('1.0', 'end').strip()))",
                 )
                 if table

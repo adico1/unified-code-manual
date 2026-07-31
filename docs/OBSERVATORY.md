@@ -23,6 +23,9 @@ summary, and a separate read-only detail panel; records are not flattened into
 one presentation string. Table columns, headings, detail fields and their
 order are declared by the application seed and verified by generated GUI
 self-tests.
+Its second generated tab enumerates all 74 proven products with product group,
+variation, canonical identity and proof status. The portfolio is declared in
+the application seed; the generic compiler contains none of those identities.
 Every record carries four observation verdicts:
 
 - `הבט` — physical presence;
