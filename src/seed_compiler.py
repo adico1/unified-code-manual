@@ -14,6 +14,7 @@ from pathlib import Path
 from declaration_compiler import LANGUAGE as DECLARATION_LANGUAGE
 from declaration_compiler import LANGUAGES as DECLARATION_LANGUAGES
 from declaration_compiler import compile_declaration
+from declaration_compiler import render_declaration_source
 from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
 from stateful_compiler import safe_name
 
@@ -21,6 +22,7 @@ from stateful_compiler import safe_name
 FORMAT = "manual-resolved-declaration-4"
 LEAF_FORMAT = "manual-what-seed-4"
 BASE_FORMAT = "manual-seed-base-1"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_CONTRACT = frozenset(
     {
         "identity",
@@ -436,16 +438,23 @@ def materialize_stateful(
         item["identity"] for item in what["presentation"]["inputs"]
     }
     collection_identity = what["presentation"]["collection"]["identity"]
+    argument_overrides = what["presentation"].get("control_arguments", {})
+    if set(argument_overrides) - {item["key"] for item in placements}:
+        raise ValueError("unknown-control-argument-override")
     for placement in placements:
         definition = definitions[placement["key"]]
+        arguments = argument_overrides.get(
+            placement["key"],
+            definition.get("arguments", {}),
+        )
         declared_arguments = {
             item["name"] for item in commands[definition["command"]]["arguments"]
         }
-        if set(definition.get("arguments", {})) != declared_arguments:
+        if set(arguments) != declared_arguments:
             raise ValueError(
                 "control-argument-mismatch:" + placement["key"]
             )
-        for argument in definition.get("arguments", {}).values():
+        for argument in arguments.values():
             if argument.get("source") == "input":
                 if argument.get("identity") not in input_identities:
                     raise ValueError("control-input-missing")
@@ -489,6 +498,11 @@ def materialize_stateful(
         {
             "id": placement["key"],
             **definitions[placement["key"]],
+            **(
+                {"arguments": argument_overrides[placement["key"]]}
+                if placement["key"] in argument_overrides
+                else {}
+            ),
             "row": placement["row"],
             "column": placement["column"],
         }
@@ -500,7 +514,7 @@ def materialize_stateful(
             **{
                 name: value
                 for name, value in what["presentation"].items()
-                if name != "keys"
+                if name not in {"keys", "control_arguments"}
             },
             "controls": controls,
         },
@@ -551,13 +565,17 @@ def resolve_reference(owner, reference, ancestry):
     if relative.is_absolute():
         raise ValueError("base-path-not-relative")
     target = (owner.parent / relative).resolve(strict=True)
-    authority_root = next(
-        (
-            candidate
-            for candidate in (owner, *owner.parents)
-            if candidate.name == "seed"
-        ),
-        owner.parent,
+    authority_root = (
+        PROJECT_ROOT / "seed"
+        if owner.is_relative_to(PROJECT_ROOT)
+        else next(
+            (
+                candidate
+                for candidate in (owner, *owner.parents)
+                if candidate.name == "seed"
+            ),
+            owner.parent,
+        )
     )
     if not target.is_relative_to(authority_root):
         raise ValueError("base-path-outside-authority")
@@ -767,11 +785,7 @@ def validate(seed):
 
 
 def render_program(seed):
-    tree = compile_declaration(seed)
-    if not isinstance(tree, ast.Module):
-        raise ValueError("program-root")
-    ast.fix_missing_locations(tree)
-    source = (ast.unparse(tree).rstrip() + "\n").encode()
+    source = render_declaration_source(seed).encode()
     compile(source, "<seed-program>", "exec")
     return source
 
@@ -1132,9 +1146,8 @@ def install(stage, output):
         shutil.rmtree(backup)
 
 
-def generate(seed_path, output):
+def assemble(seed_path):
     seed_path = Path(seed_path).resolve(strict=True)
-    output = Path(output).resolve(strict=False)
     seed, authorities = load_seed(seed_path)
     errors = validate(seed)
     if errors:
@@ -1175,8 +1188,16 @@ def generate(seed_path, output):
         "runtime_shared_engine_files": 0,
         "manual_application_files": 0,
         "manual_test_files": 0,
+        "generated_ast": True,
     }
     files["manifest.json"] = canonical(manifest)
+    return manifest, files
+
+
+def generate(seed_path, output):
+    output = Path(output).resolve(strict=False)
+    manifest, files = assemble(seed_path)
+    tests = files["test_generated.py"]
     output.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(
         tempfile.mkdtemp(prefix="." + output.name + "-", dir=output.parent)

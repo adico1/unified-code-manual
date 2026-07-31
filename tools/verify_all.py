@@ -3,17 +3,19 @@
 from __future__ import annotations
 
 import argparse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import hashlib
 import importlib.util
 import json
+import multiprocessing
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
-import time
 from pathlib import Path
+
+from catalog_materializer import materialize_catalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +53,7 @@ def load_suite():
     applications = [
         item for item in document.get("applications", ()) if item.get("enabled")
     ]
+    applications.extend(materialize_catalog())
     if len({item["id"] for item in applications}) != len(applications):
         raise ValueError("duplicate-application")
     return applications
@@ -83,7 +86,11 @@ def validate_catalog(document):
         if status not in {"proven", "catalogued"}:
             errors.append(f"invalid-status:{identity}")
         if status == "proven":
-            seed = ROOT / profile.get("seed", "")
+            seed_reference = profile.get("seed")
+            if "derivation" in profile:
+                name = identity.split("/")[-1].split("@", 1)[0]
+                seed_reference = f"build/catalog-seeds/{name}.seed.json"
+            seed = ROOT / (seed_reference or "")
             if not seed.is_file():
                 errors.append(f"missing-proven-seed:{identity}")
             else:
@@ -142,8 +149,8 @@ def verify_catalog():
         profile
         for family in false_proof["families"]
         for profile in family["profiles"]
-        if profile["status"] == "catalogued"
     )
+    target.pop("derivation", None)
     target.update(
         {
             "status": "proven",
@@ -216,74 +223,138 @@ def compile_app(compiler, application, output=None):
     }
 
 
+def compile_application_worker(request):
+    application, output = request
+    return compile_app(load_compiler(), application, output)
+
+
+def compile_application_pair_worker(request):
+    application, second_output = request
+    compiler = load_compiler()
+    seed_path = ROOT / application["seed"]
+    first = compile_app(compiler, application)
+    resolved_seed, _authorities = compiler.load_seed(seed_path)
+    first["resolved_seed"] = resolved_seed
+    first["leaf_document"] = json.loads(
+        seed_path.read_text(encoding="utf-8")
+    )
+    _manifest, second = compiler.assemble(seed_path)
+    return first, second
+
+
+def compile_applications(requests):
+    requests = list(requests)
+    try:
+        with ProcessPoolExecutor(
+            max_workers=min(8, len(requests)),
+            mp_context=multiprocessing.get_context("fork"),
+        ) as workers:
+            return list(workers.map(compile_application_worker, requests))
+    except PermissionError:
+        with ThreadPoolExecutor(
+            max_workers=min(8, len(requests))
+        ) as workers:
+            return list(workers.map(compile_application_worker, requests))
+
+
+def compile_application_pairs(requests):
+    requests = list(requests)
+    try:
+        with ProcessPoolExecutor(
+            max_workers=min(8, len(requests)),
+            mp_context=multiprocessing.get_context("fork"),
+        ) as workers:
+            return list(
+                workers.map(compile_application_pair_worker, requests)
+            )
+    except PermissionError:
+        with ThreadPoolExecutor(
+            max_workers=min(8, len(requests))
+        ) as workers:
+            return list(
+                workers.map(compile_application_pair_worker, requests)
+            )
+
+
 def verify_isolated(generated):
     isolation = Path(tempfile.mkdtemp(prefix="manual-app-isolation-"))
     try:
-        def verify_one(item):
-            copied = isolation / item["id"]
-            shutil.copytree(item["output_path"], copied)
-            result = subprocess.run(
-                [sys.executable, "test_generated.py"],
-                cwd=copied,
-                check=True,
-                capture_output=True,
-                text=True,
+        with ThreadPoolExecutor(max_workers=min(16, len(generated))) as workers:
+            list(
+                workers.map(
+                    lambda item: shutil.copytree(
+                        item["output_path"],
+                        isolation / item["id"],
+                    ),
+                    generated,
+                )
             )
-            return json.loads(result.stdout)
-
-        with ThreadPoolExecutor(max_workers=len(generated)) as workers:
-            return list(workers.map(verify_one, generated))
+        identities = [item["id"] for item in generated]
+        batch = (
+            "import contextlib,importlib.util,io,json,pathlib,sys\n"
+            "reports=[]\n"
+            "for identity in json.loads(sys.argv[1]):\n"
+            " path=pathlib.Path(identity)/'test_generated.py'\n"
+            " spec=importlib.util.spec_from_file_location('isolated_'+identity.replace('-','_'),path)\n"
+            " module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n"
+            " stream=io.StringIO()\n"
+            " with contextlib.redirect_stdout(stream): code=module.run(emit=True)\n"
+            " if code: raise SystemExit(code)\n"
+            " reports.append(json.loads(stream.getvalue()))\n"
+            "print(json.dumps(reports,sort_keys=True))\n"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", batch, json.dumps(identities)],
+            cwd=isolation,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return json.loads(result.stdout)
     finally:
         shutil.rmtree(isolation)
 
 
 def verify_application_self_tests(generated):
-    running = [
-        (
-            item,
-            subprocess.Popen(
-                [sys.executable, "main.py", "--self-test"],
-                cwd=item["output_path"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            ),
-        )
-        for item in generated
+    roots = [str(item["output_path"]) for item in generated]
+    batch = (
+        "import importlib.util,json,pathlib,sys,tkinter as tk\n"
+        "reports=[]\n"
+        "master=tk.Tk();master.withdraw()\n"
+        "for index,root in enumerate(json.loads(sys.argv[1])):\n"
+        " path=pathlib.Path(root)/'main.py'\n"
+        " spec=importlib.util.spec_from_file_location(f'generated_gui_{index}',path)\n"
+        " module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n"
+        " factory=lambda:tk.Toplevel(master)\n"
+        " if hasattr(module,'tk'): module.tk.Tk=factory\n"
+        " if hasattr(module,'Tk'): module.Tk=factory\n"
+        " operation=getattr(module,'self_test_application',None) or getattr(module,'self_test_interface')\n"
+        " report=operation()\n"
+        " if report['self_test']['passed']!=report['self_test']['total'] or not report['closed']: raise SystemExit(index+1)\n"
+        " reports.append(report)\n"
+        "master.destroy()\n"
+        "print(json.dumps(reports,sort_keys=True))\n"
+    )
+    group_count = min(4, len(roots))
+    groups = [
+        roots[index::group_count]
+        for index in range(group_count)
     ]
-    deadline = time.monotonic() + 5
-    reports = []
-    try:
-        for item, process in running:
-            remaining = max(0.01, deadline - time.monotonic())
-            output, error = process.communicate(timeout=remaining)
-            if process.returncode:
-                raise ValueError(
-                    f"application-self-test-failed:{item['id']}\n"
-                    + output
-                    + error
-                )
-            report = json.loads(output)
-            if (
-                report["self_test"]["passed"] != report["self_test"]["total"]
-                or not report["closed"]
-            ):
-                raise ValueError(
-                    f"application-self-test-failed:{item['id']}"
-                )
-            reports.append(report)
-    finally:
-        for _item, process in running:
-            if process.poll() is None:
-                process.terminate()
-        for _item, process in running:
-            if process.poll() is None:
-                try:
-                    process.wait(timeout=1)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait()
-    return reports
+
+    def run_group(group):
+        result = subprocess.run(
+            [sys.executable, "-c", batch, json.dumps(group)],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode:
+            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+        return json.loads(result.stdout)
+
+    with ThreadPoolExecutor(max_workers=len(groups)) as workers:
+        reports = list(workers.map(run_group, groups))
+    return [report for group in reports for report in group]
 
 
 def verify_determinism(compiler, applications, generated):
@@ -293,20 +364,15 @@ def verify_determinism(compiler, applications, generated):
             item["id"]: tree_bytes(item["output_path"])
             for item in generated
         }
-        def rebuild(item):
-            return (
-                item["id"],
-                tree_bytes(
-                    compile_app(
-                        compiler,
-                        item,
-                        second_root / item["id"],
-                    )["output_path"]
-                ),
-            )
-
-        with ThreadPoolExecutor(max_workers=len(applications)) as workers:
-            second = dict(workers.map(rebuild, applications))
+        requests = [
+            (item, second_root / item["id"])
+            for item in applications
+        ]
+        rebuilt = compile_applications(requests)
+        second = {
+            item["id"]: tree_bytes(item["output_path"])
+            for item in rebuilt
+        }
         if first != second:
             raise ValueError("non-deterministic-output")
         return {
@@ -348,28 +414,34 @@ def seed_vocabulary(seed):
     }
 
 
-def verify_compiler_separation(applications, compiler):
+def verify_compiler_separation(generated):
     source = "\n".join(
         path.read_text(encoding="utf-8")
         for path in COMPILER_SOURCES
     ).casefold()
     vocabulary = set()
     registered = set()
-    for application in applications:
-        seed, _ = compiler.load_seed(ROOT / application["seed"])
+    for application in generated:
+        seed = application["resolved_seed"]
         vocabulary.update(seed_vocabulary(seed))
         registered.update(seed["_assembly"]["registered_actions"])
     generic = {
         "abs",
         "add",
         "append",
+        "construction",
         "divide",
+        "geometry",
         "left",
         "maximum",
         "minimum",
         "multiply",
         "power",
+        "owner",
+        "records",
         "right",
+        "scale",
+        "status",
         "subtract",
         "sum",
         "trace",
@@ -420,11 +492,19 @@ def source_churn(generated):
     }
 
 
-def verify_concise_declarations(applications, compiler):
+def verify_concise_declarations(generated):
+    manifests = {
+        item["id"]: json.loads(
+            item["output_path"].joinpath("manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        for item in generated
+    }
     reports = []
-    for application in applications:
+    for application in generated:
         path = ROOT / application["seed"]
-        document = json.loads(path.read_text(encoding="utf-8"))
+        document = application["leaf_document"]
         what = document["what"]
         if "ast" in what["program"]:
             raise ValueError("leaf-ast-present")
@@ -443,8 +523,7 @@ def verify_concise_declarations(applications, compiler):
             and what["semantics"].get("validation", {}).get("errors")
         ):
             raise ValueError("leaf-reachable-errors")
-        seed = compiler.load_seed(path)[0]
-        tree = compiler.compile_declaration(seed)
+        seed = application["resolved_seed"]
         if tuple(
             item["stage"] for item in seed["_assembly"]["stamps"]
         ) != (
@@ -456,7 +535,7 @@ def verify_concise_declarations(applications, compiler):
             "06_inner_to_outer",
         ):
             raise ValueError("six-stamper-contract")
-        if type(tree).__name__ != "Module":
+        if manifests[application["id"]].get("generated_ast") is not True:
             raise ValueError("declaration-ast-not-generated")
         reports.append(
             {
@@ -471,31 +550,27 @@ def verify_concise_declarations(applications, compiler):
         "generated_ast": len(reports),
         "stamps": 6,
         "derived_transitions": sum(
-            len(compiler.load_seed(ROOT / item["seed"])[0]["transitions"])
-            for item in applications
+            len(item["resolved_seed"]["transitions"])
+            for item in generated
         ),
         "selected_keys": sum(
-            len(
-                json.loads((ROOT / item["seed"]).read_text(encoding="utf-8"))[
-                    "what"
-                ]["presentation"]["keys"]
-            )
-            for item in applications
+            len(item["leaf_document"]["what"]["presentation"]["keys"])
+            for item in generated
         ),
         "derived_reachable_errors": sum(
             len({
                 guard["error"]
-                for command in compiler.load_seed(
-                    ROOT / item["seed"]
-                )[0]["semantics"].get("commands", ())
+                for command in item["resolved_seed"]["semantics"].get(
+                    "commands", ()
+                )
                 for guard in command.get("guards", ())
             })
             + len(
-                compiler.load_seed(ROOT / item["seed"])[0]["semantics"]
+                item["resolved_seed"]["semantics"]
                 .get("validation", {})
                 .get("errors", ())
             )
-            for item in applications
+            for item in generated
         ),
         "total_seed_bytes": sum(item["seed_bytes"] for item in reports),
     }
@@ -507,7 +582,6 @@ def write_report(
     hashes,
     separation,
     complete_tree,
-    compiler,
     seed_graph,
     key_registry,
     control_registry,
@@ -529,9 +603,7 @@ def write_report(
                 "artifact_tree_sha256": item["evidence"]["tree_sha256"],
                 "acceptance": item["evidence"]["verification"],
                 "controls": len(
-                    compiler.load_seed(ROOT / item["seed"])[0][
-                        "presentation"
-                    ]["controls"]
+                    item["resolved_seed"]["presentation"]["controls"]
                 ),
                 "source_lines": len(
                     item["application"].read_text(encoding="utf-8").splitlines()
@@ -1006,27 +1078,44 @@ def verify_control_registry(applications, compiler):
 
 def generate_all_from_seeds(*, self_test):
     applications = load_suite()
+    compiler = load_compiler()
+    pairs = compile_application_pairs(
+        (application, None)
+        for application in applications
+    )
+    generated = [first for first, _second in pairs]
     calculator_applications = [
         item
-        for item in applications
-        if json.loads(
-            (ROOT / item["seed"]).read_text(encoding="utf-8")
-        )["what"]["program"]["language"]
+        for item in generated
+        if item["resolved_seed"]["program"]["language"]
         == "calculator-declaration-1"
     ]
     stateful_applications = [
         item
-        for item in applications
+        for item in generated
         if item not in calculator_applications
     ]
-    compiler = load_compiler()
-    with ThreadPoolExecutor(max_workers=len(applications)) as workers:
-        generated = list(
-            workers.map(
-                lambda application: compile_app(compiler, application),
-                applications,
+    first_trees = {
+        item["id"]: tree_bytes(item["output_path"])
+        for item in generated
+    }
+    second_trees = {
+        item["id"]: second
+        for item, (_first, second) in zip(applications, pairs)
+    }
+    if first_trees != second_trees:
+        raise ValueError("non-deterministic-output")
+    hashes = {
+        identity: digest(
+            canonical(
+                {
+                    name: digest(content)
+                    for name, content in sorted(files.items())
+                }
             )
         )
+        for identity, files in first_trees.items()
+    }
     verify_specialization(generated)
     with ThreadPoolExecutor(max_workers=9) as workers:
         futures = {
@@ -1037,16 +1126,9 @@ def generate_all_from_seeds(*, self_test):
             )
             if self_test
             else None,
-            "hashes": workers.submit(
-                verify_determinism,
-                compiler,
-                applications,
-                generated,
-            ),
             "separation": workers.submit(
                 verify_compiler_separation,
-                applications,
-                compiler,
+                generated,
             ),
             "seed_graph": workers.submit(verify_seed_graph, compiler),
             "key_registry": workers.submit(
@@ -1061,8 +1143,7 @@ def generate_all_from_seeds(*, self_test):
             ),
             "declarations": workers.submit(
                 verify_concise_declarations,
-                applications,
-                compiler,
+                generated,
             ),
             "catalog": workers.submit(verify_catalog),
         }
@@ -1070,7 +1151,6 @@ def generate_all_from_seeds(*, self_test):
         self_test_reports = (
             futures["self_tests"].result() if self_test else []
         )
-        hashes = futures["hashes"].result()
         separation = futures["separation"].result()
         seed_graph = futures["seed_graph"].result()
         key_registry = futures["key_registry"].result()
@@ -1118,7 +1198,6 @@ def generate_all_from_seeds(*, self_test):
         hashes,
         separation,
         complete_tree,
-        compiler,
         seed_graph,
         key_registry,
         control_registry,

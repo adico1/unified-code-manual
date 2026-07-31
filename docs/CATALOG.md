@@ -1,7 +1,6 @@
 # Application Profile Catalog
 
-This catalog maps application variation without presenting every named profile
-as an implemented proof.
+This catalog maps and proves 64 bounded application variations.
 
 ```text
 64 named profiles
@@ -14,16 +13,16 @@ two states:
 
 - `proven` — a checked seed exists in the application suite and generates a
   runnable, self-testing application.
-- `catalogued` — the application variation has a canonical identity and a
-  bounded capability declaration, but no runnable proof is claimed yet.
+- `catalogued` — reserved for a future entry whose bounded declaration exists
+  but whose runnable proof has not passed.
 
 The current counts are:
 
 | Family | Profiles | Proven | Catalogued |
 | --- | ---: | ---: | ---: |
-| Calculator | 32 | 12 | 20 |
-| Todo | 32 | 1 | 31 |
-| Total | 64 | 13 | 51 |
+| Calculator | 32 | 32 | 0 |
+| Todo | 32 | 32 | 0 |
+| Total | 64 | 64 | 0 |
 
 ## What the catalog measures
 
@@ -31,9 +30,7 @@ The profiles enumerate semantic capability combinations, not brands, websites,
 or duplicate products. A branded application can implement several profiles,
 and several branded applications can implement the same profile.
 
-The catalog is therefore larger than the present proof without making the
-false claim that every profile is already generatable. Promotion from
-`catalogued` to `proven` requires:
+All current profiles have completed this promotion:
 
 ```text
 profile
@@ -48,11 +45,24 @@ Catalog verification rejects duplicate canonical identities, false `proven`
 claims, missing seeds, mismatched generated-product identities, and empty or
 duplicate capability declarations.
 
+The original 13 programs remain direct leaf seeds. The other 51 profiles carry
+content-addressed prototype identities and complete semantic merge
+declarations. Generic build-time materialization produces their complete leaf
+seeds; generated applications never read the catalog, prototype, seed,
+compiler, or repository at runtime.
+
+“Proven” means the exact bounded contract in the profile is implemented and
+tested. Todo capabilities ending in `-field` are persisted record fields, not
+claims that a notification, network synchronization, cryptographic, or
+scheduling engine exists. The three potentially misleading identities were
+therefore narrowed to `dependency-plan`, `offline-security-plan`, and
+`collaboration-sync-plan`.
+
 ## Expansion rule
 
 New names are useful only when they introduce a distinct capability contract.
 Aliases and competing brand names do not increase the language proof.
-Eventually, a versioned seed language should generate every valid capability
-combination expressible in that language. The catalog records the bounded
-frontier; it does not claim an enumerable total for every calculator or Todo
-application on Earth.
+The versioned seed language generates every profile currently registered here.
+This is a finite, reproducible claim. It does not claim an enumerable total for
+every calculator or Todo application on Earth, nor that every imaginable
+future semantic primitive is already expressible.

@@ -1,4 +1,4 @@
-# From Seeds to Apps — Twelve Calculators and Todo
+# From Seeds to Apps — 64 Proven Applications
 
 This repository is the handwritten learning track beside
 [Unified Code](https://github.com/adico1/unified-code). It is an experimental
@@ -8,9 +8,9 @@ proof of one precise boundary:
 one pinned בלי_מה authority
 → canonical interface registries
 → calculator and stateful-list family seeds
-→ thirteen application מה seeds
+→ 13 direct and 51 derived application מה programs
 → one generic build-time assembly compiler
-→ thirteen exact specialized applications
+→ 64 exact specialized applications
 ```
 
 It does not claim full Standard Ten, UEM, self-hosting, or representation of
@@ -18,7 +18,7 @@ every possible calculator.
 
 ## One operation
 
-Generate, build, install, execute, exercise, and close all thirteen applications:
+Generate, build, install, execute, exercise, and close all 64 applications:
 
 ```bash
 python3 tools/single_api.py
@@ -59,19 +59,24 @@ authorization boundary. Credentials are never stored in the repository.
   calculator family.
 - `seed/families/stateful-list.seed.json` supplies domain-neutral state,
   collection, persistence, and interface boundaries.
-- `seed/applications/*.seed.json` are thirteen application-specific מה seeds.
+- `seed/applications/*.seed.json` are 13 direct application-specific מה seeds.
+- `seed/catalog.seed.json` contains 51 complete, pinned derived-seed programs
+  in addition to the 13 direct profile references.
+- `tools/catalog_materializer.py` applies only generic, content-addressed JSON
+  merge declarations and emits disposable complete seeds under `build/`.
 - `tools/modify_seeds.py` deterministically migrates and re-pins the complete seed
   graph.
 - `src/seed_compiler.py` is the generic structured-program compiler.
-- `seed/suite.seed.json` lists the thirteen seed paths and output paths; it
-  contains no application behavior.
+- `seed/suite.seed.json` lists the 13 direct seeds; the catalog supplies the
+  remaining 51 programs and output identities without adding behavior to the
+  suite.
 - `tools/verify_all.py` performs generation, acceptance, isolation, deterministic
   rebuilding, source-separation checks, and parallel application self-starts
   behind the single API.
 - `tools/single_api.py` is the one public seed-to-closed-GUI operation.
 - `build/` contains disposable applications and evidence and is ignored.
 
-The thirteen applications are:
+The direct applications are:
 
 ```text
 normal
@@ -181,8 +186,8 @@ application without the repository or seed and runs its generated tests again.
 
 Start with [how to read and review the project](docs/HOW_TO_READ.md), then see
 [the proof](docs/PROOF.md) for measured evidence,
-[the 64-profile application catalog](docs/CATALOG.md) for the distinction
-between 13 proven applications and 51 catalogued variations,
+[the 64-profile application catalog](docs/CATALOG.md) for all 64 proven
+products and their bounded semantic contracts,
 [the multi-family article](docs/TODO_ARTICLE.md), and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
 Publication-ready article and announcement copy are collected in
