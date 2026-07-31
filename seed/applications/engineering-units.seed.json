@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/calculator-family@1",
       "path": "../families/calculator.seed.json",
-      "sha256": "e463cfc52db45c8054f89c401c945124343c4d6c634b8c0186893b13d6b12649"
+      "sha256": "b74bbf1a9a4f815f2461fa72594f8fecbe6a298c955ef426f1bc5fb36be7f811"
     }
   ],
   "format": "manual-what-seed-4",

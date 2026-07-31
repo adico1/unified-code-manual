@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/stateful-list-family@1",
       "path": "../families/stateful-list.seed.json",
-      "sha256": "fe5536ba0e7d6a3f350823c986858e29a64d43f09e2cc95b94e5a745f3de8770"
+      "sha256": "b8039f7aaab178451d29637d4285ebdeaf5c4079dbbf6abcb616832d167c44ee"
     }
   ],
   "format": "manual-what-seed-4",

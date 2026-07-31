@@ -1,0 +1,180 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/בלי_מה@1",
+      "path": "../bases/בלי_מה.seed.json",
+      "sha256": "ac0c41637a25a96144b7c1974cdf93e6ba3408cc97c61fc1d44d34252c77e201"
+    }
+  ],
+  "format": "manual-seed-base-1",
+  "identity": "uc://manual/registries/simulation-controls@1",
+  "kind": "simulation-control-registry-authority",
+  "provides": {
+    "simulation_control_registry": [
+      {
+        "binding": "<w>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "left-bat",
+              "y"
+            ],
+            "value": -18
+          }
+        ],
+        "identity": "participant.left.up",
+        "label": "Left ↑"
+      },
+      {
+        "binding": "<s>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "left-bat",
+              "y"
+            ],
+            "value": 18
+          }
+        ],
+        "identity": "participant.left.down",
+        "label": "Left ↓"
+      },
+      {
+        "binding": "<Up>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "right-bat",
+              "y"
+            ],
+            "value": -18
+          }
+        ],
+        "identity": "participant.right.up",
+        "label": "Right ↑"
+      },
+      {
+        "binding": "<Down>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "right-bat",
+              "y"
+            ],
+            "value": 18
+          }
+        ],
+        "identity": "participant.right.down",
+        "label": "Right ↓"
+      },
+      {
+        "binding": "<w>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "left-bat-a",
+              "y"
+            ],
+            "value": -18
+          },
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "left-bat-b",
+              "y"
+            ],
+            "value": -18
+          }
+        ],
+        "identity": "team.left.up",
+        "label": "Left team ↑"
+      },
+      {
+        "binding": "<s>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "left-bat-a",
+              "y"
+            ],
+            "value": 18
+          },
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "left-bat-b",
+              "y"
+            ],
+            "value": 18
+          }
+        ],
+        "identity": "team.left.down",
+        "label": "Left team ↓"
+      },
+      {
+        "binding": "<Up>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "right-bat-a",
+              "y"
+            ],
+            "value": -18
+          },
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "right-bat-b",
+              "y"
+            ],
+            "value": -18
+          }
+        ],
+        "identity": "team.right.up",
+        "label": "Right team ↑"
+      },
+      {
+        "binding": "<Down>",
+        "changes": [
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "right-bat-a",
+              "y"
+            ],
+            "value": 18
+          },
+          {
+            "operation": "increment",
+            "path": [
+              "entities",
+              "right-bat-b",
+              "y"
+            ],
+            "value": 18
+          }
+        ],
+        "identity": "team.right.down",
+        "label": "Right team ↓"
+      }
+    ]
+  }
+}

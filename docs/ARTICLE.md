@@ -166,7 +166,7 @@ manual application code = 0
 manual application tests = 0
 compiler application-vocabulary hits = 0/128
 altered/floating/cyclic/conflicting/escaping base rejection = 5/5
-six registered build-time stampers
+seven registered build-time stages
 287 control transitions derived
 25 reachable errors derived
 generated editable-input checks = 3 per application

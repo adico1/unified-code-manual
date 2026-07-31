@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/registries/calculator-keys@1",
       "path": "../registries/calculator-keys.seed.json",
-      "sha256": "4bbdd7292e82927bf143bda27c7a61cccefdba84fe835252facf1db3cfafb8af"
+      "sha256": "2621799c9f478a97811ad462ecea11b2358556bfb65d7ad545191754957c4f2e"
     }
   ],
   "format": "manual-seed-base-1",
@@ -144,16 +144,20 @@
           "stage": "03_core_prepare"
         },
         {
+          "identity": "יהוה.core_processing",
+          "stage": "04_core_processing"
+        },
+        {
           "identity": "יהוה.core_collect",
-          "stage": "04_core_collect"
+          "stage": "05_core_collect"
         },
         {
           "identity": "יהוה.core_to_inner",
-          "stage": "05_core_to_inner"
+          "stage": "06_core_to_inner"
         },
         {
           "identity": "יה.outward.inner_to_outer",
-          "stage": "06_inner_to_outer"
+          "stage": "07_inner_to_outer"
         }
       ],
       "zero_division_expressions": {

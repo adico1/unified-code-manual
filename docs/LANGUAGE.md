@@ -230,6 +230,29 @@ human intent
 → manifested calculator
 ```
 
+## Third family: bounded simulation
+
+The same authority graph now contains a distinct generic program language:
+
+```text
+clock
++ entities and initial state
++ registered input controls
++ motion rules
++ deterministic controllers
++ boundaries
++ collisions
++ thresholds
++ geometric projection
+= specialized bounded simulation
+```
+
+Eight paddle-game profiles currently prove that language. The compiler knows
+how to specialize simulation primitives; it does not know the applications'
+bat, projectile, arena, score or product names. Network, 3D, campaign and
+non-rectangular collision semantics remain catalogued gaps rather than hidden
+application branches.
+
 Each layer translates meaning; no layer is allowed to silently invent meaning.
 
 ## Normal cases and variations

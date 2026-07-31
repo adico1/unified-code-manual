@@ -7,10 +7,12 @@ import json
 import os
 from pathlib import Path
 
+from build_layout import coordinates
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "seed" / "catalog.seed.json"
-OUTPUT = ROOT / "build" / "catalog-seeds"
+OUTPUT = ROOT / "build" / "authority"
 
 
 def canonical(value):
@@ -52,10 +54,6 @@ def resolve_prototype(reference):
     return json.loads(raw), path
 
 
-def profile_name(profile):
-    return profile["identity"].split("/")[-1].split("@", 1)[0]
-
-
 def materialize_profile(profile):
     derivation = profile["derivation"]
     if set(derivation) != {"prototype", "patch"}:
@@ -71,19 +69,26 @@ def materialize_profile(profile):
 def materialize_catalog(destination=OUTPUT):
     document = json.loads(CATALOG.read_text(encoding="utf-8"))
     profiles = [
-        profile
+        (family["build_group"], profile)
         for family in document["families"]
         for profile in family["profiles"]
         if "derivation" in profile
     ]
-    destination = Path(destination)
+    destination = Path(destination).resolve()
     destination.mkdir(parents=True, exist_ok=True)
     expected = set()
     results = []
-    for profile in profiles:
-        name = profile_name(profile)
-        path = destination / f"{name}.seed.json"
+    for group, profile in profiles:
         seed, prototype_path = materialize_profile(profile)
+        identity = coordinates(seed)
+        name = identity["variation"]
+        path = (
+            destination
+            / identity["family"]
+            / identity["key"]
+            / "seed.json"
+        )
+        path.parent.mkdir(parents=True, exist_ok=True)
         for reference in seed["bases"]:
             authority = (prototype_path.parent / reference["path"]).resolve(
                 strict=True
@@ -93,21 +98,24 @@ def materialize_catalog(destination=OUTPUT):
         temporary = path.with_suffix(".json.tmp")
         temporary.write_bytes(raw)
         temporary.replace(path)
-        expected.add(path.name)
+        expected.add(path)
         results.append(
             {
                 "id": name,
+                "group": group,
                 "title": profile["name"],
-                "seed": path.relative_to(ROOT).as_posix(),
-                "output": f"build/{name}",
+                "seed": (
+                    "build/" + path.relative_to(destination.parent).as_posix()
+                ),
+                "seed_path": path,
                 "enabled": True,
                 "seed_sha256": digest(raw),
             }
         )
     unexpected = {
-        path.name
-        for path in destination.glob("*.seed.json")
+        path
+        for path in destination.rglob("seed.json")
     } - expected
-    for name in unexpected:
-        (destination / name).unlink()
+    for path in unexpected:
+        path.unlink()
     return results

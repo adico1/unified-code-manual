@@ -19,7 +19,7 @@ applications                              12
 positive + derived negative acceptance    57/57
 isolated copied execution                 12/12
 build-time-generated ASTs                 12/12
-registered stampers                       6
+registered stages                         7
 derived control transitions               287
 derived reachable errors                  25
 seed-graph rejection proofs               5/5

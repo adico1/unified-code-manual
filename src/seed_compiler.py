@@ -17,6 +17,8 @@ from declaration_compiler import compile_declaration
 from declaration_compiler import render_declaration_source
 from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
 from stateful_compiler import safe_name
+from simulation_compiler import LANGUAGE as SIMULATION_LANGUAGE
+from simulation_compiler import render_tests as render_simulation_tests
 
 
 FORMAT = "manual-resolved-declaration-4"
@@ -539,6 +541,83 @@ def materialize_stateful(
     }
 
 
+def materialize_simulation(
+    what,
+    assembly,
+    control_registry,
+    control_registry_authority,
+    leaf_authority,
+):
+    identities = [item.get("identity") for item in control_registry]
+    if (
+        any(
+            not isinstance(item, dict)
+            or set(item) != {"identity", "label", "binding", "changes"}
+            or not isinstance(item["identity"], str)
+            or not isinstance(item["label"], str)
+            or not isinstance(item["binding"], str)
+            or not isinstance(item["changes"], list)
+            for item in control_registry
+        )
+        or len(identities) != len(set(identities))
+    ):
+        raise ValueError("invalid-simulation-control-registry")
+    definitions = {item["identity"]: item for item in control_registry}
+    placements = what["presentation"]["keys"]
+    unknown = sorted({item["key"] for item in placements} - definitions.keys())
+    if unknown:
+        raise ValueError("unknown-key:" + ",".join(unknown))
+    positions = [(item["row"], item["column"]) for item in placements]
+    if len(positions) != len(set(positions)):
+        raise ValueError("overlapping-grid-position")
+    indexes = {item["identity"]: index for index, item in enumerate(control_registry)}
+    controls = [
+        {
+            "id": placement["key"],
+            "label": definitions[placement["key"]]["label"],
+            "binding": definitions[placement["key"]]["binding"],
+            "changes": definitions[placement["key"]]["changes"],
+            "row": placement["row"],
+            "column": placement["column"],
+        }
+        for placement in placements
+    ]
+    selected = [
+        {
+            "identity": placement["key"],
+            "placement": {
+                "authority": leaf_authority["identity"],
+                "authority_sha256": leaf_authority["sha256"],
+                "path": f"/what/presentation/keys/{index}",
+            },
+            "registry": {
+                "authority": control_registry_authority["identity"],
+                "authority_sha256": control_registry_authority["sha256"],
+                "definition_path": f"/provides/simulation_control_registry/{indexes[placement['key']]}",
+                "definition_sha256": document_digest(definitions[placement["key"]]),
+            },
+        }
+        for index, placement in enumerate(placements)
+    ]
+    return {
+        **what,
+        "presentation": {
+            **{key: value for key, value in what["presentation"].items() if key != "keys"},
+            "controls": controls,
+        },
+        "transitions": [
+            {"event": f"control.{control['id']}.pressed", "route": f"control_{index}"}
+            for index, control in enumerate(controls)
+        ],
+        "boundaries": assembly["boundaries"],
+        "_assembly": {
+            "stamps": assembly["stamps"],
+            "registered_actions": ["set", "increment", "multiply"],
+            "selected_keys": selected,
+        },
+    }
+
+
 def canonical(value):
     return (
         json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -684,6 +763,19 @@ def load_seed(path):
             registry_authority,
             leaf_authority,
         )
+    elif language == SIMULATION_LANGUAGE:
+        registry_authority = next(
+            item
+            for item in authorities
+            if "simulation_control_registry" in item.get("provides", ())
+        )
+        materialized = materialize_simulation(
+            what,
+            provisions["assembly"],
+            provisions["simulation_control_registry"],
+            registry_authority,
+            leaf_authority,
+        )
     else:
         raise ValueError("unknown-program-language")
     resolved = {
@@ -753,6 +845,17 @@ def validate(seed, tree=None):
             or not presentation.get("self_tests")
         ):
             errors.append("stateful-presentation")
+    elif language == SIMULATION_LANGUAGE:
+        semantics = seed.get("semantics", {})
+        presentation = seed.get("presentation", {})
+        if (
+            not semantics.get("clock")
+            or not semantics.get("motion")
+            or not presentation.get("surface")
+            or not presentation.get("entities")
+            or not presentation.get("self_tests")
+        ):
+            errors.append("simulation-contract")
     else:
         errors.append("program-language")
     if not seed.get("transitions"):
@@ -943,11 +1046,13 @@ def render_stateful_tests(seed):
         "    module = importlib.util.module_from_spec(specification)",
         "    specification.loader.exec_module(module)",
         "    results = [module.run_case(case['input']) == case['expected'] for case in CASES]",
+        "    things = [module.part({'value': case['input'], 'depths': (), 'axes': (), 'evidence': (), 'state': 'formed'}) for case in CASES]",
+        "    thing_results = [thing['value'] == case['expected'] and thing['state'] == 'valid' and len(thing['depths']) == 10 and thing['evidence'] == ('boundary:inward', 'part:run_case', 'boundary:outward') for thing, case in zip(things, CASES)]",
         "    callbacks = verify_callbacks(path)",
-        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': 0, 'total': 0}, 'key_callbacks': {'passed': callbacks['passed'], 'total': callbacks['total']}}",
+        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'things': {'passed': sum(thing_results), 'total': len(thing_results)}, 'editable': {'passed': 0, 'total': 0}, 'key_callbacks': {'passed': callbacks['passed'], 'total': callbacks['total']}}",
         "    if emit:",
         "        print(json.dumps(report, sort_keys=True))",
-        "    return 0 if all(results) and callbacks['complete'] else 1",
+        "    return 0 if all((*results, *thing_results)) and callbacks['complete'] else 1",
         "",
         "if __name__ == '__main__':",
         "    raise SystemExit(run())",
@@ -959,6 +1064,8 @@ def render_stateful_tests(seed):
 def render_tests(seed):
     if seed["program"]["language"] == STATEFUL_LANGUAGE:
         return render_stateful_tests(seed)
+    if seed["program"]["language"] == SIMULATION_LANGUAGE:
+        return render_simulation_tests(seed)
     entrypoint = seed["program"]["case_entrypoint"]
     transition_by_event = {
         item["event"]: item
@@ -1083,12 +1190,14 @@ def render_tests(seed):
         "    module = importlib.util.module_from_spec(specification)",
         "    specification.loader.exec_module(module)",
         f"    results = [module.{entrypoint}(case['input']) == case['expected'] for case in CASES]",
+        "    things = [module.part({'value': case['input'], 'depths': (), 'axes': (), 'evidence': (), 'state': 'formed'}) for case in CASES]",
+        "    thing_results = [thing['value'] == case['expected'] and thing['state'] == ({True: 'valid', False: 'invalid'}[case['expected'].get('error') is None]) and len(thing['depths']) == 10 and thing['evidence'] == ('boundary:inward', 'part:run_case', 'boundary:outward') for thing, case in zip(things, CASES)]",
         *editable_lines,
         "    key_callbacks = verify_key_callbacks(path)",
-        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': sum(editable), 'total': len(editable)}, 'key_callbacks': {'passed': key_callbacks['passed'], 'total': key_callbacks['total']}}",
+        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'things': {'passed': sum(thing_results), 'total': len(thing_results)}, 'editable': {'passed': sum(editable), 'total': len(editable)}, 'key_callbacks': {'passed': key_callbacks['passed'], 'total': key_callbacks['total']}}",
         "    if emit:",
         "        print(json.dumps(report, sort_keys=True))",
-        "    return 0 if all((*results, *editable)) and key_callbacks['complete'] else 1",
+        "    return 0 if all((*results, *thing_results, *editable)) and key_callbacks['complete'] else 1",
         "",
         "if __name__ == '__main__':",
         "    raise SystemExit(run())",

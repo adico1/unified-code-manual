@@ -6,6 +6,7 @@ import argparse
 import ast
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import deepcopy
+from functools import lru_cache
 import hashlib
 import importlib.util
 import json
@@ -15,9 +16,15 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
 
-from catalog_materializer import materialize_catalog
+TOOLS = Path(__file__).resolve().parent
+sys.path.insert(0, str(TOOLS))
+
+from build_layout import canonical as layout_canonical
+from build_layout import classify, complete_tree_digest, coordinates, install_tree
+from catalog_materializer import materialize_catalog, materialize_profile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +32,7 @@ SUITE = ROOT / "seed" / "suite.seed.json"
 CATALOG = ROOT / "seed" / "catalog.seed.json"
 COMPILER = ROOT / "src" / "seed_compiler.py"
 COMPILER_SOURCES = tuple(sorted((ROOT / "src").glob("*.py")))
+BUILD = ROOT / "build"
 
 
 def canonical(value):
@@ -38,6 +46,7 @@ def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
+@lru_cache(maxsize=1)
 def load_compiler():
     sys.path.insert(0, str(COMPILER.parent))
     specification = importlib.util.spec_from_file_location(
@@ -48,27 +57,85 @@ def load_compiler():
     return module
 
 
-def load_suite():
-    document = json.loads(SUITE.read_text(encoding="utf-8"))
-    if document.get("format") != "manual-seed-program-suite-3":
-        raise ValueError("unsupported-suite")
-    applications = [
-        item for item in document.get("applications", ()) if item.get("enabled")
+def catalog_product_groups():
+    document = json.loads(CATALOG.read_text(encoding="utf-8"))
+    pairs = [
+        (profile.get("product_identity"), family.get("build_group"))
+        for family in document.get("families", ())
+        for profile in family.get("profiles", ())
+        if profile.get("status") == "proven"
     ]
-    applications.extend(materialize_catalog())
+    if any(not identity or not group for identity, group in pairs):
+        raise ValueError("proven-product-build-group-missing")
+    groups = dict(pairs)
+    if len(groups) != len(pairs):
+        raise ValueError("duplicate-proven-product-identity")
+    return groups
+
+
+def application_descriptor(item, groups):
+    seed_path = Path(item.get("seed_path", ROOT / item["seed"])).resolve(
+        strict=True
+    )
+    leaf = json.loads(seed_path.read_text(encoding="utf-8"))
+    identity = coordinates(leaf)
+    try:
+        identity["group"] = groups[identity["canonical_identity"]]
+    except KeyError as error:
+        raise ValueError("product-not-catalogued") from error
+    return {
+        "enabled": True,
+        "id": identity["variation"],
+        "title": leaf["what"]["presentation"]["title"],
+        "seed": (
+            f"build/{identity['group']}/{identity['key']}/authority/seed.json"
+        ),
+        "source_seed": item["seed"],
+        "seed_path": seed_path,
+        "identity": identity,
+    }
+
+
+def load_suite(build_root=BUILD):
+    document = json.loads(SUITE.read_text(encoding="utf-8"))
+    if document.get("format") != "manual-seed-program-suite-4":
+        raise ValueError("unsupported-suite")
+    groups = catalog_product_groups()
+    applications = [
+        application_descriptor(item, groups)
+        for item in document.get("applications", ())
+        if item.get("enabled")
+    ]
+    applications.extend(
+        application_descriptor(item, groups)
+        for item in materialize_catalog(Path(build_root) / ".materialized")
+    )
     if len({item["id"] for item in applications}) != len(applications):
         raise ValueError("duplicate-application")
+    if len({item["identity"]["canonical_identity"] for item in applications}) != len(
+        applications
+    ):
+        raise ValueError("duplicate-product-identity")
     return applications
 
 
-def validate_catalog(document, *, normalize=True):
+def validate_catalog(document, *, normalize=True, products=None):
     errors = []
     families = document.get("families", ())
     family_identities = [item.get("identity") for item in families]
+    build_groups = [item.get("build_group") for item in families]
     if document.get("format") != "manual-application-profile-catalog-1":
         errors.append("unsupported-catalog")
     if len(family_identities) != len(set(family_identities)):
         errors.append("duplicate-family-identity")
+    if any(
+        not isinstance(group, str)
+        or not re.fullmatch(r"[a-z][a-z0-9-]*", group)
+        for group in build_groups
+    ):
+        errors.append("invalid-build-group")
+    if len(build_groups) != len(set(build_groups)):
+        errors.append("duplicate-build-group")
     profiles = [
         (family.get("profile_namespace"), profile)
         for family in families
@@ -89,14 +156,21 @@ def validate_catalog(document, *, normalize=True):
             errors.append(f"invalid-status:{identity}")
         if status == "proven":
             seed_reference = profile.get("seed")
-            if "derivation" in profile:
-                name = identity.split("/")[-1].split("@", 1)[0]
-                seed_reference = f"build/catalog-seeds/{name}.seed.json"
-            seed = ROOT / (seed_reference or "")
-            if not seed.is_file():
+            try:
+                product = (
+                    products[profile.get("product_identity")]
+                    if products is not None
+                    else (
+                        materialize_profile(profile)[0]
+                        if "derivation" in profile
+                        else json.loads(
+                            (ROOT / (seed_reference or "")).read_text()
+                        )
+                    )
+                )
+            except (FileNotFoundError, KeyError, ValueError):
                 errors.append(f"missing-proven-seed:{identity}")
             else:
-                product = json.loads(seed.read_text(encoding="utf-8"))
                 actual = product.get("what", {}).get("identity", {}).get(
                     "canonical"
                 )
@@ -136,9 +210,9 @@ def validate_catalog(document, *, normalize=True):
     return errors, normalized
 
 
-def verify_catalog():
+def verify_catalog(products=None):
     document = json.loads(CATALOG.read_text(encoding="utf-8"))
-    errors, normalized = validate_catalog(document)
+    errors, normalized = validate_catalog(document, products=products)
     if errors:
         raise ValueError("invalid-catalog:" + ",".join(errors))
     profiles = [
@@ -150,7 +224,9 @@ def verify_catalog():
 
     family_profiles = document["families"][0]["profiles"]
     family_profiles.append(family_profiles[0])
-    mutations.append(validate_catalog(document, normalize=False)[0])
+    mutations.append(
+        validate_catalog(document, normalize=False, products=products)[0]
+    )
     family_profiles.pop()
 
     target = next(
@@ -167,17 +243,23 @@ def verify_catalog():
             "product_identity": "uc://manual/applications/not-present@1",
         }
     )
-    mutations.append(validate_catalog(document, normalize=False)[0])
+    mutations.append(
+        validate_catalog(document, normalize=False, products=products)[0]
+    )
     target.clear()
     target.update(saved_target)
 
     capabilities = family_profiles[0]["capabilities"]
     family_profiles[0]["capabilities"] = []
-    mutations.append(validate_catalog(document, normalize=False)[0])
+    mutations.append(
+        validate_catalog(document, normalize=False, products=products)[0]
+    )
     family_profiles[0]["capabilities"] = capabilities
 
     capabilities.append(capabilities[0])
-    mutations.append(validate_catalog(document, normalize=False)[0])
+    mutations.append(
+        validate_catalog(document, normalize=False, products=products)[0]
+    )
     capabilities.pop()
 
     if not all(mutations):
@@ -186,7 +268,10 @@ def verify_catalog():
     reordered["families"].reverse()
     for family in reordered["families"]:
         family["profiles"].reverse()
-    reordered_errors, reordered_normalized = validate_catalog(reordered)
+    reordered_errors, reordered_normalized = validate_catalog(
+        reordered,
+        products=products,
+    )
     if reordered_errors or canonical(reordered_normalized) != canonical(normalized):
         raise ValueError("catalog-order-dependent")
     family_counts = {
@@ -221,77 +306,84 @@ def tree_bytes(path):
     }
 
 
-def compile_app(compiler, application, output=None):
-    target = ROOT / application["output"] if output is None else Path(output)
-    evidence = compiler.generate(ROOT / application["seed"], target)
+def classified_tree(item):
     return {
-        **application,
-        "output_path": target,
-        "application": target / "main.py",
-        "evidence": evidence,
+        "authority": item["authority_path"].read_bytes(),
+        "specification": item["specification_path"].read_bytes(),
+        "source": item["source_path"].read_bytes(),
+        "product": item["application"].read_bytes(),
+        "test": item["test_path"].read_bytes(),
+        "traceability": item["traceability_path"].read_bytes(),
+        "manifest": item["manifest_path"].read_bytes(),
     }
 
 
-def compile_application_worker(request):
-    application, output = request
-    return compile_app(load_compiler(), application, output)
+def expected_classified_tree(item, files):
+    return {
+        "authority": layout_canonical(item["leaf_document"]),
+        "specification": layout_canonical(item["resolved_seed"]),
+        "source": files["main.py"],
+        "product": files["main.py"],
+        "test": files["test_generated.py"],
+        "traceability": files["traceability.json"],
+        "manifest": files["manifest.json"],
+    }
+
+
+def safe_process_context():
+    if (
+        sys.platform == "darwin"
+        and threading.current_thread() is not threading.main_thread()
+    ):
+        return None
+    return multiprocessing.get_context("fork")
 
 
 def compile_application_pair_worker(request):
-    application, second_output = request
+    first_application, first_root, second_application, second_root = request
     compiler = load_compiler()
-    seed_path = ROOT / application["seed"]
-    target = ROOT / application["output"]
-    resolved_seed, authorities = compiler.load_seed(seed_path)
-    manifest, first_files = compiler.assemble_resolved(
-        resolved_seed,
-        authorities,
-    )
-    compiler.install_files(first_files, target)
-    first = {
-        **application,
-        "output_path": target,
-        "application": target / "main.py",
-        "evidence": manifest,
-        "resolved_seed": resolved_seed,
-        "leaf_document": json.loads(
-            seed_path.read_text(encoding="utf-8")
-        ),
-    }
-    _manifest, second = compiler.assemble_resolved(
-        resolved_seed,
-        authorities,
-    )
-    return first, second
 
+    def compile_one(application, build_root):
+        seed_path = application["seed_path"]
+        resolved_seed, authorities = compiler.load_seed(seed_path)
+        manifest, files = compiler.assemble_resolved(resolved_seed, authorities)
+        leaf = json.loads(seed_path.read_text(encoding="utf-8"))
+        identity, destinations = classify(
+            build_root,
+            leaf,
+            resolved_seed,
+            files,
+            application["identity"]["group"],
+        )
+        return {
+            **application,
+            "identity": identity,
+            "output_path": destinations["product"],
+            "application": destinations["product"] / "main.py",
+            "source_path": destinations["source"],
+            "test_path": destinations["test"],
+            "traceability_path": destinations["traceability"],
+            "manifest_path": destinations["manifest"],
+            "authority_path": destinations["authority"],
+            "specification_path": destinations["specification"],
+            "evidence": manifest,
+            "resolved_seed": resolved_seed,
+            "leaf_document": leaf,
+        }
 
-def compile_applications(requests):
-    requests = list(requests)
-    try:
-        with ProcessPoolExecutor(
-            max_workers=min(8, len(requests)),
-            mp_context=multiprocessing.get_context("fork"),
-        ) as workers:
-            return list(
-                workers.map(
-                    compile_application_worker,
-                    requests,
-                    chunksize=max(1, len(requests) // 16),
-                )
-            )
-    except PermissionError:
-        with ThreadPoolExecutor(
-            max_workers=min(8, len(requests))
-        ) as workers:
-            return list(workers.map(compile_application_worker, requests))
+    return (
+        compile_one(first_application, first_root),
+        compile_one(second_application, second_root),
+    )
 
 
 def compile_application_pairs(requests):
     requests = list(requests)
-    try:
+    context = safe_process_context()
+    if context is not None:
         with ProcessPoolExecutor(
             max_workers=min(8, len(requests)),
-            mp_context=multiprocessing.get_context("fork"),
+            mp_context=context,
         ) as workers:
             return list(
                 workers.map(
@@ -300,31 +392,25 @@ def compile_application_pairs(requests):
                     chunksize=max(1, len(requests) // 16),
                 )
             )
-    except PermissionError:
-        with ThreadPoolExecutor(
-            max_workers=min(8, len(requests))
-        ) as workers:
-            return list(
-                workers.map(compile_application_pair_worker, requests)
-            )
+    with ThreadPoolExecutor(max_workers=min(16, len(requests))) as workers:
+        return list(workers.map(compile_application_pair_worker, requests))
 
 
 def verify_isolated(generated):
     isolation = Path(tempfile.mkdtemp(prefix="manual-app-isolation-"))
     try:
+        def stage(item):
+            destination = isolation / item["id"]
+            destination.mkdir()
+            shutil.copy2(item["application"], destination / "main.py")
+            shutil.copy2(item["test_path"], destination / "test_generated.py")
+
         with ThreadPoolExecutor(max_workers=min(16, len(generated))) as workers:
-            list(
-                workers.map(
-                    lambda item: shutil.copytree(
-                        item["output_path"],
-                        isolation / item["id"],
-                    ),
-                    generated,
-                )
-            )
+            list(workers.map(stage, generated))
         identities = [item["id"] for item in generated]
         batch = (
             "import contextlib,importlib.util,io,json,pathlib,sys\n"
+            "sys.dont_write_bytecode=True\n"
             "reports=[]\n"
             "for identity in json.loads(sys.argv[1]):\n"
             " path=pathlib.Path(identity)/'test_generated.py'\n"
@@ -336,14 +422,21 @@ def verify_isolated(generated):
             " reports.append(json.loads(stream.getvalue()))\n"
             "print(json.dumps(reports,sort_keys=True))\n"
         )
-        result = subprocess.run(
-            [sys.executable, "-c", batch, json.dumps(identities)],
-            cwd=isolation,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        return json.loads(result.stdout)
+        groups = [identities[index::8] for index in range(8)]
+
+        def run_group(group):
+            result = subprocess.run(
+                [sys.executable, "-c", batch, json.dumps(group)],
+                cwd=isolation,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            return json.loads(result.stdout)
+
+        with ThreadPoolExecutor(max_workers=len(groups)) as workers:
+            reports = list(workers.map(run_group, groups))
+        return [report for group in reports for report in group]
     finally:
         shutil.rmtree(isolation)
 
@@ -352,6 +445,7 @@ def verify_application_self_tests(generated):
     roots = [str(item["output_path"]) for item in generated]
     batch = (
         "import importlib.util,json,pathlib,sys,tkinter as tk\n"
+        "sys.dont_write_bytecode=True\n"
         "reports=[]\n"
         "master=tk.Tk();master.withdraw()\n"
         "destroy=master.destroy\n"
@@ -392,39 +486,6 @@ def verify_application_self_tests(generated):
     with ThreadPoolExecutor(max_workers=len(groups)) as workers:
         reports = list(workers.map(run_group, groups))
     return [report for group in reports for report in group]
-
-
-def verify_determinism(compiler, applications, generated):
-    second_root = Path(tempfile.mkdtemp(prefix="manual-app-rebuild-"))
-    try:
-        first = {
-            item["id"]: tree_bytes(item["output_path"])
-            for item in generated
-        }
-        requests = [
-            (item, second_root / item["id"])
-            for item in applications
-        ]
-        rebuilt = compile_applications(requests)
-        second = {
-            item["id"]: tree_bytes(item["output_path"])
-            for item in rebuilt
-        }
-        if first != second:
-            raise ValueError("non-deterministic-output")
-        return {
-            identity: digest(
-                canonical(
-                    {
-                        name: digest(content)
-                        for name, content in sorted(files.items())
-                    }
-                )
-            )
-            for identity, files in first.items()
-        }
-    finally:
-        shutil.rmtree(second_root)
 
 
 def seed_vocabulary(seed):
@@ -536,16 +597,12 @@ def source_churn(generated):
 
 def verify_concise_declarations(generated):
     manifests = {
-        item["id"]: json.loads(
-            item["output_path"].joinpath("manifest.json").read_text(
-                encoding="utf-8"
-            )
-        )
+        item["id"]: json.loads(item["manifest_path"].read_text(encoding="utf-8"))
         for item in generated
     }
     reports = []
     for application in generated:
-        path = ROOT / application["seed"]
+        path = application["seed_path"]
         document = application["leaf_document"]
         what = document["what"]
         if "ast" in what["program"]:
@@ -572,11 +629,12 @@ def verify_concise_declarations(generated):
             "01_outer_to_inner",
             "02_inner_to_core",
             "03_core_prepare",
-            "04_core_collect",
-            "05_core_to_inner",
-            "06_inner_to_outer",
+            "04_core_processing",
+            "05_core_collect",
+            "06_core_to_inner",
+            "07_inner_to_outer",
         ):
-            raise ValueError("six-stamper-contract")
+            raise ValueError("seven-stage-contract")
         if manifests[application["id"]].get("generated_ast") is not True:
             raise ValueError("declaration-ast-not-generated")
         reports.append(
@@ -590,7 +648,7 @@ def verify_concise_declarations(generated):
         "applications": reports,
         "leaf_ast_files": 0,
         "generated_ast": len(reports),
-        "stamps": 6,
+        "stamps": 7,
         "derived_transitions": sum(
             len(item["resolved_seed"]["transitions"])
             for item in generated
@@ -677,9 +735,7 @@ def verify_cross_family_composition(generated, compiler):
         ):
             raise ValueError("cross-family-runtime-interpreter")
         trace = json.loads(
-            application["output_path"].joinpath(
-                "traceability.json"
-            ).read_text(encoding="utf-8")
+            application["traceability_path"].read_text(encoding="utf-8")
         )
         expected_trace = [
             {
@@ -749,11 +805,12 @@ def verify_cross_family_composition(generated, compiler):
 
 
 def write_report(
+    build_root,
     applications,
     generated,
     hashes,
     separation,
-    complete_tree,
+    product_tree,
     seed_graph,
     key_registry,
     control_registry,
@@ -762,6 +819,7 @@ def write_report(
     declarations,
     catalog,
     cross_family,
+    product_watchers,
 ):
     runner_bytes = Path(__file__).read_bytes()
     single_api_bytes = Path(__file__).with_name("single_api.py").read_bytes()
@@ -771,7 +829,11 @@ def write_report(
         "applications": [
             {
                 "id": item["id"],
+                "canonical_identity": item["identity"]["canonical_identity"],
+                "family": item["identity"]["family"],
+                "build_group": item["identity"]["group"],
                 "seed": item["seed"],
+                "source_seed": item["source_seed"],
                 "seed_sha256": item["evidence"]["seed_sha256"],
                 "artifact_tree_sha256": item["evidence"]["tree_sha256"],
                 "acceptance": item["evidence"]["verification"],
@@ -781,6 +843,18 @@ def write_report(
                 "source_lines": len(
                     item["application"].read_text(encoding="utf-8").splitlines()
                 ),
+                "paths": {
+                    name: "build/" + path.relative_to(build_root).as_posix()
+                    for name, path in {
+                        "authority": item["authority_path"],
+                        "specification": item["specification_path"],
+                        "source": item["source_path"],
+                        "product": item["output_path"],
+                        "test": item["test_path"],
+                        "traceability": item["traceability_path"],
+                        "manifest": item["manifest_path"],
+                    }.items()
+                },
             }
             for item in generated
         ],
@@ -803,11 +877,25 @@ def write_report(
         },
         "generated_source": source_churn(generated),
         "deterministic_artifact_hashes": hashes,
-        "complete_tree_sha256": complete_tree,
+        "product_tree_sha256": product_tree,
         "compiler_application_vocabulary": separation,
         "manual_application_code": 0,
         "manual_application_tests": 0,
         "runtime_seed_access": 0,
+        "build_layout": {
+            "format": "manual-product-first-build-1",
+            "groups": sorted({item["identity"]["group"] for item in generated}),
+            "product_layers": [
+                "application",
+                "authority",
+                "specification",
+                "source",
+                "verification",
+                "manifest.json",
+            ],
+            "product_runtime_files": 1,
+            "runtime_cache_files": 0,
+        },
         "seed_graph": seed_graph,
         "key_registry": key_registry,
         "control_registry": control_registry,
@@ -816,8 +904,9 @@ def write_report(
         "concise_declarations": declarations,
         "application_profile_catalog": catalog,
         "cross_family_composition": cross_family,
+        "product_watchers": product_watchers,
     }
-    destination = ROOT / "build" / "assembly-report.json"
+    destination = Path(build_root) / "reports" / "assembly-report.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(".json.tmp")
     temporary.write_bytes(canonical(report))
@@ -825,19 +914,231 @@ def write_report(
     return report
 
 
-def verify_specialization(generated):
-    allowed = {
-        "main.py",
-        "manifest.json",
-        "test_generated.py",
-        "traceability.json",
+def build_index(generated, build_root, product_tree):
+    return {
+        "format": "manual-build-index-1",
+        "product_tree_sha256": product_tree,
+        "products": [
+            {
+                "canonical_identity": item["identity"]["canonical_identity"],
+                "family": item["identity"]["family"],
+                "build_group": item["identity"]["group"],
+                "variation": item["identity"]["variation"],
+                "version": item["identity"]["version"],
+                "paths": {
+                    name: "build/" + path.relative_to(build_root).as_posix()
+                    for name, path in {
+                        "authority": item["authority_path"],
+                        "specification": item["specification_path"],
+                        "source": item["source_path"],
+                        "product": item["output_path"],
+                        "test": item["test_path"],
+                        "traceability": item["traceability_path"],
+                        "manifest": item["manifest_path"],
+                    }.items()
+                },
+            }
+            for item in sorted(
+                generated,
+                key=lambda value: value["identity"]["canonical_identity"],
+            )
+        ],
     }
+
+
+def render_build_readme(index):
+    groups = {}
+    for item in index["products"]:
+        groups.setdefault(item["build_group"], []).append(item)
+    lines = [
+        "# Generated applications",
+        "",
+        "Choose a product family first, then a product. Inside each product,",
+        "`application/main.py` is the exact runnable application; the other",
+        "folders explain where it came from and how it was verified.",
+        "",
+    ]
+    for group, products in sorted(groups.items()):
+        lines.extend((f"## {group}", ""))
+        lines.extend(
+            f"- [{item['variation']}@{item['version']}]"
+            f"({group}/{item['variation']}@{item['version']}/)"
+            for item in products
+        )
+        lines.append("")
+    return "\n".join(lines)
+
+
+def write_index(build_root, generated, product_tree):
+    index = build_index(generated, build_root, product_tree)
+    destination = Path(build_root) / "index.json"
+    destination.write_bytes(canonical(index))
+    (Path(build_root) / "README.md").write_text(
+        render_build_readme(index),
+        encoding="utf-8",
+    )
+    return index
+
+
+def verify_product_first_layout(build_root, generated, complete_tree):
+    build_root = Path(build_root)
+    groups = {item["identity"]["group"] for item in generated}
+    top_directories = {
+        path.name for path in build_root.iterdir() if path.is_dir()
+    }
+    if top_directories != {*groups, "reports"}:
+        raise ValueError("build-top-level-not-product-first")
+    top_files = {path.name for path in build_root.iterdir() if path.is_file()}
+    if top_files != {"README.md", "complete-tree.sha256", "index.json"}:
+        raise ValueError("build-top-level-files-incomplete")
+    try:
+        index = json.loads((build_root / "index.json").read_text(encoding="utf-8"))
+        expected_index = build_index(
+            generated,
+            build_root,
+            index["product_tree_sha256"],
+        )
+    except (KeyError, TypeError, json.JSONDecodeError) as error:
+        raise ValueError("build-index-invalid") from error
+    if index != expected_index:
+        raise ValueError("build-index-invalid")
+    if (build_root / "README.md").read_text(encoding="utf-8") != render_build_readme(
+        index
+    ):
+        raise ValueError("build-readme-invalid")
+    for record in index["products"]:
+        for declared in record["paths"].values():
+            relative = Path(declared)
+            if not relative.parts or relative.parts[0] != "build":
+                raise ValueError("build-index-path-invalid")
+            if not (build_root.joinpath(*relative.parts[1:])).exists():
+                raise ValueError("build-index-target-missing")
+    recorded_tree = (build_root / "complete-tree.sha256").read_text(
+        encoding="utf-8"
+    ).strip()
+    if recorded_tree != complete_tree or complete_tree_digest(build_root) != complete_tree:
+        raise ValueError("complete-tree-identity-mismatch")
+    for item in generated:
+        product_root = item["output_path"].parent
+        if {path.name for path in product_root.iterdir()} != {
+            "application",
+            "authority",
+            "manifest.json",
+            "source",
+            "specification",
+            "verification",
+        }:
+            raise ValueError("product-layers-incomplete:" + item["id"])
+        if item["source_path"].read_bytes() != item["application"].read_bytes():
+            raise ValueError("source-product-divergence:" + item["id"])
+    caches = [
+        path
+        for path in build_root.rglob("*")
+        if path.name == "__pycache__" or path.suffix == ".pyc"
+    ]
+    if caches:
+        raise ValueError("runtime-cache-in-build")
+    return {
+        "groups": len(groups),
+        "products": len(generated),
+        "product_runtime_files": len(generated),
+        "cache_files": 0,
+    }
+
+
+def observe_products(generated):
+    def observed(operation):
+        try:
+            return bool(operation())
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+            return False
+
+    observations = []
+    for item in generated:
+        try:
+            manifest = json.loads(
+                item["manifest_path"].read_text(encoding="utf-8")
+            )
+        except (KeyError, json.JSONDecodeError, OSError):
+            manifest = {}
+        try:
+            trace = json.loads(
+                item["traceability_path"].read_text(encoding="utf-8")
+            )
+        except (KeyError, json.JSONDecodeError, OSError):
+            trace = {}
+        files = {
+            "main.py": item["application"],
+            "test_generated.py": item["test_path"],
+            "traceability.json": item["traceability_path"],
+        }
+        verdicts = {
+            "behold": observed(
+                lambda: all(
+                    path.is_file() and path.stat().st_size > 0
+                    for path in (
+                        item["authority_path"],
+                        item["specification_path"],
+                        item["source_path"],
+                        item["application"],
+                        item["test_path"],
+                        item["traceability_path"],
+                        item["manifest_path"],
+                    )
+                )
+            ),
+            "see": observed(
+                lambda: manifest["identity"]
+                == item["leaf_document"]["what"]["identity"]
+                and coordinates(item["leaf_document"])["canonical_identity"]
+                == item["identity"]["canonical_identity"]
+            ),
+            "investigate": observed(
+                lambda: all(
+                    manifest["files"].get(name) == digest(path.read_bytes())
+                    for name, path in files.items()
+                )
+                and manifest["verification"]["passed"]
+                == manifest["verification"]["total"]
+            ),
+            "understand": observed(
+                lambda: trace["seed_sha256"] == manifest["seed_sha256"]
+                and trace["authorities"] == manifest["authorities"]
+                and manifest["runtime_seed_files"] == 0
+                and manifest["manual_application_files"] == 0
+                and manifest["manual_test_files"] == 0
+            ),
+        }
+        failed = [name for name, passed in verdicts.items() if not passed]
+        if failed:
+            raise ValueError(
+                "product-watcher:" + item["id"] + ":" + ",".join(failed)
+            )
+        observations.append(
+            {
+                "canonical_identity": item["identity"]["canonical_identity"],
+                "verdicts": verdicts,
+            }
+        )
+    return {
+        "products": len(observations),
+        "watchers_per_product": 4,
+        "passed": sum(
+            sum(record["verdicts"].values()) for record in observations
+        ),
+        "total": len(observations) * 4,
+        "observations": observations,
+    }
+
+
+def verify_specialization(generated):
+    allowed = {"main.py"}
     trees = {
         item["id"]: tree_bytes(item["output_path"])
         for item in generated
     }
     if any(set(files) != allowed for files in trees.values()):
-        raise ValueError("non-specialized-output")
+        raise ValueError("product-contains-non-runtime-files")
     sources = {files["main.py"] for files in trees.values()}
     if len(sources) != len(trees):
         raise ValueError("applications-not-independent")
@@ -961,10 +1262,9 @@ def verify_key_registry(applications, compiler):
     selected = set()
     resolved = set()
     for application in applications:
-        path = ROOT / application["seed"]
-        document = json.loads(path.read_text(encoding="utf-8"))
+        document = application["leaf_document"]
         placements = document["what"]["presentation"]["keys"]
-        seed, _ = compiler.load_seed(path)
+        seed = application["resolved_seed"]
         selected.update(item["key"] for item in placements)
         resolved.update(item["id"] for item in seed["presentation"]["controls"])
         if [item["key"] for item in placements] != [
@@ -995,12 +1295,10 @@ def verify_key_registry(applications, compiler):
         if required_key["identity"]
         in {
             item["key"]
-            for item in json.loads(
-                (ROOT / application["seed"]).read_text(encoding="utf-8")
-            )["what"]["presentation"]["keys"]
+            for item in application["leaf_document"]["what"]["presentation"]["keys"]
         }
     )
-    proof_path = ROOT / proof_application["seed"]
+    proof_path = proof_application["seed_path"]
     proof_document = json.loads(proof_path.read_text(encoding="utf-8"))
     _, authorities = compiler.load_seed(proof_path)
     what = proof_document["what"]
@@ -1154,7 +1452,7 @@ def verify_control_registry(applications, compiler):
     if not applications:
         raise ValueError("stateful-proof-absent")
     application = applications[0]
-    leaf_path = ROOT / application["seed"]
+    leaf_path = application["seed_path"]
     document = json.loads(leaf_path.read_text(encoding="utf-8"))
     family_reference = document["bases"][0]
     family_path = (leaf_path.parent / family_reference["path"]).resolve()
@@ -1250,14 +1548,27 @@ def verify_control_registry(applications, compiler):
     }
 
 
-def generate_all_from_seeds(*, self_test):
-    applications = load_suite()
+def generate_in_stage(*, self_test, build_root):
+    build_root = Path(build_root)
+    repeat_root = build_root.parent / "second"
+    applications = load_suite(build_root)
+    repeated_applications = load_suite(repeat_root)
+    repeated_by_identity = {
+        item["identity"]["canonical_identity"]: item
+        for item in repeated_applications
+    }
     compiler = load_compiler()
     pairs = compile_application_pairs(
-        (application, None)
+        (
+            application,
+            build_root,
+            repeated_by_identity[application["identity"]["canonical_identity"]],
+            repeat_root,
+        )
         for application in applications
     )
     generated = [first for first, _second in pairs]
+    repeated_generated = [second for _first, second in pairs]
     calculator_applications = [
         item
         for item in generated
@@ -1270,15 +1581,23 @@ def generate_all_from_seeds(*, self_test):
         if item not in calculator_applications
     ]
     first_trees = {
-        item["id"]: tree_bytes(item["output_path"])
+        item["id"]: classified_tree(item)
         for item in generated
     }
     second_trees = {
-        item["id"]: second
-        for item, (_first, second) in zip(applications, pairs)
+        item["id"]: classified_tree(item)
+        for item in repeated_generated
     }
     if first_trees != second_trees:
         raise ValueError("non-deterministic-output")
+    product_watchers = observe_products(generated)
+    repeated_watchers = observe_products(repeated_generated)
+    if product_watchers != repeated_watchers:
+        raise ValueError("independent-build-watcher-mismatch")
+    product_trees = {
+        item["id"]: tree_bytes(item["output_path"])
+        for item in generated
+    }
     hashes = {
         identity: digest(
             canonical(
@@ -1288,7 +1607,7 @@ def generate_all_from_seeds(*, self_test):
                 }
             )
         )
-        for identity, files in first_trees.items()
+        for identity, files in product_trees.items()
     }
     verify_specialization(generated)
     with ThreadPoolExecutor(max_workers=9) as workers:
@@ -1319,7 +1638,13 @@ def generate_all_from_seeds(*, self_test):
                 verify_concise_declarations,
                 generated,
             ),
-            "catalog": workers.submit(verify_catalog),
+            "catalog": workers.submit(
+                verify_catalog,
+                {
+                    item["identity"]["canonical_identity"]: item["leaf_document"]
+                    for item in generated
+                },
+            ),
             "cross_family": workers.submit(
                 verify_cross_family_composition,
                 generated,
@@ -1343,6 +1668,21 @@ def generate_all_from_seeds(*, self_test):
     }
     if key_callbacks["passed"] != key_callbacks["total"]:
         raise ValueError("key-callback-verification")
+    canonical_things = {
+        "passed": sum(item["things"]["passed"] for item in isolated),
+        "total": sum(item["things"]["total"] for item in isolated),
+        "states": [
+            "unknown",
+            "absent",
+            "false",
+            "formed",
+            "valid",
+            "invalid",
+        ],
+        "semantic_depths": 10,
+    }
+    if canonical_things["passed"] != canonical_things["total"]:
+        raise ValueError("canonical-thing-verification")
     self_test_verification = {
         "applications": len(self_test_reports),
         "passed": sum(
@@ -1361,23 +1701,26 @@ def generate_all_from_seeds(*, self_test):
         item["evidence"]["verification"]["total"]
         for item in generated
     )
-    for item in generated:
-        evidence = item["evidence"]
-        print(
-            "generated "
-            f"{item['id']}: seed={evidence['seed_sha256']} "
-            f"artifact={evidence['tree_sha256']} "
-            f"acceptance={evidence['verification']['passed']}/"
-            f"{evidence['verification']['total']}",
-            flush=True,
+    product_tree = digest(
+        canonical(
+            {
+                identity: {
+                    layer: digest(content)
+                    for layer, content in sorted(files.items())
+                }
+                for identity, files in sorted(first_trees.items())
+            }
         )
-    complete_tree = digest(canonical(hashes))
+    )
+    shutil.rmtree(build_root / ".materialized")
+    shutil.rmtree(repeat_root / ".materialized")
     write_report(
+        build_root,
         applications,
         generated,
         hashes,
         separation,
-        complete_tree,
+        product_tree,
         seed_graph,
         key_registry,
         control_registry,
@@ -1386,7 +1729,46 @@ def generate_all_from_seeds(*, self_test):
         declarations,
         catalog,
         cross_family,
+        product_watchers,
     )
+    write_index(build_root, generated, product_tree)
+    write_report(
+        repeat_root,
+        repeated_applications,
+        repeated_generated,
+        hashes,
+        separation,
+        product_tree,
+        seed_graph,
+        key_registry,
+        control_registry,
+        key_callbacks,
+        self_test_verification,
+        declarations,
+        catalog,
+        cross_family,
+        repeated_watchers,
+    )
+    write_index(repeat_root, repeated_generated, product_tree)
+    repeated_complete_tree = complete_tree_digest(repeat_root)
+    (repeat_root / "complete-tree.sha256").write_text(
+        repeated_complete_tree + "\n",
+        encoding="utf-8",
+    )
+    verify_product_first_layout(
+        repeat_root,
+        repeated_generated,
+        repeated_complete_tree,
+    )
+    shutil.rmtree(repeat_root)
+    complete_tree = complete_tree_digest(build_root)
+    (build_root / "complete-tree.sha256").write_text(
+        complete_tree + "\n",
+        encoding="utf-8",
+    )
+    if complete_tree != repeated_complete_tree:
+        raise ValueError("independent-build-tree-mismatch")
+    layout = verify_product_first_layout(build_root, generated, complete_tree)
     print(
         "proof: "
         f"applications={len(generated)} "
@@ -1404,6 +1786,8 @@ def generate_all_from_seeds(*, self_test):
         f"{control_registry['selected_identities']} "
         f"key-callbacks={key_callbacks['passed']}/"
         f"{key_callbacks['total']} "
+        f"canonical-things={canonical_things['passed']}/"
+        f"{canonical_things['total']} "
         f"application-self-tests={self_test_verification['passed']}/"
         f"{self_test_verification['total']} "
         f"closed={self_test_verification['closed']} "
@@ -1417,6 +1801,8 @@ def generate_all_from_seeds(*, self_test):
         f"cross-family={len(cross_family['applications'])} "
         f"cross-family-mutations={cross_family['mutations']['passed']}/"
         f"{cross_family['mutations']['total']} "
+        f"product-watchers={product_watchers['passed']}/"
+        f"{product_watchers['total']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )
@@ -1425,12 +1811,30 @@ def generate_all_from_seeds(*, self_test):
         "applications": len(generated),
         "acceptance": {"passed": passed, "total": total},
         "key_callbacks": key_callbacks,
+        "canonical_things": canonical_things,
         "application_self_tests": self_test_verification,
         "application_profile_catalog": catalog,
         "cross_family_composition": cross_family,
         "deterministic_artifact_hashes": hashes,
+        "independent_tree_hashes": [complete_tree, repeated_complete_tree],
         "complete_tree_sha256": complete_tree,
+        "build_layout": layout,
+        "product_watchers": product_watchers,
     }
+
+
+def generate_all_from_seeds(*, self_test):
+    container = Path(tempfile.mkdtemp(prefix=".build-", dir=ROOT))
+    stage = container / "first"
+    stage.mkdir()
+    try:
+        result = generate_in_stage(self_test=self_test, build_root=stage)
+        install_tree(stage, BUILD)
+        container.rmdir()
+        return result
+    except BaseException:
+        shutil.rmtree(container, ignore_errors=True)
+        raise
 
 
 def execute(generate_only):

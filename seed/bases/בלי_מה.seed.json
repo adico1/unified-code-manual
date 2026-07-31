@@ -5,6 +5,17 @@
   "kind": "invariant-authority",
   "provides": {
     "canonical_encoding": "json-sort-keys-utf8-v1",
+    "canonical_thing": {
+      "part_law": "one-thing-in-one-thing-out",
+      "states": [
+        "unknown",
+        "absent",
+        "false",
+        "formed",
+        "valid",
+        "invalid"
+      ]
+    },
     "composition_law": {
       "base_order_is_semantic": true,
       "conflicts": "invalid",
@@ -18,7 +29,32 @@
       "runtime_seed_interpretation": false,
       "same_authorities_same_artifact": true
     },
-    "target": "python-tk",
+    "semantic_depths": [
+      "01_identity",
+      "02_authority",
+      "03_declaration",
+      "04_composition",
+      "05_processing",
+      "06_state",
+      "07_boundary",
+      "08_manifestation",
+      "09_evidence",
+      "10_fixed_point"
+    ],
+    "standard_ten": {
+      "generated_application_code_only": true,
+      "generated_tests_only": true,
+      "one_canonical_seed": true,
+      "ordered_evidence": true,
+      "standard_version": "TEN-1",
+      "unhandled_failure_policy": "redacted-deduplicated-ticket"
+    },
+    "targets": {
+      "canonical_machine": "UEM-16-v0.1",
+      "physical": [
+        "python-tk"
+      ]
+    },
     "verification": {
       "acceptance_generated": true,
       "independent_rebuild": true,

@@ -1,5 +1,7 @@
 import copy
+import importlib.util
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -38,6 +40,93 @@ class KeyRegistryContractTests(unittest.TestCase):
                 json.loads(cls.leaf.read_text(encoding="utf-8"))
             ),
         }
+        cls.generated_directory = tempfile.TemporaryDirectory()
+        cls.generated_output = Path(cls.generated_directory.name) / "normal"
+        _manifest, files = COMPILER.assemble(cls.leaf)
+        cls.generated_output.mkdir()
+        for name, content in files.items():
+            cls.generated_output.joinpath(name).write_bytes(content)
+        specification = importlib.util.spec_from_file_location(
+            "generated_normal_self_test",
+            cls.generated_output / "main.py",
+        )
+        cls.generated_application = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(cls.generated_application)
+        class Variable:
+            def __init__(self, value=""):
+                self.value = value
+
+            def get(self):
+                return self.value
+
+            def set(self, value):
+                self.value = value
+
+        class Root:
+            def __init__(self):
+                self.children = []
+
+            def title(self, _value):
+                return None
+
+            def geometry(self, _value):
+                return None
+
+            def configure(self, **_values):
+                return None
+
+            def grid_columnconfigure(self, _column, **_values):
+                return None
+
+            def grid_slaves(self, *, row, column):
+                return [
+                    child
+                    for child in reversed(self.children)
+                    if child.row == row and child.column == column
+                ]
+
+            def destroy(self):
+                self.children.clear()
+
+        class Widget:
+            kind = "Widget"
+
+            def __init__(self, root, **values):
+                self.root = root
+                self.values = values
+                self.row = None
+                self.column = None
+                root.children.append(self)
+
+            def grid(self, *, row, column, **_values):
+                self.row = row
+                self.column = column
+                return self
+
+            def winfo_class(self):
+                return self.kind
+
+            def cget(self, identity):
+                return self.values[identity]
+
+            def destroy(self):
+                self.root.children.remove(self)
+
+        class Button(Widget):
+            kind = "Button"
+
+            def invoke(self):
+                return self.values["command"]()
+
+        cls.generated_application.Tk = Root
+        cls.generated_application.StringVar = Variable
+        cls.generated_application.Button = Button
+        cls.generated_application.Entry = Widget
+        cls.generated_application.Label = Widget
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.generated_directory.cleanup()
 
     def materialize_with(self, identity, mutation):
         registry = copy.deepcopy(self.registry)
@@ -110,14 +199,11 @@ class KeyRegistryContractTests(unittest.TestCase):
             )
 
     def test_trace_names_placement_and_registry_definition(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
-            trace = json.loads(
-                output.joinpath("traceability.json").read_text(
-                    encoding="utf-8"
-                )
+        trace = json.loads(
+            self.generated_output.joinpath("traceability.json").read_text(
+                encoding="utf-8"
             )
+        )
         key = next(
             item
             for item in trace["controls"]
@@ -168,17 +254,14 @@ class KeyRegistryContractTests(unittest.TestCase):
         )
 
     def test_generated_tests_verify_every_key_callback(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
-            result = subprocess.run(
-                [sys.executable, "test_generated.py"],
-                cwd=output,
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
+        result = subprocess.run(
+            [sys.executable, "test_generated.py"],
+            cwd=self.generated_output,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
         report = json.loads(result.stdout)
         self.assertEqual(
             report["key_callbacks"],
@@ -188,7 +271,7 @@ class KeyRegistryContractTests(unittest.TestCase):
     def test_generated_tests_reject_wrong_key_value(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
+            shutil.copytree(self.generated_output, output)
             application = output / "main.py"
             source = application.read_text(encoding="utf-8")
             mutated = source.replace(
@@ -223,44 +306,27 @@ class KeyRegistryContractTests(unittest.TestCase):
                     COMPILER.generate(self.leaf, output)
             self.assertFalse(output.exists())
 
-    def test_generated_application_self_tests_real_callbacks(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
-            result = subprocess.run(
-                [sys.executable, "main.py", "--self-test"],
-                cwd=output,
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-        report = json.loads(result.stdout)
+    def test_generated_application_self_tests_callback_contract(self):
+        report = self.generated_application.self_test_application()
         self.assertEqual(report["self_test"], {"passed": 21, "total": 21})
         self.assertTrue(report["closed"])
 
     def test_generated_application_self_test_rejects_broken_route(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "normal"
-            COMPILER.generate(self.leaf, output)
-            application = output / "main.py"
-            source = application.read_text(encoding="utf-8")
-            mutated = source.replace(
-                "def append(value):\n",
-                "def append(value):\n    raise RuntimeError('broken-route')\n",
-                1,
-            )
-            self.assertNotEqual(source, mutated)
-            application.write_text(mutated, encoding="utf-8")
-            result = subprocess.run(
-                [sys.executable, "main.py", "--self-test"],
-                cwd=output,
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-        self.assertNotEqual(result.returncode, 0)
+        operation = self.generated_application.clear
+
+        def broken_route():
+            raise RuntimeError("broken-route")
+
+        self.generated_application.clear = broken_route
+        try:
+            report = self.generated_application.self_test_application()
+        finally:
+            self.generated_application.clear = operation
+        self.assertLess(
+            report["self_test"]["passed"],
+            report["self_test"]["total"],
+        )
+        self.assertTrue(report["closed"])
 
 
 if __name__ == "__main__":

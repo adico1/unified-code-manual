@@ -1,47 +1,38 @@
 {
   "bases": [
     {
-      "identity": "uc://manual/registries/stateful-interface-controls@1",
-      "path": "../registries/stateful-interface-controls.seed.json",
-      "sha256": "f4b4f30506ba3eef04951a74d56fafdf605a5c0ff018ae579ea17864ac6ee852"
+      "identity": "uc://manual/registries/simulation-controls@1",
+      "path": "../registries/simulation-controls.seed.json",
+      "sha256": "6fa0cd589e1aaf5d99f3956811624b1db7f568a79c5b657b3c204d38ed90233f"
     }
   ],
   "format": "manual-seed-base-1",
-  "identity": "uc://manual/seeds/stateful-list-family@1",
+  "identity": "uc://manual/seeds/bounded-simulation-family@1",
   "kind": "family-authority",
   "provides": {
     "assembly": {
       "boundaries": [
         {
           "direction": "inward",
-          "effect": "control event enters generated state transition",
+          "effect": "registered participant control",
           "identity": "tk.input"
         },
         {
-          "direction": "outward",
-          "effect": "generated collection state is presented",
-          "identity": "tk.collection"
+          "direction": "inward",
+          "effect": "monotonic scheduled tick",
+          "identity": "tk.clock"
         },
         {
           "direction": "outward",
-          "effect": "physical GUI and event loop",
-          "identity": "tk.window"
-        },
-        {
-          "direction": "outward",
-          "effect": "atomic canonical JSON state persistence",
-          "identity": "filesystem.state"
+          "effect": "generated geometric projection",
+          "identity": "tk.canvas"
         },
         {
           "direction": "inward-outward",
-          "effect": "canonical JSON acceptance boundary",
+          "effect": "canonical deterministic scenario",
           "identity": "process.case"
         }
       ],
-      "gui_defaults": {
-        "grid_sticky": "nsew",
-        "status_ready": "ready"
-      },
       "stamps": [
         {
           "identity": "יה.inward.outer_to_inner",
@@ -73,19 +64,13 @@
         }
       ]
     },
-    "family": "stateful-list",
-    "interface_law": {
-      "control_event_routed": true,
-      "control_identity_unique": true,
-      "grid_position_unique": true
-    },
-    "program_language": "stateful-interface-declaration-1",
+    "family": "bounded-simulation",
+    "program_language": "bounded-simulation-declaration-1",
     "required_meaning": [
       "identity",
       "semantics",
       "state",
       "presentation",
-      "persistence",
       "program",
       "acceptance"
     ],

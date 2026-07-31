@@ -2,102 +2,64 @@
   "applications": [
     {
       "enabled": true,
-      "id": "normal",
-      "output": "build/normal",
-      "seed": "seed/applications/normal.seed.json",
-      "title": "Normal Calculator"
+      "seed": "seed/applications/normal.seed.json"
     },
     {
       "enabled": true,
-      "id": "regular",
-      "output": "build/regular",
-      "seed": "seed/applications/regular.seed.json",
-      "title": "Regular Calculator"
+      "seed": "seed/applications/regular.seed.json"
     },
     {
       "enabled": true,
-      "id": "scientific",
-      "output": "build/scientific",
-      "seed": "seed/applications/scientific.seed.json",
-      "title": "Scientific Calculator"
+      "seed": "seed/applications/scientific.seed.json"
     },
     {
       "enabled": true,
-      "id": "programmer",
-      "output": "build/programmer",
-      "seed": "seed/applications/programmer.seed.json",
-      "title": "Programmer Calculator"
+      "seed": "seed/applications/programmer.seed.json"
     },
     {
       "enabled": true,
-      "id": "financial",
-      "output": "build/financial",
-      "seed": "seed/applications/financial.seed.json",
-      "title": "Financial Calculator"
+      "seed": "seed/applications/financial.seed.json"
     },
     {
       "enabled": true,
-      "id": "statistical",
-      "output": "build/statistical",
-      "seed": "seed/applications/statistical.seed.json",
-      "title": "Statistical Calculator"
+      "seed": "seed/applications/statistical.seed.json"
     },
     {
       "enabled": true,
-      "id": "graphing",
-      "output": "build/graphing",
-      "seed": "seed/applications/graphing.seed.json",
-      "title": "Graphing Calculator"
+      "seed": "seed/applications/graphing.seed.json"
     },
     {
       "enabled": true,
-      "id": "matrix-vector",
-      "output": "build/matrix-vector",
-      "seed": "seed/applications/matrix-vector.seed.json",
-      "title": "Matrix and Vector Calculator"
+      "seed": "seed/applications/matrix-vector.seed.json"
     },
     {
       "enabled": true,
-      "id": "engineering-units",
-      "output": "build/engineering-units",
-      "seed": "seed/applications/engineering-units.seed.json",
-      "title": "Engineering Unit Calculator"
+      "seed": "seed/applications/engineering-units.seed.json"
     },
     {
       "enabled": true,
-      "id": "rpn",
-      "output": "build/rpn",
-      "seed": "seed/applications/rpn.seed.json",
-      "title": "RPN Stack Calculator"
+      "seed": "seed/applications/rpn.seed.json"
     },
     {
       "enabled": true,
-      "id": "ohms-law",
-      "output": "build/ohms-law",
-      "seed": "seed/applications/ohms-law.seed.json",
-      "title": "Ohm's Law Calculator"
+      "seed": "seed/applications/ohms-law.seed.json"
     },
     {
       "enabled": true,
-      "id": "quadratic-polynomial",
-      "output": "build/quadratic-polynomial",
-      "seed": "seed/applications/quadratic-polynomial.seed.json",
-      "title": "Quadratic Polynomial Calculator"
+      "seed": "seed/applications/quadratic-polynomial.seed.json"
     },
     {
       "enabled": true,
-      "id": "todo",
-      "output": "build/todo",
-      "seed": "seed/applications/todo.seed.json",
-      "title": "Todo"
+      "seed": "seed/applications/todo.seed.json"
     },
     {
       "enabled": true,
-      "id": "costed-todo",
-      "output": "build/costed-todo",
-      "seed": "seed/applications/costed-todo.seed.json",
-      "title": "Costed Todo"
+      "seed": "seed/applications/costed-todo.seed.json"
+    },
+    {
+      "enabled": true,
+      "seed": "seed/applications/classic-paddle-duel.seed.json"
     }
   ],
-  "format": "manual-seed-program-suite-3"
+  "format": "manual-seed-program-suite-4"
 }

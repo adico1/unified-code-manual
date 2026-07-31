@@ -1,0 +1,258 @@
+{
+  "authorities": [
+    {
+      "identity": "uc://authorities/applications/classic-paddle-duel.seed.json",
+      "path": "seed/applications/classic-paddle-duel.seed.json",
+      "sha256": "c907b86b8a0873e1d21d2561f588383cd2687ed8f65e82991e68938dba620b9e"
+    },
+    {
+      "identity": "uc://authorities/applications/costed-todo.seed.json",
+      "path": "seed/applications/costed-todo.seed.json",
+      "sha256": "4986caba643844580ed9f6cd3c59a1de2789fd827e1037a0c141f143d83cc37c"
+    },
+    {
+      "identity": "uc://authorities/applications/engineering-units.seed.json",
+      "path": "seed/applications/engineering-units.seed.json",
+      "sha256": "59527901248414405c80cd9c1e3f61f19eef58b611b9ff94ae4aacd2301632af"
+    },
+    {
+      "identity": "uc://authorities/applications/financial.seed.json",
+      "path": "seed/applications/financial.seed.json",
+      "sha256": "ec7a3ebb09d3b035cd63a9c94423aa4febf5a0ff3e1f9f1068df58e6c8e8abdf"
+    },
+    {
+      "identity": "uc://authorities/applications/graphing.seed.json",
+      "path": "seed/applications/graphing.seed.json",
+      "sha256": "5acc5fd2d7589f865f48a9cde754bb9e28b17b12c6fe58d6e2df247d4ebdfede"
+    },
+    {
+      "identity": "uc://authorities/applications/matrix-vector.seed.json",
+      "path": "seed/applications/matrix-vector.seed.json",
+      "sha256": "07d9848b57aeee887d6e7c74ed6027dad79121fd46a4a885a1e5a14ab7a36a9d"
+    },
+    {
+      "identity": "uc://authorities/applications/normal.seed.json",
+      "path": "seed/applications/normal.seed.json",
+      "sha256": "5b0da8d3344368c23a5681aa640a6ae0ca8ee7f6c92fa23dede2c8450d66743d"
+    },
+    {
+      "identity": "uc://authorities/applications/ohms-law.seed.json",
+      "path": "seed/applications/ohms-law.seed.json",
+      "sha256": "7984f9b01a79cd0de71ad2d9c4a1e508668a2522caf2d27002599c2edf9bb60b"
+    },
+    {
+      "identity": "uc://authorities/applications/programmer.seed.json",
+      "path": "seed/applications/programmer.seed.json",
+      "sha256": "e8c3bd91985ef9d201888045a283cad6f2114513ae76daef02b410f8b2d5b26a"
+    },
+    {
+      "identity": "uc://authorities/applications/quadratic-polynomial.seed.json",
+      "path": "seed/applications/quadratic-polynomial.seed.json",
+      "sha256": "b2c3db132b01185e40f5950c010fe14102c207501c42e24b0d63c3890636a143"
+    },
+    {
+      "identity": "uc://authorities/applications/regular.seed.json",
+      "path": "seed/applications/regular.seed.json",
+      "sha256": "188e91b2130f70fbf89dbd64146c69948cf38fde2ac5bcba09adeefefc341c33"
+    },
+    {
+      "identity": "uc://authorities/applications/rpn.seed.json",
+      "path": "seed/applications/rpn.seed.json",
+      "sha256": "cdb8c9a5c61d392a779135c53a40efdcfd03c133d489b464305a4fbfdf63a5c9"
+    },
+    {
+      "identity": "uc://authorities/applications/scientific.seed.json",
+      "path": "seed/applications/scientific.seed.json",
+      "sha256": "b98996fb68bc2572ae02b0668984df233f4145cd3229db1dab6f3da9734dd5e5"
+    },
+    {
+      "identity": "uc://authorities/applications/statistical.seed.json",
+      "path": "seed/applications/statistical.seed.json",
+      "sha256": "301ca471ae772c40e2733ed963a8cdf01f86f88c89789f1a5a90e076b59e0b35"
+    },
+    {
+      "identity": "uc://authorities/applications/todo.seed.json",
+      "path": "seed/applications/todo.seed.json",
+      "sha256": "b42c00124af11dc9a6a2d06833a4b7592570c1476673c017e8cd11c0fc125301"
+    },
+    {
+      "identity": "uc://manual/seeds/בלי_מה@1",
+      "path": "seed/bases/בלי_מה.seed.json",
+      "sha256": "ac0c41637a25a96144b7c1974cdf93e6ba3408cc97c61fc1d44d34252c77e201"
+    },
+    {
+      "identity": "uc://manual/catalogs/application-profiles@1",
+      "path": "seed/catalog.seed.json",
+      "sha256": "2c5c35d1691bc03b09957cf1e3c5cbfb0458dedff144952b8e06eb212dcecec3"
+    },
+    {
+      "identity": "uc://manual/seeds/bounded-simulation-family@1",
+      "path": "seed/families/bounded-simulation.seed.json",
+      "sha256": "29f65ad0c7fa4c6fcf451735767ccf4489e22c7163f4ec9844ffc5695653316c"
+    },
+    {
+      "identity": "uc://manual/seeds/calculator-family@1",
+      "path": "seed/families/calculator.seed.json",
+      "sha256": "b74bbf1a9a4f815f2461fa72594f8fecbe6a298c955ef426f1bc5fb36be7f811"
+    },
+    {
+      "identity": "uc://manual/seeds/stateful-list-family@1",
+      "path": "seed/families/stateful-list.seed.json",
+      "sha256": "b8039f7aaab178451d29637d4285ebdeaf5c4079dbbf6abcb616832d167c44ee"
+    },
+    {
+      "identity": "uc://manual/registries/calculator-keys@1",
+      "path": "seed/registries/calculator-keys.seed.json",
+      "sha256": "2621799c9f478a97811ad462ecea11b2358556bfb65d7ad545191754957c4f2e"
+    },
+    {
+      "identity": "uc://manual/registries/simulation-controls@1",
+      "path": "seed/registries/simulation-controls.seed.json",
+      "sha256": "6fa0cd589e1aaf5d99f3956811624b1db7f568a79c5b657b3c204d38ed90233f"
+    },
+    {
+      "identity": "uc://manual/registries/stateful-interface-controls@1",
+      "path": "seed/registries/stateful-interface-controls.seed.json",
+      "sha256": "f4b4f30506ba3eef04951a74d56fafdf605a5c0ff018ae579ea17864ac6ee852"
+    },
+    {
+      "identity": "uc://authorities/schema.json",
+      "path": "seed/schema.json",
+      "sha256": "c62b7f21a39938ec928242b50e71656d3ccab0565c4b4ec6e0f3c1c05aa1db5f"
+    },
+    {
+      "identity": "uc://authorities/suite.seed.json",
+      "path": "seed/suite.seed.json",
+      "sha256": "04370962eda487fb7b391f0912ef642367b5084f561e4a7c543652b08688dd7b"
+    }
+  ],
+  "creator_authorities": [
+    {
+      "identity": "uc://manual/creator/uc",
+      "path": "uc",
+      "provenance": "trusted-manual",
+      "sha256": "16ed3b548b2ce579a4cc1ecbd51485b7cc9630bf3867db3777bbfe5566aefb5c"
+    },
+    {
+      "identity": "uc://manual/creator/tools/build_layout.py",
+      "path": "tools/build_layout.py",
+      "provenance": "trusted-manual",
+      "sha256": "e0b88cf8e9adc529efc4f5a7b6e409681b69b902956059258c90f70ec8e68318"
+    },
+    {
+      "identity": "uc://manual/creator/tools/catalog_materializer.py",
+      "path": "tools/catalog_materializer.py",
+      "provenance": "trusted-manual",
+      "sha256": "fd2c28f5b3ace9783cf8cad5b192a0f3d9ceb266abe11e5add80e3e79c23b9c3"
+    },
+    {
+      "identity": "uc://manual/creator/tools/single_api.py",
+      "path": "tools/single_api.py",
+      "provenance": "trusted-manual",
+      "sha256": "7179a4fda9c239b309cfc33c64c5a819ef4a4708b7da89e4ecef570af48d28c5"
+    },
+    {
+      "identity": "uc://manual/creator/tools/verify_all.py",
+      "path": "tools/verify_all.py",
+      "provenance": "trusted-manual",
+      "sha256": "65f644ac93a5e18b1480f8ec60379f1795a2c5255f3ff1682535dca8f65dca6e"
+    },
+    {
+      "identity": "uc://manual/creator/src/declaration_compiler.py",
+      "path": "src/declaration_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "aa09b37ef26b0575e730ad5c871db85843df5f0035314394cc66f324d8944464"
+    },
+    {
+      "identity": "uc://manual/creator/src/root_authority.py",
+      "path": "src/root_authority.py",
+      "provenance": "trusted-manual",
+      "sha256": "3e75aeffe595e0e7a0fb3850ad2fceca4417f2d84efcbd421a5e867877cabf67"
+    },
+    {
+      "identity": "uc://manual/creator/src/seed_compiler.py",
+      "path": "src/seed_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "b56c40db0c0418d3c79ae3b962d8337a2283ef4d3ecbbe01c0650f76725ce313"
+    },
+    {
+      "identity": "uc://manual/creator/src/semantic_expression.py",
+      "path": "src/semantic_expression.py",
+      "provenance": "trusted-manual",
+      "sha256": "437b82a56fa01296d06d5140c13bd34e6496a8eeda13db643055a8f54fef3323"
+    },
+    {
+      "identity": "uc://manual/creator/src/simulation_compiler.py",
+      "path": "src/simulation_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "e6e225639959a1f1c523bbdcca9f4e9b43fcbc7e8179fbbf358760cd37eb3a31"
+    },
+    {
+      "identity": "uc://manual/creator/src/stateful_compiler.py",
+      "path": "src/stateful_compiler.py",
+      "provenance": "trusted-manual",
+      "sha256": "cb9e3dece33bacffcd4f857a4c5d469b22e884dcd89a76b8551e12d721f182a8"
+    }
+  ],
+  "fixed_point": {
+    "algorithm": "sha256-canonical-json-and-generated-tree",
+    "cycle": "invalid",
+    "maximum_passes": 10,
+    "second_pass_changes": 0
+  },
+  "format": "unified-root-seed-1",
+  "identity": "uc://roots/unified-code@1",
+  "machine": {
+    "host_law": "independent-hosts-one-canonical-interface",
+    "identity": "UEM-16-v0.1"
+  },
+  "open_gaps": [
+    "gap.root-creator-not-generated"
+  ],
+  "operation": {
+    "entrypoint": "tools/single_api.py",
+    "identity": "assemble-all",
+    "required_authorities": [
+      "seed/bases/בלי_מה.seed.json",
+      "seed/suite.seed.json",
+      "seed/catalog.seed.json"
+    ],
+    "required_creator_authorities": [
+      "uc",
+      "tools/build_layout.py",
+      "tools/catalog_materializer.py",
+      "tools/single_api.py",
+      "tools/verify_all.py",
+      "src/declaration_compiler.py",
+      "src/root_authority.py",
+      "src/seed_compiler.py",
+      "src/semantic_expression.py",
+      "src/simulation_compiler.py",
+      "src/stateful_compiler.py"
+    ]
+  },
+  "scope": "application-language-convergence",
+  "standard": {
+    "semantic_depths": [
+      "01_identity",
+      "02_authority",
+      "03_declaration",
+      "04_composition",
+      "05_processing",
+      "06_state",
+      "07_boundary",
+      "08_manifestation",
+      "09_evidence",
+      "10_fixed_point"
+    ],
+    "thing_states": [
+      "unknown",
+      "absent",
+      "false",
+      "formed",
+      "valid",
+      "invalid"
+    ],
+    "version": "TEN-1"
+  }
+}

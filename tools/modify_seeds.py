@@ -12,6 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED_ROOT = ROOT / "seed"
+ROOT_SEED = SEED_ROOT / "ROOT.seed.json"
+CATALOG = SEED_ROOT / "catalog.seed.json"
 SEEDS = SEED_ROOT / "applications"
 BASES = SEED_ROOT / "bases"
 REGISTRIES = SEED_ROOT / "registries"
@@ -20,6 +22,15 @@ KEY_REGISTRY = REGISTRIES / "calculator-keys.seed.json"
 CALCULATOR_FAMILY = SEED_ROOT / "families" / "calculator.seed.json"
 LEAF_FORMAT = "manual-what-seed-4"
 BASE_FORMAT = "manual-seed-base-1"
+ROOT_FORMAT = "unified-root-seed-1"
+CREATOR_PATHS = (
+    ROOT / "uc",
+    ROOT / "tools" / "build_layout.py",
+    ROOT / "tools" / "catalog_materializer.py",
+    ROOT / "tools" / "single_api.py",
+    ROOT / "tools" / "verify_all.py",
+    *sorted((ROOT / "src").glob("*.py")),
+)
 
 
 def canonical(value):
@@ -214,12 +225,96 @@ def expected_documents():
             )
         ]
         leaves[path] = document
-    return {
+    documents = {
         WITHOUT_WHAT: root_document,
         **registry_documents,
         **family_documents,
         **leaves,
     }
+    catalog_document = load(CATALOG)
+    for family in catalog_document.get("families", ()):
+        for profile in family.get("profiles", ()):
+            derivation = profile.get("derivation")
+            if not derivation:
+                continue
+            reference = derivation["prototype"]
+            target = (ROOT / reference["path"]).resolve()
+            prototype = documents[target] if target in documents else load(target)
+            reference["sha256"] = hashlib.sha256(pretty(prototype)).hexdigest()
+    documents[CATALOG] = catalog_document
+    semantic_paths = [
+        *documents,
+        SEED_ROOT / "schema.json",
+        SEED_ROOT / "suite.seed.json",
+    ]
+    root_authorities = []
+    for path in sorted(set(semantic_paths)):
+        document = documents.get(path, load(path))
+        root_authorities.append(
+            {
+                "identity": document.get(
+                    "identity",
+                    "uc://authorities/" + path.relative_to(SEED_ROOT).as_posix(),
+                ),
+                "path": path.relative_to(ROOT).as_posix(),
+                "sha256": digest(document),
+            }
+        )
+    root = {
+        "format": ROOT_FORMAT,
+        "identity": "uc://roots/unified-code@1",
+        "scope": "application-language-convergence",
+        "standard": {
+            "version": "TEN-1",
+            "thing_states": [
+                "unknown",
+                "absent",
+                "false",
+                "formed",
+                "valid",
+                "invalid",
+            ],
+            "semantic_depths": root_document["provides"]["semantic_depths"],
+        },
+        "machine": {
+            "identity": "UEM-16-v0.1",
+            "host_law": "independent-hosts-one-canonical-interface",
+        },
+        "operation": {
+            "identity": "assemble-all",
+            "entrypoint": "tools/single_api.py",
+            "required_authorities": [
+                "seed/bases/בלי_מה.seed.json",
+                "seed/suite.seed.json",
+                "seed/catalog.seed.json",
+            ],
+            "required_creator_authorities": [
+                path.relative_to(ROOT).as_posix()
+                for path in CREATOR_PATHS
+            ],
+        },
+        "authorities": root_authorities,
+        "creator_authorities": [
+            {
+                "identity": (
+                    "uc://manual/creator/" + path.relative_to(ROOT).as_posix()
+                ),
+                "path": path.relative_to(ROOT).as_posix(),
+                "provenance": "trusted-manual",
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in CREATOR_PATHS
+        ],
+        "fixed_point": {
+            "algorithm": "sha256-canonical-json-and-generated-tree",
+            "cycle": "invalid",
+            "maximum_passes": 10,
+            "second_pass_changes": 0,
+        },
+        "open_gaps": ["gap.root-creator-not-generated"],
+    }
+    documents[ROOT_SEED] = root
+    return documents
 
 
 def apply_documents(documents):

@@ -2,6 +2,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
@@ -16,6 +17,44 @@ SPECIFICATION.loader.exec_module(VERIFY_ALL)
 
 
 class DynamicSuiteTests(unittest.TestCase):
+    def test_catalog_defines_user_facing_product_groups(self):
+        groups = VERIFY_ALL.catalog_product_groups()
+        counts = {}
+        for group in groups.values():
+            counts[group] = counts.get(group, 0) + 1
+        self.assertEqual(
+            counts,
+            {"calculators": 32, "pong-games": 8, "todos": 33},
+        )
+
+    def test_macos_worker_thread_cannot_select_fork_context(self):
+        with (
+            patch.object(VERIFY_ALL.sys, "platform", "darwin"),
+            ThreadPoolExecutor(max_workers=1) as worker,
+        ):
+            context = worker.submit(VERIFY_ALL.safe_process_context).result()
+        self.assertIsNone(context)
+
+    def test_main_thread_retains_fast_fork_before_gui_startup(self):
+        with patch.object(VERIFY_ALL.sys, "platform", "darwin"):
+            context = VERIFY_ALL.safe_process_context()
+        self.assertEqual(context.get_start_method(), "fork")
+
+    def test_worker_permission_failure_is_not_retried_as_threads(self):
+        context = unittest.mock.Mock()
+        workers = unittest.mock.MagicMock()
+        workers.__enter__.return_value.map.side_effect = PermissionError(
+            "application-boundary-denied"
+        )
+        with (
+            patch.object(VERIFY_ALL, "safe_process_context", return_value=context),
+            patch.object(VERIFY_ALL, "ProcessPoolExecutor", return_value=workers),
+            patch.object(VERIFY_ALL, "ThreadPoolExecutor") as threads,
+        ):
+            with self.assertRaisesRegex(PermissionError, "application-boundary-denied"):
+                VERIFY_ALL.compile_application_pairs(({},))
+        threads.assert_not_called()
+
     def test_suite_size_is_declared_by_enabled_applications(self):
         applications = [
             {
@@ -25,7 +64,7 @@ class DynamicSuiteTests(unittest.TestCase):
             for index in range(11)
         ]
         document = {
-            "format": "manual-seed-program-suite-3",
+            "format": "manual-seed-program-suite-4",
             "applications": applications,
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -34,6 +73,21 @@ class DynamicSuiteTests(unittest.TestCase):
             with (
                 patch.object(VERIFY_ALL, "SUITE", suite),
                 patch.object(VERIFY_ALL, "materialize_catalog", return_value=[]),
+                patch.object(
+                    VERIFY_ALL,
+                    "application_descriptor",
+                    side_effect=lambda item, _groups: {
+                        **item,
+                        "identity": {
+                            "canonical_identity": "uc://test/" + item["id"]
+                        },
+                    },
+                ),
+                patch.object(
+                    VERIFY_ALL,
+                    "catalog_product_groups",
+                    return_value={},
+                ),
             ):
                 loaded = VERIFY_ALL.load_suite()
         self.assertEqual(
