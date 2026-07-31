@@ -166,7 +166,8 @@ The aggregate operation independently rebuilds every seed in a second temporary
 tree and requires byte-identical outputs. It then copies each generated
 application without the repository or seed and runs its generated tests again.
 
-See [the proof](docs/PROOF.md) for measured evidence and
+Start with [how to read and review the project](docs/HOW_TO_READ.md), then see
+[the proof](docs/PROOF.md) for measured evidence and
 [the language specification](docs/LANGUAGE.md) for the language boundary.
 Publication-ready article and announcement copy are collected in
 [the publication package](docs/PUBLICATION.md).
