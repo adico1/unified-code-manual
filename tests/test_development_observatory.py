@@ -146,6 +146,25 @@ class DevelopmentObservatoryTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_lazy_launch_rebuilds_interface_before_loading_state(self):
+        specification = importlib.util.spec_from_file_location(
+            "generated_observatory_launch", self.generated / "main.py"
+        )
+        application = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(application)
+        original = application.build_interface
+
+        def build_and_close():
+            root = original()
+            root.withdraw()
+            root.mainloop = root.destroy
+            return root
+
+        application.build_interface = build_and_close
+        with tempfile.TemporaryDirectory() as directory:
+            application.configure_state_path(Path(directory) / "state.json")
+            application.launch()
+
 
 if __name__ == "__main__":
     unittest.main()

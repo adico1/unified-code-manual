@@ -196,7 +196,7 @@
       "identity": "uc://manual/creator/src/stateful_compiler.py",
       "path": "src/stateful_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "20c6f1816c39c13523d85e9822bd0c7dfee7c5ce8da8bba83838b17b0bc11138"
+      "sha256": "048416894a233875729741e21a236e42f60f209f82c2c5da3b25dcc17644bec6"
     }
   ],
   "fixed_point": {
