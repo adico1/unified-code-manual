@@ -3171,7 +3171,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/grocery@1",
@@ -3955,7 +3955,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/errands@1",
@@ -4739,7 +4739,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/daily-planner@1",
@@ -5523,7 +5523,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/weekly-planner@1",
@@ -6307,7 +6307,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/habits@1",
@@ -7091,7 +7091,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/recurring-chores@1",
@@ -7875,7 +7875,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/reminders@1",
@@ -8659,7 +8659,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/calendar-tasks@1",
@@ -9492,7 +9492,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/gtd@1",
@@ -10276,7 +10276,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/eisenhower@1",
@@ -11060,7 +11060,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/kanban@1",
@@ -11844,7 +11844,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/project-work-breakdown@1",
@@ -12628,7 +12628,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/dependency-plan@1",
@@ -13412,7 +13412,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/team-assignments@1",
@@ -14196,7 +14196,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/approvals@1",
@@ -15029,7 +15029,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/issue-tracker@1",
@@ -15813,7 +15813,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/bug-tracker@1",
@@ -16597,7 +16597,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/sprint-backlog@1",
@@ -17381,7 +17381,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/product-roadmap@1",
@@ -18165,7 +18165,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/crm-follow-up@1",
@@ -18949,7 +18949,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/support-queue@1",
@@ -19733,7 +19733,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/maintenance-work-orders@1",
@@ -20517,7 +20517,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/inventory-restock@1",
@@ -21301,7 +21301,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/event-planning@1",
@@ -22085,7 +22085,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/travel-checklist@1",
@@ -22869,7 +22869,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/study-homework@1",
@@ -23653,7 +23653,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/research-pipeline@1",
@@ -24437,7 +24437,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/editorial-calendar@1",
@@ -25221,7 +25221,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/care-plan@1",
@@ -26005,7 +26005,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/offline-security-plan@1",
@@ -26789,7 +26789,7 @@
             },
             "prototype": {
               "path": "seed/applications/todo.seed.json",
-              "sha256": "aada5d965a006027e715c43a28d0be4d1a2a6bca6bb3dbe8f567ef9ea2cec8d0"
+              "sha256": "4bde37107184100f9c5376854336a4b44f00454f36d8da89a2374572ec5a8c80"
             }
           },
           "identity": "uc://manual/catalog/todo/collaboration-sync-plan@1",
@@ -28639,6 +28639,29 @@
           "identity": "uc://manual/catalog/paddle-simulation/alternate-geometry@1",
           "name": "Alternate-geometry paddle arena",
           "status": "catalogued"
+        }
+      ]
+    },
+    {
+      "build_group": "dashboards",
+      "identity": "uc://manual/catalog-families/development-observatory@1",
+      "name": "development-observatory",
+      "profile_namespace": "development-observatory",
+      "profiles": [
+        {
+          "capabilities": [
+            "four-lens-observation",
+            "past-present-future",
+            "request-to-ai",
+            "code-links",
+            "authority-and-projection-signs"
+          ],
+          "class": "development-governance",
+          "identity": "uc://manual/catalog/development-observatory/system@1",
+          "name": "Unified Development Observatory",
+          "product_identity": "uc://manual/applications/development-observatory@1",
+          "seed": "seed/applications/development-observatory.seed.json",
+          "status": "proven"
         }
       ]
     }

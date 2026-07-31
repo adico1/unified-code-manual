@@ -33,6 +33,7 @@ choice is the product family:
 ```text
 build/
 ├── calculators/
+├── dashboards/
 ├── todos/
 └── pong-games/
 ```

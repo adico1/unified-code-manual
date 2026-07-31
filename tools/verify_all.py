@@ -382,14 +382,14 @@ def compile_application_pairs(requests):
     context = safe_process_context()
     if context is not None:
         with ProcessPoolExecutor(
-            max_workers=min(8, len(requests)),
+            max_workers=min(12, len(requests)),
             mp_context=context,
         ) as workers:
             return list(
                 workers.map(
                     compile_application_pair_worker,
                     requests,
-                    chunksize=max(1, len(requests) // 16),
+                    chunksize=max(1, len(requests) // 24),
                 )
             )
     with ThreadPoolExecutor(max_workers=min(16, len(requests))) as workers:
@@ -401,9 +401,15 @@ def verify_isolated(generated):
     try:
         def stage(item):
             destination = isolation / item["id"]
-            destination.mkdir()
-            shutil.copy2(item["application"], destination / "main.py")
-            shutil.copy2(item["test_path"], destination / "test_generated.py")
+            application = destination / "application"
+            verification = destination / "verification"
+            application.mkdir(parents=True)
+            verification.mkdir(parents=True)
+            shutil.copy2(item["application"], application / "main.py")
+            shutil.copy2(
+                item["test_path"],
+                verification / "test_generated.py",
+            )
 
         with ThreadPoolExecutor(max_workers=min(16, len(generated))) as workers:
             list(workers.map(stage, generated))
@@ -413,7 +419,7 @@ def verify_isolated(generated):
             "sys.dont_write_bytecode=True\n"
             "reports=[]\n"
             "for identity in json.loads(sys.argv[1]):\n"
-            " path=pathlib.Path(identity)/'test_generated.py'\n"
+            " path=pathlib.Path(identity)/'verification'/'test_generated.py'\n"
             " spec=importlib.util.spec_from_file_location('isolated_'+identity.replace('-','_'),path)\n"
             " module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n"
             " stream=io.StringIO()\n"
@@ -422,7 +428,11 @@ def verify_isolated(generated):
             " reports.append(json.loads(stream.getvalue()))\n"
             "print(json.dumps(reports,sort_keys=True))\n"
         )
-        groups = [identities[index::8] for index in range(8)]
+        group_count = min(8, len(identities))
+        groups = [
+            identities[index::group_count]
+            for index in range(group_count)
+        ]
 
         def run_group(group):
             result = subprocess.run(
@@ -820,6 +830,7 @@ def write_report(
     catalog,
     cross_family,
     product_watchers,
+    published_tests,
 ):
     runner_bytes = Path(__file__).read_bytes()
     single_api_bytes = Path(__file__).with_name("single_api.py").read_bytes()
@@ -905,6 +916,7 @@ def write_report(
         "application_profile_catalog": catalog,
         "cross_family_composition": cross_family,
         "product_watchers": product_watchers,
+        "published_generated_tests": published_tests,
     }
     destination = Path(build_root) / "reports" / "assembly-report.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -1652,6 +1664,10 @@ def generate_in_stage(*, self_test, build_root):
             ),
         }
         isolated = futures["isolated"].result()
+        published_tests = {
+            "passed": len(isolated),
+            "total": len(generated),
+        }
         self_test_reports = (
             futures["self_tests"].result() if self_test else []
         )
@@ -1730,6 +1746,7 @@ def generate_in_stage(*, self_test, build_root):
         catalog,
         cross_family,
         product_watchers,
+        published_tests,
     )
     write_index(build_root, generated, product_tree)
     write_report(
@@ -1748,6 +1765,7 @@ def generate_in_stage(*, self_test, build_root):
         catalog,
         cross_family,
         repeated_watchers,
+        published_tests,
     )
     write_index(repeat_root, repeated_generated, product_tree)
     repeated_complete_tree = complete_tree_digest(repeat_root)
@@ -1803,6 +1821,8 @@ def generate_in_stage(*, self_test, build_root):
         f"{cross_family['mutations']['total']} "
         f"product-watchers={product_watchers['passed']}/"
         f"{product_watchers['total']} "
+        f"published-tests={published_tests['passed']}/"
+        f"{published_tests['total']} "
         f"complete-tree={complete_tree}",
         flush=True,
     )
@@ -1820,6 +1840,7 @@ def generate_in_stage(*, self_test, build_root):
         "complete_tree_sha256": complete_tree,
         "build_layout": layout,
         "product_watchers": product_watchers,
+        "published_generated_tests": published_tests,
     }
 
 

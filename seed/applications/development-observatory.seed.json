@@ -1,0 +1,1721 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/stateful-list-family@1",
+      "path": "../families/stateful-list.seed.json",
+      "sha256": "7fe5eed2d365ba4d7ef2ea5b5530a74392d76e1007fe62636ff6a0c8dbc17f24"
+    }
+  ],
+  "format": "manual-what-seed-4",
+  "what": {
+    "acceptance": [
+      {
+        "expected": {
+          "results": [
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 6,
+                "observations": [
+                  {
+                    "archived": false,
+                    "completed": true,
+                    "id": 1,
+                    "kind": "achievement",
+                    "link": "https://github.com/adico1/unified-code",
+                    "observed_ref": "8933e8456b67375ec2b567c0107a64d9afc3c060",
+                    "observer": "system",
+                    "passed": 13,
+                    "phase": "verified",
+                    "progress": 100,
+                    "temporal": "past",
+                    "title": "Milestone 1 seed-to-application proof",
+                    "total": 13,
+                    "אדון_הכל": "Manifested and verified: application, API and CLI.",
+                    "הבט": "A runnable generated application artifact exists.",
+                    "הבן": "This proves bounded seed-to-application generation, not root self-hosting.",
+                    "חקור": "Every L1-L13 verification gate passed.",
+                    "מלך_עולם": "The application seed is the verified canonical authority.",
+                    "ראה": "The seed and generated product resolve to one identity."
+                  },
+                  {
+                    "archived": false,
+                    "completed": false,
+                    "id": 2,
+                    "kind": "review",
+                    "link": "https://github.com/adico1/unified-code-manual/blob/feature/development-observatory/src/stateful_compiler.py",
+                    "observed_ref": "uc://manual/applications/development-observatory@1",
+                    "observer": "architect",
+                    "passed": 292,
+                    "phase": "verification",
+                    "progress": 100,
+                    "temporal": "present",
+                    "title": "Manual compiler: 74 products in four groups",
+                    "total": 292,
+                    "אדון_הכל": "Manifested and verified: application, API and GUI.",
+                    "הבט": "A public review branch and pull request exist.",
+                    "הבן": "Review and merge the product-family dependency before this stacked change.",
+                    "חקור": "The complete local proof passed within the five-second law.",
+                    "מלך_עולם": "ROOT pins every current creator authority.",
+                    "ראה": "Every product identity is derived from registered seed data."
+                  },
+                  {
+                    "archived": false,
+                    "completed": false,
+                    "id": 3,
+                    "kind": "gap",
+                    "link": "https://github.com/adico1/unified-code/issues/10",
+                    "observed_ref": "4ee817a950e323614ff4215426391e6ebd2e5afc",
+                    "observer": "system",
+                    "passed": 0,
+                    "phase": "blocked",
+                    "progress": 0,
+                    "temporal": "present",
+                    "title": "ROOT creator is pinned but not root-generated",
+                    "total": 1,
+                    "אדון_הכל": "Manifested: partial repository; the root-generated repository is absent.",
+                    "הבט": "The trusted creator exists as handwritten infrastructure.",
+                    "הבן": "The creator must still be generated from ROOT before Milestone 2 can close.",
+                    "חקור": "The repository-wide fixed-point proof remains open.",
+                    "מלך_עולם": "ROOT is pinned but does not yet generate its creator.",
+                    "ראה": "Authority remains divided between ROOT and handwritten creator code."
+                  },
+                  {
+                    "archived": false,
+                    "completed": false,
+                    "id": 4,
+                    "kind": "direction",
+                    "link": "https://github.com/adico1/unified-code/issues/9",
+                    "observed_ref": "issue-9",
+                    "observer": "ai",
+                    "passed": 0,
+                    "phase": "planned",
+                    "progress": 0,
+                    "temporal": "future",
+                    "title": "Clean-room whole-repository fixed point",
+                    "total": 1,
+                    "אדון_הכל": "No clean-room root-generated repository has manifested yet.",
+                    "הבט": "The clean-room integration issue and contract exist.",
+                    "הבן": "Begin only after dependency provenance and root generation are complete.",
+                    "חקור": "Acceptance is declared; the clean-room result is not yet proven.",
+                    "מלך_עולם": "The completion contract is recorded as authority.",
+                    "ראה": "Required root-generation dependencies remain open."
+                  },
+                  {
+                    "archived": false,
+                    "completed": false,
+                    "id": 5,
+                    "kind": "request",
+                    "link": "",
+                    "observed_ref": "local-request",
+                    "observer": "user",
+                    "passed": 0,
+                    "phase": "proposed",
+                    "progress": 0,
+                    "temporal": "future",
+                    "title": "Expose approved AI request",
+                    "total": 1,
+                    "אדון_הכל": "Requested application and API projections have not manifested.",
+                    "הבט": "A user request is stored in the local queue.",
+                    "הבן": "The user must authorize the external destination before delivery.",
+                    "חקור": "No external AI or GitHub delivery has been executed.",
+                    "מלך_עולם": "A future seed must declare the audited external delivery boundary.",
+                    "ראה": "The request is identified but not yet authorized for external delivery."
+                  }
+                ]
+              }
+            }
+          ],
+          "state": {
+            "filter": "all",
+            "next_id": 6,
+            "observations": [
+              {
+                "archived": false,
+                "completed": true,
+                "id": 1,
+                "kind": "achievement",
+                "link": "https://github.com/adico1/unified-code",
+                "observed_ref": "8933e8456b67375ec2b567c0107a64d9afc3c060",
+                "observer": "system",
+                "passed": 13,
+                "phase": "verified",
+                "progress": 100,
+                "temporal": "past",
+                "title": "Milestone 1 seed-to-application proof",
+                "total": 13,
+                "אדון_הכל": "Manifested and verified: application, API and CLI.",
+                "הבט": "A runnable generated application artifact exists.",
+                "הבן": "This proves bounded seed-to-application generation, not root self-hosting.",
+                "חקור": "Every L1-L13 verification gate passed.",
+                "מלך_עולם": "The application seed is the verified canonical authority.",
+                "ראה": "The seed and generated product resolve to one identity."
+              },
+              {
+                "archived": false,
+                "completed": false,
+                "id": 2,
+                "kind": "review",
+                "link": "https://github.com/adico1/unified-code-manual/blob/feature/development-observatory/src/stateful_compiler.py",
+                "observed_ref": "uc://manual/applications/development-observatory@1",
+                "observer": "architect",
+                "passed": 292,
+                "phase": "verification",
+                "progress": 100,
+                "temporal": "present",
+                "title": "Manual compiler: 74 products in four groups",
+                "total": 292,
+                "אדון_הכל": "Manifested and verified: application, API and GUI.",
+                "הבט": "A public review branch and pull request exist.",
+                "הבן": "Review and merge the product-family dependency before this stacked change.",
+                "חקור": "The complete local proof passed within the five-second law.",
+                "מלך_עולם": "ROOT pins every current creator authority.",
+                "ראה": "Every product identity is derived from registered seed data."
+              },
+              {
+                "archived": false,
+                "completed": false,
+                "id": 3,
+                "kind": "gap",
+                "link": "https://github.com/adico1/unified-code/issues/10",
+                "observed_ref": "4ee817a950e323614ff4215426391e6ebd2e5afc",
+                "observer": "system",
+                "passed": 0,
+                "phase": "blocked",
+                "progress": 0,
+                "temporal": "present",
+                "title": "ROOT creator is pinned but not root-generated",
+                "total": 1,
+                "אדון_הכל": "Manifested: partial repository; the root-generated repository is absent.",
+                "הבט": "The trusted creator exists as handwritten infrastructure.",
+                "הבן": "The creator must still be generated from ROOT before Milestone 2 can close.",
+                "חקור": "The repository-wide fixed-point proof remains open.",
+                "מלך_עולם": "ROOT is pinned but does not yet generate its creator.",
+                "ראה": "Authority remains divided between ROOT and handwritten creator code."
+              },
+              {
+                "archived": false,
+                "completed": false,
+                "id": 4,
+                "kind": "direction",
+                "link": "https://github.com/adico1/unified-code/issues/9",
+                "observed_ref": "issue-9",
+                "observer": "ai",
+                "passed": 0,
+                "phase": "planned",
+                "progress": 0,
+                "temporal": "future",
+                "title": "Clean-room whole-repository fixed point",
+                "total": 1,
+                "אדון_הכל": "No clean-room root-generated repository has manifested yet.",
+                "הבט": "The clean-room integration issue and contract exist.",
+                "הבן": "Begin only after dependency provenance and root generation are complete.",
+                "חקור": "Acceptance is declared; the clean-room result is not yet proven.",
+                "מלך_עולם": "The completion contract is recorded as authority.",
+                "ראה": "Required root-generation dependencies remain open."
+              },
+              {
+                "archived": false,
+                "completed": false,
+                "id": 5,
+                "kind": "request",
+                "link": "",
+                "observed_ref": "local-request",
+                "observer": "user",
+                "passed": 0,
+                "phase": "proposed",
+                "progress": 0,
+                "temporal": "future",
+                "title": "Expose approved AI request",
+                "total": 1,
+                "אדון_הכל": "Requested application and API projections have not manifested.",
+                "הבט": "A user request is stored in the local queue.",
+                "הבן": "The user must authorize the external destination before delivery.",
+                "חקור": "No external AI or GitHub delivery has been executed.",
+                "מלך_עולם": "A future seed must declare the audited external delivery boundary.",
+                "ראה": "The request is identified but not yet authorized for external delivery."
+              }
+            ]
+          }
+        },
+        "id": "development-observatory.request-to-ai",
+        "input": {
+          "steps": [
+            {
+              "arguments": {
+                "title": "Expose approved AI request"
+              },
+              "command": "create"
+            }
+          ]
+        }
+      }
+    ],
+    "identity": {
+      "canonical": "uc://manual/applications/development-observatory@1",
+      "family": "stateful-list",
+      "variation": "development-observatory",
+      "version": 1
+    },
+    "persistence": {
+      "default_path": ".unified-code-manual/development-observatory/state.json",
+      "environment": "UC_MANUAL_DEVELOPMENT_OBSERVATORY_STATE"
+    },
+    "presentation": {
+      "collection": {
+        "column": 0,
+        "columnspan": 4,
+        "display_fields": [
+          "temporal",
+          "observer",
+          "phase",
+          "title",
+          "progress",
+          "kind",
+          "observed_ref",
+          "הבט",
+          "ראה",
+          "חקור",
+          "הבן",
+          "מלך_עולם",
+          "אדון_הכל",
+          "link"
+        ],
+        "filter_field": "filter",
+        "filters": {
+          "all": null,
+          "completed": {
+            "equals": true,
+            "field": "completed"
+          },
+          "future": {
+            "equals": "future",
+            "field": "temporal"
+          },
+          "open": {
+            "equals": false,
+            "field": "completed"
+          },
+          "past": {
+            "equals": "past",
+            "field": "temporal"
+          },
+          "present": {
+            "equals": "present",
+            "field": "temporal"
+          }
+        },
+        "height": 18,
+        "identity": "collection.primary",
+        "identity_field": "id",
+        "row": 1,
+        "state_field": "observations",
+        "table": {
+          "columns": [
+            {
+              "field": "temporal",
+              "label": "Time",
+              "width": 90
+            },
+            {
+              "field": "observer",
+              "label": "Observer",
+              "width": 100
+            },
+            {
+              "field": "phase",
+              "label": "SDLC phase",
+              "width": 120
+            },
+            {
+              "field": "progress",
+              "label": "Progress %",
+              "width": 90
+            },
+            {
+              "field": "title",
+              "label": "Development item",
+              "width": 360
+            }
+          ],
+          "detail_fields": [
+            {
+              "field": "title",
+              "label": "Development item"
+            },
+            {
+              "field": "temporal",
+              "label": "Time horizon"
+            },
+            {
+              "field": "observer",
+              "label": "Observer"
+            },
+            {
+              "field": "phase",
+              "label": "SDLC phase"
+            },
+            {
+              "field": "progress",
+              "label": "Measured progress (%)"
+            },
+            {
+              "field": "הבט",
+              "label": "Physical presence — הבט"
+            },
+            {
+              "field": "ראה",
+              "label": "Identity and relation — ראה"
+            },
+            {
+              "field": "חקור",
+              "label": "Measured evidence — חקור"
+            },
+            {
+              "field": "הבן",
+              "label": "Meaning and next decision — הבן"
+            },
+            {
+              "field": "מלך_עולם",
+              "label": "Canonical authority — מלך_עולם"
+            },
+            {
+              "field": "אדון_הכל",
+              "label": "Manifested projections — אדון_הכל"
+            },
+            {
+              "field": "observed_ref",
+              "label": "Evidence identity"
+            },
+            {
+              "field": "link",
+              "label": "Related code or issue"
+            }
+          ],
+          "heading": "Development lifecycle — past, present and future",
+          "metrics": [
+            {
+              "label": "generated products",
+              "value": "74"
+            },
+            {
+              "label": "product families",
+              "value": "4"
+            },
+            {
+              "label": "acceptance cases",
+              "value": "175 / 175"
+            },
+            {
+              "label": "generated GUI checks",
+              "value": "PASS"
+            },
+            {
+              "label": "verification budget",
+              "value": "≤ 5 seconds"
+            }
+          ],
+          "portfolio": {
+            "columns": [
+              {
+                "field": "group",
+                "label": "Product family",
+                "width": 150
+              },
+              {
+                "field": "product",
+                "label": "Generated product",
+                "width": 240
+              },
+              {
+                "field": "identity",
+                "label": "Canonical identity",
+                "width": 520
+              },
+              {
+                "field": "status",
+                "label": "Proof status",
+                "width": 110
+              }
+            ],
+            "records": [
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/approvals@1",
+                "product": "approvals",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/bug-tracker@1",
+                "product": "bug-tracker",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/calendar-tasks@1",
+                "product": "calendar-tasks",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/care-plan@1",
+                "product": "care-plan",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/classic-paddle-duel@1",
+                "product": "classic-paddle-duel",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/collaboration-sync-plan@1",
+                "product": "collaboration-sync-plan",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/costed-todo@1",
+                "product": "costed-todo",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/crm-follow-up@1",
+                "product": "crm-follow-up",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/daily-planner@1",
+                "product": "daily-planner",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/dependency-plan@1",
+                "product": "dependency-plan",
+                "status": "proven"
+              },
+              {
+                "group": "dashboards",
+                "identity": "uc://manual/applications/development-observatory@1",
+                "product": "development-observatory",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/doubles-paddle-duel@1",
+                "product": "doubles-paddle-duel",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/editorial-calendar@1",
+                "product": "editorial-calendar",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/eisenhower@1",
+                "product": "eisenhower",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/errands@1",
+                "product": "errands",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/event-planning@1",
+                "product": "event-planning",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/grocery@1",
+                "product": "grocery",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/gtd@1",
+                "product": "gtd",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/habits@1",
+                "product": "habits",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/inventory-restock@1",
+                "product": "inventory-restock",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/issue-tracker@1",
+                "product": "issue-tracker",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/kanban@1",
+                "product": "kanban",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/maintenance-work-orders@1",
+                "product": "maintenance-work-orders",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/multiball-paddle-duel@1",
+                "product": "multiball-paddle-duel",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/obstacle-paddle-arena@1",
+                "product": "obstacle-paddle-arena",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/offline-security-plan@1",
+                "product": "offline-security-plan",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/power-up-paddle-arena@1",
+                "product": "power-up-paddle-arena",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/product-roadmap@1",
+                "product": "product-roadmap",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/project-work-breakdown@1",
+                "product": "project-work-breakdown",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/recurring-chores@1",
+                "product": "recurring-chores",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/reminders@1",
+                "product": "reminders",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/research-pipeline@1",
+                "product": "research-pipeline",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/solo-paddle-opponent@1",
+                "product": "solo-paddle-opponent",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/sprint-backlog@1",
+                "product": "sprint-backlog",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/study-homework@1",
+                "product": "study-homework",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/support-queue@1",
+                "product": "support-queue",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/team-assignments@1",
+                "product": "team-assignments",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/timed-paddle-score-attack@1",
+                "product": "timed-paddle-score-attack",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/todo@1",
+                "product": "todo",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/travel-checklist@1",
+                "product": "travel-checklist",
+                "status": "proven"
+              },
+              {
+                "group": "pong-games",
+                "identity": "uc://manual/applications/wall-return-training@1",
+                "product": "wall-return-training",
+                "status": "proven"
+              },
+              {
+                "group": "todos",
+                "identity": "uc://manual/applications/weekly-planner@1",
+                "product": "weekly-planner",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/arbitrary-precision@1",
+                "product": "arbitrary-precision",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/calculus@1",
+                "product": "calculus",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/chemistry@1",
+                "product": "chemistry",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/complex-number@1",
+                "product": "complex-number",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/construction@1",
+                "product": "construction",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/cooking@1",
+                "product": "cooking",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/currency@1",
+                "product": "currency",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/date-time@1",
+                "product": "date-time",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/engineering-units@1",
+                "product": "engineering-units",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/financial@1",
+                "product": "financial",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/fraction@1",
+                "product": "fraction",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/geometry@1",
+                "product": "geometry",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/graphing@1",
+                "product": "graphing",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/health@1",
+                "product": "health",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/investment@1",
+                "product": "investment",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/loan-mortgage@1",
+                "product": "loan-mortgage",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/matrix-vector@1",
+                "product": "matrix-vector",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/navigation@1",
+                "product": "navigation",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/normal@1",
+                "product": "normal",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/ohms-law@1",
+                "product": "ohms-law",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/physics@1",
+                "product": "physics",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/polynomial-algebra@1",
+                "product": "polynomial-algebra",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/probability@1",
+                "product": "probability",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/programmer@1",
+                "product": "programmer",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/quadratic-polynomial@1",
+                "product": "quadratic-polynomial",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/regression@1",
+                "product": "regression",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/regular@1",
+                "product": "regular",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/rpn@1",
+                "product": "rpn",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/scientific@1",
+                "product": "scientific",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/statistical@1",
+                "product": "statistical",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/subnet@1",
+                "product": "subnet",
+                "status": "proven"
+              },
+              {
+                "group": "calculators",
+                "identity": "uc://manual/calculators/tax@1",
+                "product": "tax",
+                "status": "proven"
+              }
+            ],
+            "tab_labels": {
+              "overview": "Development direction",
+              "portfolio": "All generated products"
+            }
+          }
+        },
+        "visibility": {
+          "equals": false,
+          "field": "archived"
+        },
+        "width": 150
+      },
+      "geometry": "1400x720+40+40",
+      "inputs": [
+        {
+          "column": 0,
+          "columnspan": 3,
+          "identity": "entry.primary",
+          "label": "Request to AI",
+          "row": 0,
+          "width": 80
+        }
+      ],
+      "keys": [
+        {
+          "column": 0,
+          "key": "request.submit",
+          "row": 2
+        },
+        {
+          "column": 1,
+          "key": "record.toggle",
+          "row": 2
+        },
+        {
+          "column": 2,
+          "key": "link.open",
+          "row": 2
+        },
+        {
+          "column": 3,
+          "key": "record.archive",
+          "row": 2
+        },
+        {
+          "column": 0,
+          "key": "filter.all",
+          "row": 3
+        },
+        {
+          "column": 1,
+          "key": "filter.past",
+          "row": 3
+        },
+        {
+          "column": 2,
+          "key": "filter.present",
+          "row": 3
+        },
+        {
+          "column": 3,
+          "key": "filter.future",
+          "row": 3
+        }
+      ],
+      "self_tests": [
+        {
+          "assertions": {
+            "collection_count": 5,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false,
+                "completed": false,
+                "observer": "user",
+                "temporal": "future"
+              },
+              "match": {
+                "equals": "Review all generated product evidence",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 5
+          },
+          "control": "request.submit",
+          "id": "ask-ai",
+          "inputs": {
+            "entry.primary": "Review all generated product evidence"
+          },
+          "restart": true
+        },
+        {
+          "assertions": {
+            "collection_count": 5,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false,
+                "completed": true
+              },
+              "match": {
+                "equals": "Complete this request",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 5
+          },
+          "control": "record.toggle",
+          "id": "complete-request",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Complete this request"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 5,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false,
+                "completed": false
+              },
+              "match": {
+                "equals": "Reopen this request",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 5
+          },
+          "control": "record.toggle",
+          "id": "reopen-request",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Reopen this request"
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "id": 5
+              },
+              "command": "toggle"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": "protected-observation",
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false,
+                "completed": false
+              },
+              "match": {
+                "equals": 2,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "record.toggle",
+          "id": "protect-system-completion",
+          "selection": {
+            "identity": "collection.primary",
+            "index": 1
+          }
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [
+              "https://github.com/adico1/unified-code"
+            ],
+            "record": {
+              "fields": {
+                "archived": false,
+                "completed": true
+              },
+              "match": {
+                "equals": 1,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "link.open",
+          "id": "open-code",
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          }
+        },
+        {
+          "assertions": {
+            "collection_count": 5,
+            "error": "confirmation-declined",
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false
+              },
+              "match": {
+                "equals": "Keep this request",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 5
+          },
+          "confirmation": false,
+          "control": "record.archive",
+          "id": "decline-archive",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Keep this request"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 5,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": true
+              },
+              "match": {
+                "equals": "Archive this request",
+                "field": "title"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "confirmation": true,
+          "control": "record.archive",
+          "id": "archive-request",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 4
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "Archive this request"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": "protected-observation",
+            "outward": [],
+            "record": {
+              "fields": {
+                "archived": false
+              },
+              "match": {
+                "equals": 1,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "confirmation": true,
+          "control": "record.archive",
+          "id": "protect-system-archive",
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          }
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "filter.all",
+          "id": "filter-all",
+          "setup": [
+            {
+              "arguments": {
+                "mode": "future"
+              },
+              "command": "set_filter"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "past"
+            },
+            "visible_count": 1
+          },
+          "control": "filter.past",
+          "id": "filter-past"
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "present"
+            },
+            "visible_count": 2
+          },
+          "control": "filter.present",
+          "id": "filter-present"
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "future"
+            },
+            "visible_count": 1
+          },
+          "control": "filter.future",
+          "id": "filter-future"
+        }
+      ],
+      "status": {
+        "column": 0,
+        "columnspan": 4,
+        "row": 4
+      },
+      "title": "Unified Development Observatory"
+    },
+    "program": {
+      "case_entrypoint": "run_case",
+      "language": "stateful-interface-declaration-1",
+      "launch_entrypoint": "launch",
+      "projections": [
+        "API",
+        "APP",
+        "CLI"
+      ]
+    },
+    "semantics": {
+      "application_vocabulary": [
+        "development-observatory",
+        "observations",
+        "architecture-status",
+        "root-fixed-point",
+        "invalid-request",
+        "duplicate-request",
+        "unknown-observation",
+        "link-absent",
+        "invalid-link",
+        "מלך_עולם",
+        "אדון_הכל",
+        "UC_MANUAL_DEVELOPMENT_OBSERVATORY_STATE",
+        "protected-observation"
+      ],
+      "commands": [
+        {
+          "arguments": [
+            {
+              "name": "title",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "observations",
+              "op": "append",
+              "value": {
+                "object": {
+                  "archived": {
+                    "literal": false
+                  },
+                  "completed": {
+                    "literal": false
+                  },
+                  "id": {
+                    "state": "next_id"
+                  },
+                  "kind": {
+                    "literal": "request"
+                  },
+                  "link": {
+                    "literal": ""
+                  },
+                  "observed_ref": {
+                    "literal": "local-request"
+                  },
+                  "observer": {
+                    "literal": "user"
+                  },
+                  "passed": {
+                    "literal": 0
+                  },
+                  "phase": {
+                    "literal": "proposed"
+                  },
+                  "temporal": {
+                    "literal": "future"
+                  },
+                  "title": {
+                    "argument": "title"
+                  },
+                  "total": {
+                    "literal": 1
+                  },
+                  "אדון_הכל": {
+                    "literal": "Requested application and API projections have not manifested."
+                  },
+                  "הבט": {
+                    "literal": "A user request is stored in the local queue."
+                  },
+                  "הבן": {
+                    "literal": "The user must authorize the external destination before delivery."
+                  },
+                  "חקור": {
+                    "literal": "No external AI or GitHub delivery has been executed."
+                  },
+                  "מלך_עולם": {
+                    "literal": "A future seed must declare the audited external delivery boundary."
+                  },
+                  "ראה": {
+                    "literal": "The request is identified but not yet authorized for external delivery."
+                  }
+                }
+              }
+            },
+            {
+              "amount": {
+                "literal": 1
+              },
+              "field": "next_id",
+              "op": "increment"
+            }
+          ],
+          "guards": [
+            {
+              "error": "invalid-request",
+              "op": "non_empty",
+              "value": {
+                "argument": "title"
+              }
+            },
+            {
+              "collection": "observations",
+              "error": "duplicate-request",
+              "field": "title",
+              "op": "unique",
+              "value": {
+                "argument": "title"
+              }
+            }
+          ],
+          "id": "create",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "completed": {
+                  "not": {
+                    "matched_field": "completed"
+                  }
+                }
+              },
+              "collection": "observations",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "observations",
+              "error": "unknown-observation",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            },
+            {
+              "collection": "observations",
+              "error": "protected-observation",
+              "field": "observer",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "record_field_equals",
+              "value": {
+                "literal": "user"
+              }
+            }
+          ],
+          "id": "toggle",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "archived": {
+                  "literal": true
+                }
+              },
+              "collection": "observations",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "observations",
+              "error": "unknown-observation",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            },
+            {
+              "collection": "observations",
+              "error": "protected-observation",
+              "field": "observer",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "record_field_equals",
+              "value": {
+                "literal": "user"
+              }
+            }
+          ],
+          "id": "archive",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "mode",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "field": "filter",
+              "op": "set",
+              "value": {
+                "argument": "mode"
+              }
+            }
+          ],
+          "id": "set_filter",
+          "persist": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "link",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "op": "open_url",
+              "value": {
+                "argument": "link"
+              }
+            }
+          ],
+          "guards": [
+            {
+              "error": "link-absent",
+              "op": "non_empty",
+              "value": {
+                "argument": "link"
+              }
+            },
+            {
+              "error": "invalid-link",
+              "op": "https_url",
+              "value": {
+                "argument": "link"
+              }
+            }
+          ],
+          "id": "open_link",
+          "persist": false
+        }
+      ],
+      "record_contract": {
+        "collection": "observations",
+        "derived_fields": {
+          "progress": {
+            "denominator": "total",
+            "numerator": "passed",
+            "scale": 100
+          }
+        },
+        "required_fields": [
+          "id",
+          "title",
+          "completed",
+          "archived",
+          "kind",
+          "temporal",
+          "phase",
+          "observer",
+          "observed_ref",
+          "passed",
+          "total",
+          "progress",
+          "הבט",
+          "ראה",
+          "חקור",
+          "הבן",
+          "מלך_עולם",
+          "אדון_הכל",
+          "link"
+        ],
+        "signs": [
+          "מלך_עולם",
+          "אדון_הכל"
+        ],
+        "watchers": [
+          "הבט",
+          "ראה",
+          "חקור",
+          "הבן"
+        ]
+      }
+    },
+    "state": {
+      "authority": "declarations",
+      "fields": [
+        "filter",
+        "next_id",
+        "observations"
+      ],
+      "initial": {
+        "filter": "all",
+        "next_id": 5,
+        "observations": [
+          {
+            "archived": false,
+            "completed": true,
+            "id": 1,
+            "kind": "achievement",
+            "link": "https://github.com/adico1/unified-code",
+            "observed_ref": "8933e8456b67375ec2b567c0107a64d9afc3c060",
+            "observer": "system",
+            "passed": 13,
+            "phase": "verified",
+            "temporal": "past",
+            "title": "Milestone 1 seed-to-application proof",
+            "total": 13,
+            "אדון_הכל": "Manifested and verified: application, API and CLI.",
+            "הבט": "A runnable generated application artifact exists.",
+            "הבן": "This proves bounded seed-to-application generation, not root self-hosting.",
+            "חקור": "Every L1-L13 verification gate passed.",
+            "מלך_עולם": "The application seed is the verified canonical authority.",
+            "ראה": "The seed and generated product resolve to one identity."
+          },
+          {
+            "archived": false,
+            "completed": false,
+            "id": 2,
+            "kind": "review",
+            "link": "https://github.com/adico1/unified-code-manual/blob/feature/development-observatory/src/stateful_compiler.py",
+            "observed_ref": "uc://manual/applications/development-observatory@1",
+            "observer": "architect",
+            "passed": 292,
+            "phase": "verification",
+            "temporal": "present",
+            "title": "Manual compiler: 74 products in four groups",
+            "total": 292,
+            "אדון_הכל": "Manifested and verified: application, API and GUI.",
+            "הבט": "A public review branch and pull request exist.",
+            "הבן": "Review and merge the product-family dependency before this stacked change.",
+            "חקור": "The complete local proof passed within the five-second law.",
+            "מלך_עולם": "ROOT pins every current creator authority.",
+            "ראה": "Every product identity is derived from registered seed data."
+          },
+          {
+            "archived": false,
+            "completed": false,
+            "id": 3,
+            "kind": "gap",
+            "link": "https://github.com/adico1/unified-code/issues/10",
+            "observed_ref": "4ee817a950e323614ff4215426391e6ebd2e5afc",
+            "observer": "system",
+            "passed": 0,
+            "phase": "blocked",
+            "temporal": "present",
+            "title": "ROOT creator is pinned but not root-generated",
+            "total": 1,
+            "אדון_הכל": "Manifested: partial repository; the root-generated repository is absent.",
+            "הבט": "The trusted creator exists as handwritten infrastructure.",
+            "הבן": "The creator must still be generated from ROOT before Milestone 2 can close.",
+            "חקור": "The repository-wide fixed-point proof remains open.",
+            "מלך_עולם": "ROOT is pinned but does not yet generate its creator.",
+            "ראה": "Authority remains divided between ROOT and handwritten creator code."
+          },
+          {
+            "archived": false,
+            "completed": false,
+            "id": 4,
+            "kind": "direction",
+            "link": "https://github.com/adico1/unified-code/issues/9",
+            "observed_ref": "issue-9",
+            "observer": "ai",
+            "passed": 0,
+            "phase": "planned",
+            "temporal": "future",
+            "title": "Clean-room whole-repository fixed point",
+            "total": 1,
+            "אדון_הכל": "No clean-room root-generated repository has manifested yet.",
+            "הבט": "The clean-room integration issue and contract exist.",
+            "הבן": "Begin only after dependency provenance and root generation are complete.",
+            "חקור": "Acceptance is declared; the clean-room result is not yet proven.",
+            "מלך_עולם": "The completion contract is recorded as authority.",
+            "ראה": "Required root-generation dependencies remain open."
+          }
+        ]
+      }
+    }
+  }
+}

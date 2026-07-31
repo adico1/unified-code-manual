@@ -24,7 +24,12 @@ class DynamicSuiteTests(unittest.TestCase):
             counts[group] = counts.get(group, 0) + 1
         self.assertEqual(
             counts,
-            {"calculators": 32, "pong-games": 8, "todos": 33},
+            {
+                "calculators": 32,
+                "dashboards": 1,
+                "pong-games": 8,
+                "todos": 33,
+            },
         )
 
     def test_macos_worker_thread_cannot_select_fork_context(self):

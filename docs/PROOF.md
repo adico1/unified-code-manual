@@ -25,8 +25,8 @@ python3 tools/single_api.py
 The operation requires:
 
 1. exactly one pinned בלי_מה root, three interface registries, three family
-   bases, 15 direct מה seeds, and 58 content-addressed derived מה programs;
-2. 73 distinct generated application sources;
+   bases, 16 direct מה seeds, and 58 content-addressed derived מה programs;
+2. 74 distinct generated application sources;
 3. all seed-declared and derived negative acceptance cases to pass;
 4. generated tests for every application;
 5. copied execution without seed, compiler, or repository access;
@@ -37,7 +37,7 @@ The operation requires:
 10. declaration-section and event-route to generated-source traceability;
 11. rejection of altered, floating, cyclic, conflicting, and escaping base
     authority;
-12. zero stored leaf ASTs and 73 build-time-generated ASTs.
+12. zero stored leaf ASTs and 74 build-time-generated ASTs.
 13. exactly seven registered build-time stages;
 14. leaf transition tables, boundaries, reachable errors, and duplicated
     numeric-law indexes are absent and deterministically derived.
@@ -53,7 +53,7 @@ The operation requires:
     execution, verifies observable effects, and destroys its proof window.
 20. all 32 Todo profiles prove exact state after atomic persistence and
     restart.
-21. vocabulary derived from all 73 applications has zero hits in compiler
+21. vocabulary derived from all 74 applications has zero hits in compiler
     sources.
 22. every calculator acceptance expression exposed by the editable GUI is
     entered through the generated widget and checked against its visible
@@ -74,52 +74,54 @@ The operation requires:
     file except its own identity carrier.
 28. ROOT rejects a missing or altered trusted creator while honestly retaining
     `gap.root-creator-not-generated`.
+29. every generated test runs from its published `verification/` layer, not
+    only from an artificial colocated copy.
+30. the development observatory generates API, responsive APP and CLI
+    projections, four lenses, temporal views, durable AI requests and an
+    audited outward code-link boundary.
 
 Current measured result:
 
 ```text
-applications = 73
-acceptance = 174/174
-isolated copied applications = 73/73
+applications = 74
+acceptance = 175/175
+isolated copied applications = 74/74
 deterministic = PASS
 runtime seed access = 0
 manual application code = 0
 manual application tests = 0
-compiler application-vocabulary hits = 0/349
+compiler application-vocabulary hits = 0/362
 seed-graph rejection proofs = 5/5
 canonical Key definitions = 79
 selected/resolved Key identities = 79/79
 unknown/duplicate/invalid/missing-capability Key rejection = PASS
 callback-contract mutations = 3/3
-generated Key callback wiring checks = 946/946
-canonical Thing acceptance = 174/174
+generated Key callback wiring checks = 954/954
+canonical Thing acceptance = 175/175
 semantic depths = exactly 10
-application-owned GUI and acceptance self-tests = 959/959
-self-test applications closed = 73/73
+application-owned GUI and acceptance self-tests = 977/977
+self-test applications closed = 74/74
 runtime Key-registry access = 0
 stored leaf ASTs = 0
-build-time-generated ASTs = 73/73
+build-time-generated ASTs = 74/74
 registered build-time stages = 7
-derived transitions = 946
+derived transitions = 954
 derived reachable errors = 182
 generated editable-input checks = 3 per application
-catalog profiles = 79
-catalog proven = 73
+catalog profiles = 80
+catalog proven = 74
 catalogued = 6
 cross-family applications = 1
 cross-family call-resolution mutations = 2/2
 runtime expression-interpreter files = 0
-product watchers = 292/292
-catalog snapshot =
-93daa3146944e87a046bd89a23a3ecf0556e913755608dab5649b03c8a14ddd2
-product tree =
-305c451c998d079d68fc767fc8496b80eeb883821847c57937015635773ba9d2
+product watchers = 296/296
+published generated tests = 74/74
+catalog snapshot = emitted by `build/reports/assembly-report.json`
+product tree = emitted by `build/reports/assembly-report.json`
 complete tree = emitted by `build/complete-tree.sha256`
-Costed Todo artifact =
-a6d5461f2615d9ab5230977afdaba7012a5d1f85aa82dd97f800e0df9ed5a6a4
-ROOT authority =
-367313f62af026b9c322ab619bfe9f983a9a009d59bb96c69d47ca171ac383fd
-classified build layout = 3 groups / 73 products / 0 cache files
+Costed Todo artifact = emitted by the assembly report
+ROOT authority = emitted by `seed/ROOT.seed.json`
+classified build layout = 4 groups / 74 products / 0 cache files
 ```
 
 ## Honest boundary
@@ -128,7 +130,7 @@ classified build layout = 3 groups / 73 products / 0 cache files
   artifact, but it is not an input to generation.
 - The concise declarations generate the Python AST; it is not copied into an
   application seed.
-- Fifteen applications are direct leaves. Fifty-eight use a pinned prototype
+- Sixteen applications are direct leaves. Fifty-eight use a pinned prototype
   plus a complete generic JSON merge declaration; the materialized leaves are
   disposable build products, not runtime inputs.
 - Recursive seed ancestry is content-addressed. Every formula, operation and
@@ -148,7 +150,8 @@ classified build layout = 3 groups / 73 products / 0 cache files
   named for reminders, collaboration, encryption boundaries, scheduling, and
   similar concerns are stored application data; no notification, network,
   cryptographic, or scheduling engine is claimed where none was generated.
-- This proves 73 catalog profiles, including the bounded cross-family application,
+- This proves 74 catalog profiles, including the bounded cross-family application
+  and the commit-addressed development observatory,
   not every calculator, Todo application or paddle game,
   arbitrary applications, every GUI toolkit, full Standard Ten conformance,
   generated parallelism, or root-seed self-hosting.

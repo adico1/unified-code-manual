@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+from copy import deepcopy
 import hashlib
 import json
 import shutil
@@ -373,16 +374,57 @@ def materialize_stateful(
     control_registry_authority,
     leaf_authority,
 ):
+    what = deepcopy(what)
+    contract = what["semantics"].get("record_contract")
+    if contract is not None:
+        derived = contract.get("derived_fields", {})
+        collection = contract.get("collection")
+        for record in what["state"]["initial"].get(collection, ()):
+            for field, rule in derived.items():
+                if set(rule) != {"numerator", "denominator", "scale"}:
+                    raise ValueError("invalid-record-derivation")
+                denominator = record[rule["denominator"]]
+                if not isinstance(denominator, int) or denominator <= 0:
+                    raise ValueError("invalid-record-derivation")
+                record[field] = (
+                    record[rule["numerator"]] * rule["scale"] // denominator
+                )
+        for command in what["semantics"]["commands"]:
+            for effect in command.get("effects", ()):
+                record = effect.get("value", {}).get("object")
+                if effect.get("op") != "append" or not isinstance(record, dict):
+                    continue
+                for field, rule in derived.items():
+                    record[field] = {
+                        "derived_percentage": {
+                            "numerator": record[rule["numerator"]],
+                            "denominator": record[rule["denominator"]],
+                            "scale": rule["scale"],
+                        }
+                    }
     identities = [item.get("identity") for item in control_registry]
     if (
         any(
             not isinstance(item, dict)
             or not {"identity", "label", "command"} <= set(item)
-            or set(item) - {"identity", "label", "command", "arguments"}
+            or set(item)
+            - {"identity", "label", "command", "arguments", "confirmation"}
             or not isinstance(item["identity"], str)
             or not isinstance(item["label"], str)
             or not isinstance(item["command"], str)
             or not isinstance(item.get("arguments", {}), dict)
+            or (
+                "confirmation" in item
+                and (
+                    not isinstance(item["confirmation"], dict)
+                    or set(item["confirmation"]) != {"title", "message"}
+                    or not all(
+                        isinstance(item["confirmation"][field], str)
+                        and item["confirmation"][field]
+                        for field in ("title", "message")
+                    )
+                )
+            )
             for item in control_registry
         )
         or len(identities) != len(set(identities))
@@ -1041,7 +1083,8 @@ def render_stateful_tests(seed):
         "    return {'passed': sum(results), 'total': len(EXPECTED_CALLBACKS), 'complete': len(callbacks) == len(EXPECTED_CALLBACKS) and all(results)}",
         "",
         "def run(*, emit=True):",
-        "    path = Path(__file__).with_name('main.py')",
+        "    local = Path(__file__).with_name('main.py')",
+        "    path = local if local.exists() else Path(__file__).parents[1] / 'application' / 'main.py'",
         "    specification = importlib.util.spec_from_file_location('generated_app', path)",
         "    module = importlib.util.module_from_spec(specification)",
         "    specification.loader.exec_module(module)",
@@ -1185,7 +1228,8 @@ def render_tests(seed):
         "    return {'passed': sum(results), 'total': len(expected), 'complete': complete}",
         "",
         "def run(*, emit=True):",
-        "    path = Path(__file__).with_name('main.py')",
+        "    local = Path(__file__).with_name('main.py')",
+        "    path = local if local.exists() else Path(__file__).parents[1] / 'application' / 'main.py'",
         "    specification = importlib.util.spec_from_file_location('generated_app', path)",
         "    module = importlib.util.module_from_spec(specification)",
         "    specification.loader.exec_module(module)",

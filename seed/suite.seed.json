@@ -59,6 +59,10 @@
     {
       "enabled": true,
       "seed": "seed/applications/classic-paddle-duel.seed.json"
+    },
+    {
+      "enabled": true,
+      "seed": "seed/applications/development-observatory.seed.json"
     }
   ],
   "format": "manual-seed-program-suite-4"

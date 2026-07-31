@@ -8,7 +8,12 @@
     {
       "identity": "uc://authorities/applications/costed-todo.seed.json",
       "path": "seed/applications/costed-todo.seed.json",
-      "sha256": "4986caba643844580ed9f6cd3c59a1de2789fd827e1037a0c141f143d83cc37c"
+      "sha256": "ca604986a8b41e5645e97e52146e252970d5a327ed4bf6c8583ddf95bab50703"
+    },
+    {
+      "identity": "uc://authorities/applications/development-observatory.seed.json",
+      "path": "seed/applications/development-observatory.seed.json",
+      "sha256": "11065421ee01c9d1aafdff24dd1e6659b650939e3950704f9e7444bd1b42ac49"
     },
     {
       "identity": "uc://authorities/applications/engineering-units.seed.json",
@@ -73,7 +78,7 @@
     {
       "identity": "uc://authorities/applications/todo.seed.json",
       "path": "seed/applications/todo.seed.json",
-      "sha256": "b42c00124af11dc9a6a2d06833a4b7592570c1476673c017e8cd11c0fc125301"
+      "sha256": "412ec9d100b741ff957b9bb37c65227f378cdbeda9aea34b973a3dbf6d723f18"
     },
     {
       "identity": "uc://manual/seeds/בלי_מה@1",
@@ -83,7 +88,7 @@
     {
       "identity": "uc://manual/catalogs/application-profiles@1",
       "path": "seed/catalog.seed.json",
-      "sha256": "2c5c35d1691bc03b09957cf1e3c5cbfb0458dedff144952b8e06eb212dcecec3"
+      "sha256": "709d1ec4aff9a0932bd0c7394507cb1e313bcbc8109eb90ba8130b401be45c6b"
     },
     {
       "identity": "uc://manual/seeds/bounded-simulation-family@1",
@@ -98,7 +103,7 @@
     {
       "identity": "uc://manual/seeds/stateful-list-family@1",
       "path": "seed/families/stateful-list.seed.json",
-      "sha256": "b8039f7aaab178451d29637d4285ebdeaf5c4079dbbf6abcb616832d167c44ee"
+      "sha256": "7fe5eed2d365ba4d7ef2ea5b5530a74392d76e1007fe62636ff6a0c8dbc17f24"
     },
     {
       "identity": "uc://manual/registries/calculator-keys@1",
@@ -113,7 +118,7 @@
     {
       "identity": "uc://manual/registries/stateful-interface-controls@1",
       "path": "seed/registries/stateful-interface-controls.seed.json",
-      "sha256": "f4b4f30506ba3eef04951a74d56fafdf605a5c0ff018ae579ea17864ac6ee852"
+      "sha256": "960d66a03892467c56ddb1562cc98699aad45b86e19be3966f70aadb8738dd21"
     },
     {
       "identity": "uc://authorities/schema.json",
@@ -123,7 +128,7 @@
     {
       "identity": "uc://authorities/suite.seed.json",
       "path": "seed/suite.seed.json",
-      "sha256": "04370962eda487fb7b391f0912ef642367b5084f561e4a7c543652b08688dd7b"
+      "sha256": "3bb0adcdfb982a7967503aa3285042d874b006a17ef8345144d9ce6409bd9e82"
     }
   ],
   "creator_authorities": [
@@ -155,7 +160,7 @@
       "identity": "uc://manual/creator/tools/verify_all.py",
       "path": "tools/verify_all.py",
       "provenance": "trusted-manual",
-      "sha256": "65f644ac93a5e18b1480f8ec60379f1795a2c5255f3ff1682535dca8f65dca6e"
+      "sha256": "f96e73040cd649a58050160b169d5f4d6833f3c637b67968122a43db424f416e"
     },
     {
       "identity": "uc://manual/creator/src/declaration_compiler.py",
@@ -173,7 +178,7 @@
       "identity": "uc://manual/creator/src/seed_compiler.py",
       "path": "src/seed_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "b56c40db0c0418d3c79ae3b962d8337a2283ef4d3ecbbe01c0650f76725ce313"
+      "sha256": "e9643ee79f72d76d8f07b9064dc22fb9b4ffeb072d0cc091a17940087086b5d9"
     },
     {
       "identity": "uc://manual/creator/src/semantic_expression.py",
@@ -185,13 +190,13 @@
       "identity": "uc://manual/creator/src/simulation_compiler.py",
       "path": "src/simulation_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "e6e225639959a1f1c523bbdcca9f4e9b43fcbc7e8179fbbf358760cd37eb3a31"
+      "sha256": "bbecc589af6568ef5a14ad3cd782594919506d6aa109a45d5613457159e0ffcc"
     },
     {
       "identity": "uc://manual/creator/src/stateful_compiler.py",
       "path": "src/stateful_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "cb9e3dece33bacffcd4f857a4c5d469b22e884dcd89a76b8551e12d721f182a8"
+      "sha256": "c14cc9a8b45e8dfcb673bebb8c60e2fc473b43a633fd1eec05198fc89e589fd0"
     }
   ],
   "fixed_point": {
