@@ -311,6 +311,7 @@ def verify(query):
     return {
         "query": query,
         "article_path": article_path.relative_to(ROOT).as_posix(),
+        "evidence_path": evidence_path.relative_to(ROOT).as_posix(),
         "metadata": metadata,
         "article": article,
         "html": markdown_html(article),
@@ -371,7 +372,7 @@ def main(argv=None):
         "tree_sha256": bundle["tree_sha256"],
         "article": bundle["article_path"],
         "targets": ["github", "wordpress"],
-        "linkedin_copy": "docs/PUBLICATION.md",
+        "linkedin_copy": bundle["evidence_path"],
     }
     if arguments.execute:
         authorization = wordpress_authority()
