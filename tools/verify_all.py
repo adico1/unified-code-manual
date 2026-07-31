@@ -59,7 +59,7 @@ def load_suite():
     return applications
 
 
-def validate_catalog(document):
+def validate_catalog(document, *, normalize=True):
     errors = []
     families = document.get("families", ())
     family_identities = [item.get("identity") for item in families]
@@ -106,23 +106,31 @@ def validate_catalog(document):
             errors.append(f"false-proof-reference:{identity}")
         if not str(identity).startswith(f"uc://manual/catalog/{family}/"):
             errors.append(f"family-identity-mismatch:{identity}")
-    normalized = {
-        "format": document.get("format"),
-        "identity": document.get("identity"),
-        "families": [
-            {
-                **{key: value for key, value in family.items() if key != "profiles"},
-                "profiles": sorted(
-                    family.get("profiles", ()),
+    normalized = (
+        {
+            "format": document.get("format"),
+            "identity": document.get("identity"),
+            "families": [
+                {
+                    **{
+                        key: value
+                        for key, value in family.items()
+                        if key != "profiles"
+                    },
+                    "profiles": sorted(
+                        family.get("profiles", ()),
+                        key=lambda item: item.get("identity", ""),
+                    ),
+                }
+                for family in sorted(
+                    families,
                     key=lambda item: item.get("identity", ""),
-                ),
-            }
-            for family in sorted(
-                families,
-                key=lambda item: item.get("identity", ""),
-            )
-        ],
-    }
+                )
+            ],
+        }
+        if normalize
+        else None
+    )
     return errors, normalized
 
 
@@ -138,18 +146,17 @@ def verify_catalog():
     ]
     mutations = []
 
-    duplicate = json.loads(json.dumps(document))
-    duplicate["families"][0]["profiles"].append(
-        duplicate["families"][0]["profiles"][0]
-    )
-    mutations.append(validate_catalog(duplicate)[0])
+    family_profiles = document["families"][0]["profiles"]
+    family_profiles.append(family_profiles[0])
+    mutations.append(validate_catalog(document, normalize=False)[0])
+    family_profiles.pop()
 
-    false_proof = json.loads(json.dumps(document))
     target = next(
         profile
-        for family in false_proof["families"]
+        for family in document["families"]
         for profile in family["profiles"]
     )
+    saved_target = dict(target)
     target.pop("derivation", None)
     target.update(
         {
@@ -158,18 +165,18 @@ def verify_catalog():
             "product_identity": "uc://manual/applications/not-present@1",
         }
     )
-    mutations.append(validate_catalog(false_proof)[0])
+    mutations.append(validate_catalog(document, normalize=False)[0])
+    target.clear()
+    target.update(saved_target)
 
-    empty_capabilities = json.loads(json.dumps(document))
-    empty_capabilities["families"][0]["profiles"][0]["capabilities"] = []
-    mutations.append(validate_catalog(empty_capabilities)[0])
+    capabilities = family_profiles[0]["capabilities"]
+    family_profiles[0]["capabilities"] = []
+    mutations.append(validate_catalog(document, normalize=False)[0])
+    family_profiles[0]["capabilities"] = capabilities
 
-    duplicate_capability = json.loads(json.dumps(document))
-    capabilities = duplicate_capability["families"][0]["profiles"][0][
-        "capabilities"
-    ]
     capabilities.append(capabilities[0])
-    mutations.append(validate_catalog(duplicate_capability)[0])
+    mutations.append(validate_catalog(document, normalize=False)[0])
+    capabilities.pop()
 
     if not all(mutations):
         raise ValueError("catalog-mutation-undetected")
@@ -232,13 +239,27 @@ def compile_application_pair_worker(request):
     application, second_output = request
     compiler = load_compiler()
     seed_path = ROOT / application["seed"]
-    first = compile_app(compiler, application)
-    resolved_seed, _authorities = compiler.load_seed(seed_path)
-    first["resolved_seed"] = resolved_seed
-    first["leaf_document"] = json.loads(
-        seed_path.read_text(encoding="utf-8")
+    target = ROOT / application["output"]
+    resolved_seed, authorities = compiler.load_seed(seed_path)
+    manifest, first_files = compiler.assemble_resolved(
+        resolved_seed,
+        authorities,
     )
-    _manifest, second = compiler.assemble(seed_path)
+    compiler.install_files(first_files, target)
+    first = {
+        **application,
+        "output_path": target,
+        "application": target / "main.py",
+        "evidence": manifest,
+        "resolved_seed": resolved_seed,
+        "leaf_document": json.loads(
+            seed_path.read_text(encoding="utf-8")
+        ),
+    }
+    _manifest, second = compiler.assemble_resolved(
+        resolved_seed,
+        authorities,
+    )
     return first, second
 
 
@@ -249,7 +270,13 @@ def compile_applications(requests):
             max_workers=min(8, len(requests)),
             mp_context=multiprocessing.get_context("fork"),
         ) as workers:
-            return list(workers.map(compile_application_worker, requests))
+            return list(
+                workers.map(
+                    compile_application_worker,
+                    requests,
+                    chunksize=max(1, len(requests) // 16),
+                )
+            )
     except PermissionError:
         with ThreadPoolExecutor(
             max_workers=min(8, len(requests))
@@ -265,7 +292,11 @@ def compile_application_pairs(requests):
             mp_context=multiprocessing.get_context("fork"),
         ) as workers:
             return list(
-                workers.map(compile_application_pair_worker, requests)
+                workers.map(
+                    compile_application_pair_worker,
+                    requests,
+                    chunksize=max(1, len(requests) // 16),
+                )
             )
     except PermissionError:
         with ThreadPoolExecutor(
@@ -321,18 +352,22 @@ def verify_application_self_tests(generated):
         "import importlib.util,json,pathlib,sys,tkinter as tk\n"
         "reports=[]\n"
         "master=tk.Tk();master.withdraw()\n"
+        "destroy=master.destroy\n"
+        "def clear_surface():\n"
+        " for child in master.winfo_children(): child.destroy()\n"
+        "master.destroy=clear_surface\n"
         "for index,root in enumerate(json.loads(sys.argv[1])):\n"
         " path=pathlib.Path(root)/'main.py'\n"
         " spec=importlib.util.spec_from_file_location(f'generated_gui_{index}',path)\n"
         " module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n"
-        " factory=lambda:tk.Toplevel(master)\n"
+        " factory=lambda:master\n"
         " if hasattr(module,'tk'): module.tk.Tk=factory\n"
         " if hasattr(module,'Tk'): module.Tk=factory\n"
         " operation=getattr(module,'self_test_application',None) or getattr(module,'self_test_interface')\n"
         " report=operation()\n"
         " if report['self_test']['passed']!=report['self_test']['total'] or not report['closed']: raise SystemExit(index+1)\n"
         " reports.append(report)\n"
-        "master.destroy()\n"
+        "destroy()\n"
         "print(json.dumps(reports,sort_keys=True))\n"
     )
     group_count = min(4, len(roots))
@@ -449,14 +484,18 @@ def verify_compiler_separation(generated):
     inspected = sorted(
         item for item in vocabulary - generic - registered if len(item) >= 4
     )
-    hits = [
-        item
-        for item in inspected
-        if re.search(
-            rf"(?<![a-z0-9_-]){re.escape(item.casefold())}(?![a-z0-9_-])",
-            source,
+    vocabulary_pattern = (
+        r"(?<![a-z0-9_-])(?:"
+        + "|".join(
+            re.escape(item.casefold())
+            for item in sorted(inspected, key=len, reverse=True)
         )
-    ]
+        + r")(?![a-z0-9_-])"
+    )
+    hits = sorted({
+        match.group(0)
+        for match in re.finditer(vocabulary_pattern, source)
+    })
     if hits:
         raise ValueError("compiler-application-vocabulary:" + ",".join(hits))
     return {"inspected": len(inspected), "hits": len(hits)}

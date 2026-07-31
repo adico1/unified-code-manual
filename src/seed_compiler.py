@@ -694,7 +694,7 @@ def load_seed(path):
     return resolved, authorities
 
 
-def validate(seed):
+def validate(seed, tree=None):
     errors = []
     if seed.get("format") != FORMAT:
         errors.append("format")
@@ -762,7 +762,7 @@ def validate(seed):
     if not seed.get("acceptance"):
         errors.append("acceptance")
     if not errors:
-        tree = compile_declaration(seed)
+        tree = compile_declaration(seed) if tree is None else tree
         functions = {
             node.name
             for node in ast.walk(tree)
@@ -786,12 +786,13 @@ def validate(seed):
 
 def render_program(seed):
     source = render_declaration_source(seed).encode()
-    compile(source, "<seed-program>", "exec")
-    return source
+    tree = ast.parse(source)
+    ast.fix_missing_locations(tree)
+    compile(tree, "<seed-program>", "exec")
+    return source, tree
 
 
-def trace_program(seed, source, authorities):
-    rendered = ast.parse(source)
+def trace_program(seed, source, rendered, authorities):
     functions = {
         node.name: node
         for node in rendered.body
@@ -1067,8 +1068,7 @@ def render_tests(seed):
     return "\n".join(lines).encode()
 
 
-def verify_runtime_source(seed, source):
-    tree = ast.parse(source)
+def verify_runtime_source(seed, tree):
     imported = {
         alias.name
         for node in ast.walk(tree)
@@ -1146,17 +1146,15 @@ def install(stage, output):
         shutil.rmtree(backup)
 
 
-def assemble(seed_path):
-    seed_path = Path(seed_path).resolve(strict=True)
-    seed, authorities = load_seed(seed_path)
-    errors = validate(seed)
+def assemble_resolved(seed, authorities):
+    source, tree = render_program(seed)
+    errors = validate(seed, tree)
     if errors:
         raise ValueError(",".join(errors))
-    source = render_program(seed)
-    verify_runtime_source(seed, source)
+    verify_runtime_source(seed, tree)
     verification = acceptance_result(seed, source)
     tests = render_tests(seed)
-    trace = canonical(trace_program(seed, source, authorities))
+    trace = canonical(trace_program(seed, source, tree, authorities))
     files = {
         "main.py": source,
         "test_generated.py": tests,
@@ -1194,9 +1192,14 @@ def assemble(seed_path):
     return manifest, files
 
 
-def generate(seed_path, output):
+def assemble(seed_path):
+    seed_path = Path(seed_path).resolve(strict=True)
+    seed, authorities = load_seed(seed_path)
+    return assemble_resolved(seed, authorities)
+
+
+def install_files(files, output):
     output = Path(output).resolve(strict=False)
-    manifest, files = assemble(seed_path)
     tests = files["test_generated.py"]
     output.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(
@@ -1216,6 +1219,11 @@ def generate(seed_path, output):
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)
         raise
+
+
+def generate(seed_path, output):
+    manifest, files = assemble(seed_path)
+    install_files(files, output)
     return manifest
 
 

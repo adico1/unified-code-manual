@@ -657,7 +657,6 @@ def gui_source(seed, routes, transitions):
             "        try:",
             "            widget = widgets[0] if len(widgets) == 1 else None",
             "            widget.invoke()",
-            "            root.update_idletasks()",
             "            results.append(widget.cget('text') == control['label'] and self_test_effect(control))",
             "        except Exception:",
             "            results.append(False)",
@@ -668,7 +667,6 @@ def gui_source(seed, routes, transitions):
                     "    state['expression'] = ''",
                     f"    widgets = [item for item in root.grid_slaves(row={evaluation_control['row']!r}, column={evaluation_control['column']!r}) if item.winfo_class() == 'Button']",
                     "    widgets[0].invoke()",
-                    "    root.update_idletasks()",
                     f"    results.append(display.get() == {(gui_acceptance['expected']['result'] or gui_acceptance['expected']['error'])!r})",
                 ]
                 if gui_acceptance
@@ -681,7 +679,6 @@ def gui_source(seed, routes, transitions):
             "    root = build_interface()",
             "    closed = False",
             "    try:",
-            "        root.update()",
             "        report = self_test_interface(root)",
             "    finally:",
             "        root.destroy()",
