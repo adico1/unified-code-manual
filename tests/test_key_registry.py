@@ -236,7 +236,7 @@ class KeyRegistryContractTests(unittest.TestCase):
                 timeout=5,
             )
         report = json.loads(result.stdout)
-        self.assertEqual(report["self_test"], {"passed": 20, "total": 20})
+        self.assertEqual(report["self_test"], {"passed": 21, "total": 21})
         self.assertTrue(report["closed"])
 
     def test_generated_application_self_test_rejects_broken_route(self):

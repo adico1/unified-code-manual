@@ -265,9 +265,10 @@ seed/applications/quadratic-polynomial.seed.json
 seed/registries/stateful-interface-controls.seed.json
 → seed/families/stateful-list.seed.json
 → seed/applications/todo.seed.json
+→ seed/applications/costed-todo.seed.json
 ```
 
-Thirteen leaves are direct application-specific מה seeds. Fifty-one additional
+Fourteen leaves are direct application-specific מה seeds. Fifty-one additional
 programs are complete derived-seed declarations in the catalog. Every
 prototype and base reference pins an exact identity or path and SHA-256.
 `tools/modify_seeds.py` migrates and re-pins the direct graph deterministically;
@@ -307,16 +308,32 @@ state fields
 The registered generic operations currently include:
 
 ```text
-guards: non_empty, exists, unique
+guards: non_empty, integer_range, exists, unique
 effects: append, update, remove, increment, set
-values: literal, argument, state, matched_field, not, add, object
+values: literal, argument, state, matched_field, not, add, calculate, object
 sources: input, selection, literal
 ```
 
 Generated command functions contain only the selected guards and effects. The
 runtime carries no seed and no universal stateful-declaration interpreter.
 
-This proves that one assembly operation crosses an application-family
-boundary. It does not prove arbitrary applications. A behavior outside the
-registered declaration languages still requires a generic, domain-neutral
-language extension.
+## Composition across the boundary
+
+`src/semantic_expression.py` is one build-time authority for semantic function
+expressions. Calculator declarations and stateful calculations both select
+from it. The Costed Todo seed declares bounded integer multiplication and
+invokes it from create and update effects:
+
+```text
+stateful command declaration
+→ calculate(line_total, quantity, unit_price)
+→ shared semantic-expression compiler
+→ exact _calculation_0 function
+→ persisted calculated record
+```
+
+No expression interpreter is emitted. An undeclared calculation call is
+rejected before generation. This proves one measured composition across the
+calculator and stateful-list boundary. It does not prove arbitrary
+applications. A behavior outside the registered declaration languages still
+requires a generic, domain-neutral language extension.

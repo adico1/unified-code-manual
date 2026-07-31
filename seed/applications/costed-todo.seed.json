@@ -1,0 +1,877 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/stateful-list-family@1",
+      "path": "../families/stateful-list.seed.json",
+      "sha256": "fe5536ba0e7d6a3f350823c986858e29a64d43f09e2cc95b94e5a745f3de8770"
+    }
+  ],
+  "format": "manual-what-seed-4",
+  "what": {
+    "acceptance": [
+      {
+        "expected": {
+          "results": [
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 3,
+                    "title": "Steel",
+                    "total": 21,
+                    "unit_price": 7
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 3,
+                    "title": "Steel",
+                    "total": 21,
+                    "unit_price": 7
+                  },
+                  {
+                    "completed": false,
+                    "id": 2,
+                    "quantity": 4,
+                    "title": "Wood",
+                    "total": 20,
+                    "unit_price": 5
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 6,
+                    "title": "Steel",
+                    "total": 42,
+                    "unit_price": 7
+                  },
+                  {
+                    "completed": false,
+                    "id": 2,
+                    "quantity": 4,
+                    "title": "Wood",
+                    "total": 20,
+                    "unit_price": 5
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 6,
+                    "title": "Steel",
+                    "total": 42,
+                    "unit_price": 7
+                  },
+                  {
+                    "completed": true,
+                    "id": 2,
+                    "quantity": 4,
+                    "title": "Wood",
+                    "total": 20,
+                    "unit_price": 5
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 6,
+                    "title": "Steel",
+                    "total": 42,
+                    "unit_price": 7
+                  },
+                  {
+                    "completed": true,
+                    "id": 2,
+                    "quantity": 4,
+                    "title": "Wood",
+                    "total": 20,
+                    "unit_price": 5
+                  }
+                ]
+              }
+            }
+          ],
+          "state": {
+            "filter": "all",
+            "next_id": 3,
+            "tasks": [
+              {
+                "completed": false,
+                "id": 1,
+                "quantity": 6,
+                "title": "Steel",
+                "total": 42,
+                "unit_price": 7
+              },
+              {
+                "completed": true,
+                "id": 2,
+                "quantity": 4,
+                "title": "Wood",
+                "total": 20,
+                "unit_price": 5
+              }
+            ]
+          }
+        },
+        "id": "costed-todo.calculated-persistence",
+        "input": {
+          "steps": [
+            {
+              "arguments": {
+                "quantity": 3,
+                "title": "Steel",
+                "unit_price": 7
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "quantity": 4,
+                "title": "Wood",
+                "unit_price": 5
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "id": 1,
+                "quantity": 6,
+                "title": "Steel",
+                "unit_price": 7
+              },
+              "command": "update"
+            },
+            {
+              "arguments": {
+                "id": 2
+              },
+              "command": "toggle"
+            },
+            {
+              "restart": true
+            }
+          ]
+        }
+      },
+      {
+        "expected": {
+          "results": [
+            {
+              "error": "invalid-quantity-range",
+              "result": null
+            },
+            {
+              "error": "invalid-unit-price-range",
+              "result": null
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 1000000,
+                    "title": "Maximum",
+                    "total": 1000000000000,
+                    "unit_price": 1000000
+                  }
+                ]
+              }
+            },
+            {
+              "error": "duplicate-title",
+              "result": null
+            }
+          ],
+          "state": {
+            "filter": "all",
+            "next_id": 2,
+            "tasks": [
+              {
+                "completed": false,
+                "id": 1,
+                "quantity": 1000000,
+                "title": "Maximum",
+                "total": 1000000000000,
+                "unit_price": 1000000
+              }
+            ]
+          }
+        },
+        "id": "costed-todo.bounded-calculation",
+        "input": {
+          "steps": [
+            {
+              "arguments": {
+                "quantity": -1,
+                "title": "Low",
+                "unit_price": 1
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "quantity": 1,
+                "title": "High",
+                "unit_price": 1000001
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "quantity": 1000000,
+                "title": "Maximum",
+                "unit_price": 1000000
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "quantity": 1,
+                "title": "Maximum",
+                "unit_price": 1
+              },
+              "command": "create"
+            }
+          ]
+        }
+      }
+    ],
+    "identity": {
+      "canonical": "uc://manual/applications/costed-todo@1",
+      "family": "stateful-list",
+      "variation": "costed-todo",
+      "version": 1
+    },
+    "persistence": {
+      "default_path": ".unified-code-manual/costed-todo/state.json",
+      "environment": "UC_MANUAL_COSTED_TODO_STATE"
+    },
+    "presentation": {
+      "collection": {
+        "column": 0,
+        "columnspan": 4,
+        "display_fields": [
+          "id",
+          "title",
+          "quantity",
+          "unit_price",
+          "total",
+          "completed"
+        ],
+        "filter_field": "filter",
+        "filters": {
+          "all": null,
+          "completed": {
+            "equals": true,
+            "field": "completed"
+          },
+          "open": {
+            "equals": false,
+            "field": "completed"
+          }
+        },
+        "height": 12,
+        "identity": "collection.primary",
+        "identity_field": "id",
+        "row": 1,
+        "state_field": "tasks",
+        "width": 76
+      },
+      "control_arguments": {
+        "record.create": {
+          "quantity": {
+            "identity": "entry.quantity",
+            "source": "input"
+          },
+          "title": {
+            "identity": "entry.primary",
+            "source": "input"
+          },
+          "unit_price": {
+            "identity": "entry.unit-price",
+            "source": "input"
+          }
+        },
+        "record.update": {
+          "id": {
+            "field": "id",
+            "identity": "collection.primary",
+            "source": "selection"
+          },
+          "quantity": {
+            "identity": "entry.quantity",
+            "source": "input"
+          },
+          "title": {
+            "identity": "entry.primary",
+            "source": "input"
+          },
+          "unit_price": {
+            "identity": "entry.unit-price",
+            "source": "input"
+          }
+        }
+      },
+      "geometry": "760x400+80+80",
+      "inputs": [
+        {
+          "column": 0,
+          "identity": "entry.primary",
+          "label": "Task",
+          "row": 0,
+          "width": 30
+        },
+        {
+          "column": 1,
+          "identity": "entry.quantity",
+          "label": "Quantity",
+          "row": 0,
+          "width": 12
+        },
+        {
+          "column": 2,
+          "columnspan": 2,
+          "identity": "entry.unit-price",
+          "label": "Unit price",
+          "row": 0,
+          "width": 12
+        }
+      ],
+      "keys": [
+        {
+          "column": 0,
+          "key": "record.create",
+          "row": 2
+        },
+        {
+          "column": 1,
+          "key": "record.update",
+          "row": 2
+        },
+        {
+          "column": 2,
+          "key": "record.toggle",
+          "row": 2
+        },
+        {
+          "column": 3,
+          "key": "record.remove",
+          "row": 2
+        },
+        {
+          "column": 0,
+          "key": "filter.all",
+          "row": 3
+        },
+        {
+          "column": 1,
+          "key": "filter.open",
+          "row": 3
+        },
+        {
+          "column": 2,
+          "key": "filter.completed",
+          "row": 3
+        }
+      ],
+      "self_tests": [
+        {
+          "control": "record.create",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 3,
+                    "title": "A",
+                    "total": 21,
+                    "unit_price": 7
+                  }
+                ]
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 2,
+              "tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "quantity": 3,
+                  "title": "A",
+                  "total": 21,
+                  "unit_price": 7
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "entry.primary": "A",
+            "entry.quantity": "3",
+            "entry.unit-price": "7"
+          }
+        },
+        {
+          "control": "record.update",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "quantity": 9,
+                    "title": "B",
+                    "total": 18,
+                    "unit_price": 2
+                  }
+                ]
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 2,
+              "tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "quantity": 9,
+                  "title": "B",
+                  "total": 18,
+                  "unit_price": 2
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "entry.primary": "B",
+            "entry.quantity": "9",
+            "entry.unit-price": "2"
+          },
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          },
+          "setup": [
+            {
+              "arguments": {
+                "quantity": 1,
+                "title": "A",
+                "unit_price": 1
+              },
+              "command": "create"
+            }
+          ]
+        }
+      ],
+      "status": {
+        "column": 0,
+        "columnspan": 4,
+        "row": 4
+      },
+      "title": "Costed Todo"
+    },
+    "program": {
+      "case_entrypoint": "run_case",
+      "language": "stateful-interface-declaration-1",
+      "launch_entrypoint": "launch"
+    },
+    "semantics": {
+      "application_vocabulary": [
+        "costed-todo",
+        "tasks",
+        "quantity",
+        "unit_price",
+        "total",
+        "completed",
+        "invalid-title",
+        "invalid-quantity-range",
+        "invalid-unit-price-range",
+        "duplicate-title",
+        "unknown-item",
+        "UC_MANUAL_COSTED_TODO_STATE"
+      ],
+      "calculations": {
+        "functions": [
+          {
+            "body": {
+              "multiply": [
+                {
+                  "parameter": "quantity"
+                },
+                {
+                  "parameter": "unit_price"
+                }
+              ]
+            },
+            "id": "line_total",
+            "parameters": [
+              "quantity",
+              "unit_price"
+            ]
+          }
+        ],
+        "numeric_laws": {
+          "input_maximum": 1000000,
+          "input_minimum": 0,
+          "numeric_domain": "bounded-integer",
+          "result_maximum": 1000000000000,
+          "result_minimum": 0
+        }
+      },
+      "commands": [
+        {
+          "arguments": [
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "quantity",
+              "type": "integer"
+            },
+            {
+              "name": "unit_price",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "tasks",
+              "op": "append",
+              "value": {
+                "object": {
+                  "completed": {
+                    "literal": false
+                  },
+                  "id": {
+                    "state": "next_id"
+                  },
+                  "quantity": {
+                    "argument": "quantity"
+                  },
+                  "title": {
+                    "argument": "title"
+                  },
+                  "total": {
+                    "calculate": {
+                      "arguments": [
+                        {
+                          "argument": "quantity"
+                        },
+                        {
+                          "argument": "unit_price"
+                        }
+                      ],
+                      "call": "line_total"
+                    }
+                  },
+                  "unit_price": {
+                    "argument": "unit_price"
+                  }
+                }
+              }
+            },
+            {
+              "amount": {
+                "literal": 1
+              },
+              "field": "next_id",
+              "op": "increment"
+            }
+          ],
+          "guards": [
+            {
+              "error": "invalid-title",
+              "op": "non_empty",
+              "value": {
+                "argument": "title"
+              }
+            },
+            {
+              "error": "invalid-quantity-range",
+              "maximum": 1000000,
+              "minimum": 0,
+              "op": "integer_range",
+              "value": {
+                "argument": "quantity"
+              }
+            },
+            {
+              "error": "invalid-unit-price-range",
+              "maximum": 1000000,
+              "minimum": 0,
+              "op": "integer_range",
+              "value": {
+                "argument": "unit_price"
+              }
+            },
+            {
+              "collection": "tasks",
+              "error": "duplicate-title",
+              "field": "title",
+              "op": "unique",
+              "value": {
+                "argument": "title"
+              }
+            }
+          ],
+          "id": "create",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "quantity",
+              "type": "integer"
+            },
+            {
+              "name": "unit_price",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "quantity": {
+                  "argument": "quantity"
+                },
+                "title": {
+                  "argument": "title"
+                },
+                "total": {
+                  "calculate": {
+                    "arguments": [
+                      {
+                        "argument": "quantity"
+                      },
+                      {
+                        "argument": "unit_price"
+                      }
+                    ],
+                    "call": "line_total"
+                  }
+                },
+                "unit_price": {
+                  "argument": "unit_price"
+                }
+              },
+              "collection": "tasks",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "error": "invalid-title",
+              "op": "non_empty",
+              "value": {
+                "argument": "title"
+              }
+            },
+            {
+              "error": "invalid-quantity-range",
+              "maximum": 1000000,
+              "minimum": 0,
+              "op": "integer_range",
+              "value": {
+                "argument": "quantity"
+              }
+            },
+            {
+              "error": "invalid-unit-price-range",
+              "maximum": 1000000,
+              "minimum": 0,
+              "op": "integer_range",
+              "value": {
+                "argument": "unit_price"
+              }
+            },
+            {
+              "collection": "tasks",
+              "error": "unknown-item",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "update",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "completed": {
+                  "not": {
+                    "matched_field": "completed"
+                  }
+                }
+              },
+              "collection": "tasks",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "tasks",
+              "error": "unknown-item",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "toggle",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "tasks",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "remove"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "tasks",
+              "error": "unknown-item",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "remove",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "mode",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "field": "filter",
+              "op": "set",
+              "value": {
+                "argument": "mode"
+              }
+            }
+          ],
+          "guards": [],
+          "id": "set_filter",
+          "persist": true
+        }
+      ]
+    },
+    "state": {
+      "authority": "declarations",
+      "fields": [
+        "tasks",
+        "next_id",
+        "filter"
+      ],
+      "initial": {
+        "filter": "all",
+        "next_id": 1,
+        "tasks": []
+      }
+    }
+  }
+}

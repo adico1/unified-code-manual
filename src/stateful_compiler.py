@@ -5,6 +5,8 @@ from __future__ import annotations
 import ast
 import re
 
+from semantic_expression import function_source
+
 
 LANGUAGE = "stateful-interface-declaration-1"
 
@@ -13,7 +15,13 @@ def safe_name(value):
     return re.sub(r"[^a-zA-Z0-9_]", "_", value)
 
 
-def value_source(node, *, arguments="arguments", record="record"):
+def value_source(
+    node,
+    *,
+    arguments="arguments",
+    record="record",
+    calculations=None,
+):
     if set(node) == {"literal"}:
         return repr(node["literal"])
     if set(node) == {"argument"}:
@@ -25,18 +33,46 @@ def value_source(node, *, arguments="arguments", record="record"):
     if set(node) == {"matched_field"}:
         return f"{record}[{node['matched_field']!r}]"
     if set(node) == {"not"}:
-        return f"(not {value_source(node['not'], arguments=arguments, record=record)})"
+        return (
+            f"(not {value_source(node['not'], arguments=arguments, record=record, calculations=calculations)})"
+        )
     if set(node) == {"add"}:
         left, right = node["add"]
         return (
-            f"({value_source(left, arguments=arguments, record=record)} + "
-            f"{value_source(right, arguments=arguments, record=record)})"
+            f"({value_source(left, arguments=arguments, record=record, calculations=calculations)} + "
+            f"{value_source(right, arguments=arguments, record=record, calculations=calculations)})"
         )
+    if set(node) == {"calculate"}:
+        calculation = node["calculate"]
+        definition = (
+            (calculations or {}).get(calculation.get("call"))
+            if isinstance(calculation, dict)
+            else None
+        )
+        if (
+            not isinstance(calculation, dict)
+            or set(calculation) != {"call", "arguments"}
+            or definition is None
+            or not isinstance(calculation["arguments"], list)
+        ):
+            raise ValueError("unknown-stateful-calculation")
+        if len(calculation["arguments"]) != definition["arity"]:
+            raise ValueError("invalid-stateful-calculation-arity")
+        values = ", ".join(
+            value_source(
+                value,
+                arguments=arguments,
+                record=record,
+                calculations=calculations,
+            )
+            for value in calculation["arguments"]
+        )
+        return f"{definition['source']}({values})"
     if set(node) == {"object"}:
         return (
             "{"
             + ", ".join(
-                f"{name!r}: {value_source(value, arguments=arguments, record=record)}"
+                f"{name!r}: {value_source(value, arguments=arguments, record=record, calculations=calculations)}"
                 for name, value in node["object"].items()
             )
             + "}"
@@ -44,11 +80,18 @@ def value_source(node, *, arguments="arguments", record="record"):
     raise ValueError("unknown-stateful-value")
 
 
-def guard_source(guard):
+def guard_source(guard, calculations):
     operation = guard["op"]
-    value = value_source(guard["value"])
+    value = value_source(guard["value"], calculations=calculations)
     if operation == "non_empty":
         return f"(isinstance({value}, str) and bool({value}.strip()))"
+    if operation == "integer_range":
+        if set(guard) != {"op", "value", "minimum", "maximum", "error"}:
+            raise ValueError("invalid-stateful-range")
+        return (
+            f"(isinstance({value}, int) and "
+            f"{guard['minimum']!r} <= {value} <= {guard['maximum']!r})"
+        )
     collection = f"state[{guard['collection']!r}]"
     field = guard["field"]
     comparison = f"record[{field!r}] == {value}"
@@ -59,26 +102,26 @@ def guard_source(guard):
     raise ValueError("unknown-stateful-guard")
 
 
-def effect_lines(effect):
+def effect_lines(effect, calculations):
     operation = effect["op"]
     if operation == "append":
         return [
             f"    state[{effect['collection']!r}].append("
-            f"{value_source(effect['value'])})"
+            f"{value_source(effect['value'], calculations=calculations)})"
         ]
     if operation == "increment":
         return [
             f"    state[{effect['field']!r}] += "
-            f"{value_source(effect['amount'])}"
+            f"{value_source(effect['amount'], calculations=calculations)}"
         ]
     if operation == "set":
         return [
             f"    state[{effect['field']!r}] = "
-            f"{value_source(effect['value'])}"
+            f"{value_source(effect['value'], calculations=calculations)}"
         ]
     if operation == "remove":
         match = effect["match"]
-        value = value_source(match["value"])
+        value = value_source(match["value"], calculations=calculations)
         return [
             f"    state[{effect['collection']!r}] = [",
             f"        record for record in state[{effect['collection']!r}]",
@@ -87,21 +130,21 @@ def effect_lines(effect):
         ]
     if operation == "update":
         match = effect["match"]
-        value = value_source(match["value"])
+        value = value_source(match["value"], calculations=calculations)
         lines = [
             f"    for record in state[{effect['collection']!r}]:",
             f"        if record[{match['field']!r}] == {value}:",
         ]
         lines.extend(
             f"            record[{field!r}] = "
-            f"{value_source(replacement, record='record')}"
+            f"{value_source(replacement, record='record', calculations=calculations)}"
             for field, replacement in effect["changes"].items()
         )
         return lines
     raise ValueError("unknown-stateful-effect")
 
 
-def command_source(command):
+def command_source(command, calculations):
     function = "command_" + safe_name(command["id"])
     lines = [f"def {function}(arguments):"]
     for argument in command["arguments"]:
@@ -126,12 +169,12 @@ def command_source(command):
     for guard in command.get("guards", ()):
         lines.extend(
             [
-                f"    if not {guard_source(guard)}:",
+                f"    if not {guard_source(guard, calculations)}:",
                 f"        return _failure({guard['error']!r})",
             ]
         )
     for effect in command.get("effects", ()):
-        lines.extend(effect_lines(effect))
+        lines.extend(effect_lines(effect, calculations))
     if command.get("persist", True):
         lines.append("    persist_state()")
     lines.extend(
@@ -182,6 +225,23 @@ def render_source(seed):
     initial = seed["state"]["initial"]
     controls = presentation["controls"]
     filters = collection.get("filters", {})
+    calculation_definitions = (
+        seed["semantics"].get("calculations", {}).get("functions", ())
+    )
+    calculation_lines, calculation_names = function_source(
+        calculation_definitions,
+        prefix="_calculation",
+    )
+    calculations = {
+        identity: {
+            "source": source,
+            "arity": len(definition["parameters"]),
+        }
+        for definition, (identity, source) in zip(
+            calculation_definitions,
+            calculation_names,
+        )
+    }
     lines = [
         '"""Generated stateful application. Do not edit."""',
         "from copy import deepcopy",
@@ -256,9 +316,10 @@ def render_source(seed):
         "def _failure(identity):",
         "    return {'result': None, 'error': identity}",
         "",
+        *calculation_lines,
     ]
     for command in seed["semantics"]["commands"]:
-        lines.extend(command_source(command))
+        lines.extend(command_source(command, calculations))
     lines.extend(
         [
             "COMMANDS = {",
