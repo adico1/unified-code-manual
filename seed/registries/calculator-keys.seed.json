@@ -1,0 +1,533 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/בלי_מה@1",
+      "path": "../bases/בלי_מה.seed.json",
+      "sha256": "9c37eec0f7d88064a2b7eca3da2802db2ee369e67b436611485cdfa7cffdb6c5"
+    }
+  ],
+  "format": "manual-seed-base-1",
+  "identity": "uc://manual/registries/calculator-keys@1",
+  "kind": "key-registry-authority",
+  "provides": {
+    "key_registry": [
+      {
+        "action": "backspace",
+        "identity": "command.backspace",
+        "label": "⌫"
+      },
+      {
+        "action": "base",
+        "identity": "command.base.10",
+        "label": "DEC",
+        "value": "10"
+      },
+      {
+        "action": "base",
+        "identity": "command.base.16",
+        "label": "HEX",
+        "value": "16"
+      },
+      {
+        "action": "base",
+        "identity": "command.base.2",
+        "label": "BIN",
+        "value": "2"
+      },
+      {
+        "action": "base",
+        "identity": "command.base.8",
+        "label": "OCT",
+        "value": "8"
+      },
+      {
+        "action": "clear",
+        "identity": "command.clear.compact",
+        "label": "C"
+      },
+      {
+        "action": "clear",
+        "identity": "command.clear.stack",
+        "label": "CLEAR"
+      },
+      {
+        "action": "clear",
+        "identity": "command.clear.word",
+        "label": "Clear"
+      },
+      {
+        "action": "evaluate",
+        "identity": "command.evaluate",
+        "label": "="
+      },
+      {
+        "action": "evaluate",
+        "identity": "command.evaluate.function",
+        "label": "f(x)"
+      },
+      {
+        "action": "plot",
+        "identity": "command.plot",
+        "label": "PLOT"
+      },
+      {
+        "action": "push",
+        "identity": "command.stack.enter",
+        "label": "ENTER"
+      },
+      {
+        "action": "push",
+        "identity": "command.stack.push",
+        "label": "PUSH"
+      },
+      {
+        "action": "append",
+        "identity": "digit.0",
+        "label": "0",
+        "value": "0"
+      },
+      {
+        "action": "append",
+        "identity": "digit.1",
+        "label": "1",
+        "value": "1"
+      },
+      {
+        "action": "append",
+        "identity": "digit.2",
+        "label": "2",
+        "value": "2"
+      },
+      {
+        "action": "append",
+        "identity": "digit.3",
+        "label": "3",
+        "value": "3"
+      },
+      {
+        "action": "append",
+        "identity": "digit.4",
+        "label": "4",
+        "value": "4"
+      },
+      {
+        "action": "append",
+        "identity": "digit.5",
+        "label": "5",
+        "value": "5"
+      },
+      {
+        "action": "append",
+        "identity": "digit.6",
+        "label": "6",
+        "value": "6"
+      },
+      {
+        "action": "append",
+        "identity": "digit.7",
+        "label": "7",
+        "value": "7"
+      },
+      {
+        "action": "append",
+        "identity": "digit.8",
+        "label": "8",
+        "value": "8"
+      },
+      {
+        "action": "append",
+        "identity": "digit.9",
+        "label": "9",
+        "value": "9"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.bit-and",
+        "label": "AND",
+        "requires": "operation.bit-and",
+        "value": "&"
+      },
+      {
+        "action": "append",
+        "identity": "function.cos",
+        "label": "cos",
+        "requires": "operation.cos",
+        "value": "cos("
+      },
+      {
+        "action": "append",
+        "identity": "function.ctof",
+        "label": "°C→°F",
+        "requires": "operation.c_to_f",
+        "value": "c_to_f("
+      },
+      {
+        "action": "append",
+        "identity": "function.current",
+        "label": "I = V÷R",
+        "requires": "operation.current",
+        "value": "current("
+      },
+      {
+        "action": "append",
+        "identity": "function.det",
+        "label": "det₂",
+        "requires": "operation.determinant2",
+        "value": "determinant2("
+      },
+      {
+        "action": "append",
+        "identity": "function.discriminant",
+        "label": "Δ(a,b,c)",
+        "requires": "operation.discriminant",
+        "value": "discriminant("
+      },
+      {
+        "action": "append",
+        "identity": "function.dot",
+        "label": "dot₂",
+        "requires": "operation.dot2",
+        "value": "dot2("
+      },
+      {
+        "action": "append",
+        "identity": "constant.e",
+        "label": "e",
+        "requires": "operation.e",
+        "value": "e"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.floor-divide",
+        "label": "DIV",
+        "requires": "operation.floor-divide",
+        "value": "//"
+      },
+      {
+        "action": "append",
+        "identity": "function.ftoc",
+        "label": "°F→°C",
+        "requires": "operation.f_to_c",
+        "value": "f_to_c("
+      },
+      {
+        "action": "append",
+        "identity": "function.fv",
+        "label": "FV",
+        "requires": "operation.future_value",
+        "value": "future_value("
+      },
+      {
+        "action": "append",
+        "identity": "function.kgtolb",
+        "label": "kg→lb",
+        "requires": "operation.kg_to_lb",
+        "value": "kg_to_lb("
+      },
+      {
+        "action": "append",
+        "identity": "function.kmtomi",
+        "label": "km→mi",
+        "requires": "operation.km_to_mi",
+        "value": "km_to_mi("
+      },
+      {
+        "action": "append",
+        "identity": "function.lbtokg",
+        "label": "lb→kg",
+        "requires": "operation.lb_to_kg",
+        "value": "lb_to_kg("
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.shift-left",
+        "label": "<<",
+        "requires": "operation.shift-left",
+        "value": "<<"
+      },
+      {
+        "action": "append",
+        "identity": "function.ln",
+        "label": "ln",
+        "requires": "operation.ln",
+        "value": "ln("
+      },
+      {
+        "action": "append",
+        "identity": "function.log",
+        "label": "log₁₀",
+        "requires": "operation.log10",
+        "value": "log10("
+      },
+      {
+        "action": "append",
+        "identity": "function.max",
+        "label": "max",
+        "requires": "operation.maximum",
+        "value": "maximum("
+      },
+      {
+        "action": "append",
+        "identity": "function.mean",
+        "label": "mean",
+        "requires": "operation.mean",
+        "value": "mean("
+      },
+      {
+        "action": "append",
+        "identity": "function.median",
+        "label": "median",
+        "requires": "operation.median",
+        "value": "median("
+      },
+      {
+        "action": "append",
+        "identity": "function.min",
+        "label": "min",
+        "requires": "operation.minimum",
+        "value": "minimum("
+      },
+      {
+        "action": "append",
+        "identity": "function.mitokm",
+        "label": "mi→km",
+        "requires": "operation.mi_to_km",
+        "value": "mi_to_km("
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.modulo",
+        "label": "MOD",
+        "requires": "operation.modulo",
+        "value": "%"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.bit-not",
+        "label": "NOT",
+        "requires": "operation.bit-not",
+        "value": "~"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.bit-or",
+        "label": "OR",
+        "requires": "operation.bit-or",
+        "value": "|"
+      },
+      {
+        "action": "append",
+        "identity": "constant.pi",
+        "label": "π",
+        "requires": "operation.pi",
+        "value": "pi"
+      },
+      {
+        "action": "append",
+        "identity": "function.pmt",
+        "label": "PMT",
+        "requires": "operation.payment",
+        "value": "payment("
+      },
+      {
+        "action": "append",
+        "identity": "function.polynomial",
+        "label": "f(a,b,c,x)",
+        "requires": "operation.polynomial",
+        "value": "polynomial("
+      },
+      {
+        "action": "append",
+        "identity": "function.pv",
+        "label": "PV",
+        "requires": "operation.present_value",
+        "value": "present_value("
+      },
+      {
+        "action": "append",
+        "identity": "function.resistance",
+        "label": "R = V÷I",
+        "requires": "operation.resistance",
+        "value": "resistance("
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.shift-right",
+        "label": ">>",
+        "requires": "operation.shift-right",
+        "value": ">>"
+      },
+      {
+        "action": "append",
+        "identity": "function.sin",
+        "label": "sin",
+        "requires": "operation.sin",
+        "value": "sin("
+      },
+      {
+        "action": "append",
+        "identity": "function.sqrt",
+        "label": "√",
+        "requires": "operation.sqrt",
+        "value": "sqrt("
+      },
+      {
+        "action": "append",
+        "identity": "function.stdev",
+        "label": "σ",
+        "requires": "operation.pstdev",
+        "value": "pstdev("
+      },
+      {
+        "action": "append",
+        "identity": "function.sum",
+        "label": "Σ",
+        "requires": "operation.sum",
+        "value": "sum("
+      },
+      {
+        "action": "append",
+        "identity": "function.tan",
+        "label": "tan",
+        "requires": "operation.tan",
+        "value": "tan("
+      },
+      {
+        "action": "append",
+        "identity": "function.trace",
+        "label": "trace₂",
+        "requires": "operation.trace2",
+        "value": "trace2("
+      },
+      {
+        "action": "append",
+        "identity": "function.vertex-x",
+        "label": "xᵥ(a,b)",
+        "requires": "operation.vertex_x",
+        "value": "vertex_x("
+      },
+      {
+        "action": "append",
+        "identity": "function.voltage",
+        "label": "V = I×R",
+        "requires": "operation.voltage",
+        "value": "voltage("
+      },
+      {
+        "action": "append",
+        "identity": "variable.x",
+        "label": "x",
+        "requires": "variable.x",
+        "value": "x"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.bit-xor",
+        "label": "XOR",
+        "requires": "operation.bit-xor",
+        "value": "^"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.add",
+        "label": "+",
+        "requires": "operation.add",
+        "value": "+"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.divide",
+        "label": "÷",
+        "requires": "operation.divide",
+        "value": "/"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.multiply",
+        "label": "×",
+        "requires": "operation.multiply",
+        "value": "*"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.power",
+        "label": "xʸ",
+        "requires": "operation.power",
+        "value": "**"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.power.caret",
+        "label": "^",
+        "requires": "operation.power",
+        "value": "**"
+      },
+      {
+        "action": "append",
+        "identity": "operator.expression.subtract",
+        "label": "−",
+        "requires": "operation.subtract",
+        "value": "-"
+      },
+      {
+        "action": "apply",
+        "identity": "operator.stack.add",
+        "label": "+",
+        "requires": "operation.add",
+        "value": "+"
+      },
+      {
+        "action": "apply",
+        "identity": "operator.stack.divide",
+        "label": "÷",
+        "requires": "operation.divide",
+        "value": "/"
+      },
+      {
+        "action": "apply",
+        "identity": "operator.stack.multiply",
+        "label": "×",
+        "requires": "operation.multiply",
+        "value": "*"
+      },
+      {
+        "action": "apply",
+        "identity": "operator.stack.power",
+        "label": "xʸ",
+        "requires": "operation.power",
+        "value": "^"
+      },
+      {
+        "action": "apply",
+        "identity": "operator.stack.subtract",
+        "label": "−",
+        "requires": "operation.subtract",
+        "value": "-"
+      },
+      {
+        "action": "append",
+        "identity": "syntax.comma",
+        "label": ",",
+        "value": ","
+      },
+      {
+        "action": "append",
+        "identity": "syntax.decimal",
+        "label": ".",
+        "value": "."
+      },
+      {
+        "action": "append",
+        "identity": "syntax.left",
+        "label": "(",
+        "value": "("
+      },
+      {
+        "action": "append",
+        "identity": "syntax.right",
+        "label": ")",
+        "value": ")"
+      }
+    ]
+  }
+}

@@ -38,6 +38,13 @@ class DynamicSuiteTests(unittest.TestCase):
             [item["id"] for item in applications],
         )
 
+    def test_gui_verification_executes_generated_application_entrypoint(self):
+        source = (
+            ROOT / "tools" / "verify_all.py"
+        ).read_text(encoding="utf-8")
+        self.assertIn('"main.py", "--self-test"', source)
+        self.assertNotIn('"test_generated.py", "--gui-e2e"', source)
+
 
 if __name__ == "__main__":
     unittest.main()

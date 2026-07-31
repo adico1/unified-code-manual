@@ -188,11 +188,11 @@
         "presentation": {
           "additionalProperties": false,
           "properties": {
-            "controls": {
+            "keys": {
               "items": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "properties": {
-                  "action": {
+                  "key": {
                     "minLength": 1,
                     "type": "string"
                   },
@@ -200,22 +200,13 @@
                     "minimum": 0,
                     "type": "integer"
                   },
-                  "id": {
-                    "minLength": 1,
-                    "type": "string"
-                  },
-                  "label": {
-                    "type": "string"
-                  },
                   "row": {
                     "minimum": 0,
                     "type": "integer"
                   }
                 },
                 "required": [
-                  "id",
-                  "label",
-                  "action",
+                  "key",
                   "row",
                   "column"
                 ],
@@ -248,7 +239,7 @@
             "mode_label",
             "layout",
             "theme",
-            "controls"
+            "keys"
           ],
           "type": "object"
         },

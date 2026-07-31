@@ -23,14 +23,17 @@ registered stampers                       6
 derived control transitions               287
 derived reachable errors                  25
 seed-graph rejection proofs               5/5
-compiler application-vocabulary hits      0/71
+compiler application-vocabulary hits      0/128
 generated editable-input checks           3 per application
+application-owned self-tested Keys        287/287
+self-test applications closed             12/12
 runtime seed access                       0
 manual application code                   0
 manual application tests                  0
 deterministic rebuild                     PASS
 complete tree SHA-256
-371f159f7a724fcf10b965adac06fd9d17bfdf3e6f5dd600b8acfeed95cab73d
+14bca5577e6d125d21b2ef754a15c3dd2f8d8b0cca0792e498f50aac1d051559
+single API elapsed                       4.25 seconds
 ```
 
 Reproduce:
@@ -38,13 +41,7 @@ Reproduce:
 ```bash
 git clone https://github.com/adico1/unified-code-manual.git
 cd unified-code-manual
-python3 tools/verify_all.py --generate-only
-```
-
-Open all twelve generated applications:
-
-```bash
-python3 tools/verify_all.py
+python3 tools/single_api.py
 ```
 
 ## LinkedIn announcement
@@ -52,11 +49,12 @@ python3 tools/verify_all.py
 I built twelve different calculator products from one shared construction
 infrastructure.
 
-Not twelve templates selecting hidden handwritten behavior. Each application seed
-declares its own identity, mathematical operations, formulas, state, controls,
-layout, and acceptance behavior. A pinned calculator-family seed supplies the
-unchanging family law once. One build-time compiler specializes the selected
-meaning into twelve exact standalone Python applications.
+Not twelve templates selecting hidden handwritten behavior. Each application
+seed declares its own identity, mathematical operations, formulas, state,
+selected Key identities, layout, and acceptance behavior. A pinned canonical
+registry defines reusable Key meaning once, and a pinned calculator-family seed
+supplies the unchanging family law once. One build-time compiler specializes
+the selected meaning into twelve exact standalone Python applications.
 
 Measured proof:
 
@@ -122,7 +120,7 @@ claim generated `צבאות` parallel execution.
 
 ## Pre-publication checklist
 
-- Run `python3 tools/verify_all.py --generate-only`.
+- Run `python3 tools/single_api.py`.
 - Confirm the reported complete-tree hash matches this document.
 - Confirm `git diff --check`.
 - Publish the repository commit before linking it.

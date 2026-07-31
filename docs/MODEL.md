@@ -18,6 +18,7 @@ A seed may be the base authority of another seed:
 
 ```text
 בלי_מה
+→ canonical Key registry
 → calculator-family seed
 → application מה seed
 → generated application
@@ -30,7 +31,7 @@ family invariants. The leaf מה seed contains the complete selected application
 identity
 + semantic contract
 + state
-+ presentation and controls
++ presentation and selected Key identities
 + structured executable program
 + acceptance cases
 ```
@@ -53,6 +54,45 @@ six ordered stamp identities
 The leaf does not repeat those truths. During base resolution, the compiler
 derives one transition from each control, derives only reachable errors, and
 adds the matching negative cases.
+
+## Canonical Keys
+
+Every reusable physical key has one globally unique identity:
+
+```text
+digit.8
+operator.expression.add
+operator.stack.add
+command.evaluate
+```
+
+The registry defines its label, action, emitted value and required backend
+capability once. A leaf selects only the identity and grid position:
+
+```json
+{"key": "digit.8", "row": 3, "column": 1}
+```
+
+Resolution is exact. Unknown, duplicate and malformed registry identities are
+invalid. The selected definition is specialized into the generated
+application, which never loads the registry at runtime.
+
+Callback arity is family authority:
+
+```text
+argument-required action + one string value → valid
+argument-free action + no value            → valid
+every other combination                    → invalid
+```
+
+Traceability keeps both authorities visible:
+
+```text
+leaf Key placement
++ canonical registry definition
++ required semantic capability
+→ generated Button source line
+```
 
 ## One body and six build-time stampers
 

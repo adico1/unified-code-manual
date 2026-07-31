@@ -93,23 +93,24 @@ licenses for every imported asset.
 
 ## GUI writes backend requirements
 
-The GUI is not decoration added after the backend. Its declared controls form
-a requirement projection.
-
-Every control declares:
+The GUI is not decoration added after the backend. Its selected Keys form a
+requirement projection. Reusable meaning is declared once in the canonical
+registry:
 
 ```json
 {
-  "id": "operator.add",
-  "identity": "uc://calculator-functions/add@1",
+  "identity": "operator.expression.add",
   "label": "+",
-  "accessible_name": "Add",
-  "position": {"row": 2, "column": 3, "row_span": 1, "column_span": 1},
-  "function": {"kind": "expression-token", "token": "+"},
-  "requires": ["backend.operator.add"],
-  "visible_when": "always",
-  "enabled_when": "expression.accepts-operator"
+  "action": "append",
+  "value": "+",
+  "requires": "operation.add"
 }
+```
+
+The application declares only the unique identity and placement:
+
+```json
+{"key": "operator.expression.add", "row": 2, "column": 3}
 ```
 
 The compiler derives:
@@ -126,25 +127,25 @@ control identity
 
 Required laws:
 
-1. Every visible control has one stable identity.
-2. Every label has a declared meaning; a glyph alone is insufficient.
+1. Every visible Key has one globally unique identity.
+2. Every label, emitted value and action come from that identity.
 3. Every position is explicit and non-overlapping.
 4. Every function resolves to one registered semantic capability.
 5. Every expression token is admitted by the selected grammar.
 6. Every backend capability names its numeric domain and error behavior.
 7. Every mode-changing control exposes the active mode.
-8. Every control has an accessible name and keyboard equivalent when possible.
+8. Accessibility and keyboard projections must resolve from the same identity
+   when declared.
 9. Every event route has an acceptance case.
 10. No theme may change mathematical meaning.
 
 Validation rejects:
 
 ```text
-unknown-function
-orphan-control
-duplicate-control-identity
+unknown-key
+invalid-key-definition
+duplicate-key-identity
 overlapping-grid-position
-label-function-conflict
 grammar-token-missing
 backend-capability-missing
 mode-not-visible
@@ -245,6 +246,7 @@ The current proof uses an immutable content-addressed seed graph:
 
 ```text
 seed/bases/בלי_מה.seed.json
+→ seed/registries/calculator-keys.seed.json
 → seed/families/calculator.seed.json
 →
 seed/applications/normal.seed.json
@@ -266,14 +268,17 @@ exact identity, relative path and SHA-256. `tools/modify_seeds.py` migrates and
 re-pins the graph deterministically; the compiler rejects cycles, conflicts,
 floating references and tampering.
 
-The leaf seeds contain complete concise application declarations.
+The leaf seeds contain complete concise application declarations. Reusable
+Key meaning is pinned once in the canonical registry; leaves select unique Key
+identities and positions.
 `src/declaration_compiler.py` generates the specialized AST from registered
 numeric, state, transition and presentation vocabulary. It contains no
 calculator identity, selected equation or concrete layout.
 
 ## Suite operation
 
-`tools/verify_all.py` reads `seed/suite.seed.json`, regenerates every enabled seed,
-runs generated acceptance tests in isolation, performs a second independent
-build, checks seed ancestry and compiler/application vocabulary separation, and
-optionally opens all twelve GUIs.
+`tools/single_api.py` is the public operation. Behind it, `tools/verify_all.py`
+reads `seed/suite.seed.json`, regenerates every enabled seed, runs generated
+acceptance tests in isolation, invokes every real Tk Key, destroys every
+window, performs a second independent build, and checks seed ancestry plus
+compiler/application vocabulary separation.

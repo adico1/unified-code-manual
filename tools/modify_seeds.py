@@ -14,7 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SEED_ROOT = ROOT / "seed"
 SEEDS = SEED_ROOT / "applications"
 BASES = SEED_ROOT / "bases"
+REGISTRIES = SEED_ROOT / "registries"
 WITHOUT_WHAT = BASES / "בלי_מה.seed.json"
+KEY_REGISTRY = REGISTRIES / "calculator-keys.seed.json"
 CALCULATOR_FAMILY = SEED_ROOT / "families" / "calculator.seed.json"
 LEAF_FORMAT = "manual-what-seed-4"
 BASE_FORMAT = "manual-seed-base-1"
@@ -58,12 +60,63 @@ def leaf_paths():
     )
 
 
-def concise_what(what):
+def key_definitions(registry_document):
+    definitions = registry_document["provides"]["key_registry"]
+    identities = [item["identity"] for item in definitions]
+    if len(identities) != len(set(identities)):
+        raise ValueError("duplicate-key-identity")
+    return definitions
+
+
+def key_placements(presentation, registry_document):
+    if "keys" in presentation:
+        return presentation["keys"]
+    definitions = key_definitions(registry_document)
+    by_meaning = {
+        canonical(
+            {
+                name: value
+                for name, value in item.items()
+                if name not in {"identity", "requires"}
+            }
+        ): item["identity"]
+        for item in definitions
+    }
+    placements = []
+    for control in presentation["controls"]:
+        meaning = canonical(
+            {
+                name: value
+                for name, value in control.items()
+                if name not in {"id", "row", "column"}
+            }
+        )
+        if meaning not in by_meaning:
+            raise ValueError("unregistered-key:" + control["id"])
+        placements.append(
+            {
+                "key": by_meaning[meaning],
+                "row": control["row"],
+                "column": control["column"],
+            }
+        )
+    return placements
+
+
+def concise_what(what, registry_document):
     program = what["program"]
     if "ast" in program:
         raise ValueError("legacy-ast-not-supported")
     concise = {
         **what,
+        "presentation": {
+            **{
+                name: value
+                for name, value in what["presentation"].items()
+                if name not in {"controls", "keys"}
+            },
+            "keys": key_placements(what["presentation"], registry_document),
+        },
         "state": {
             **what["state"],
             "authority": "declarations",
@@ -87,7 +140,7 @@ def concise_what(what):
     return concise
 
 
-def migrate_leaf(path, family_document):
+def migrate_leaf(path, family_document, registry_document):
     document = load(path)
     if document.get("format") == LEAF_FORMAT:
         what = document["what"]
@@ -98,30 +151,40 @@ def migrate_leaf(path, family_document):
         "bases": [
             base_reference(path, CALCULATOR_FAMILY, family_document)
         ],
-        "what": concise_what(what),
+        "what": concise_what(what, registry_document),
     }
 
 
 def expected_documents():
-    if not WITHOUT_WHAT.exists() or not CALCULATOR_FAMILY.exists():
+    if (
+        not WITHOUT_WHAT.exists()
+        or not KEY_REGISTRY.exists()
+        or not CALCULATOR_FAMILY.exists()
+    ):
         raise ValueError("missing-base-authority")
     root_document = load(WITHOUT_WHAT)
+    registry_document = load(KEY_REGISTRY)
     family_document = load(CALCULATOR_FAMILY)
     if (
         root_document.get("format") != BASE_FORMAT
         or root_document.get("bases") != []
+        or registry_document.get("format") != BASE_FORMAT
         or family_document.get("format") != BASE_FORMAT
     ):
         raise ValueError("invalid-base-authority")
+    registry_document["bases"] = [
+        base_reference(KEY_REGISTRY, WITHOUT_WHAT, root_document)
+    ]
     family_document["bases"] = [
-        base_reference(CALCULATOR_FAMILY, WITHOUT_WHAT, root_document)
+        base_reference(CALCULATOR_FAMILY, KEY_REGISTRY, registry_document)
     ]
     leaves = {
-        path: migrate_leaf(path, family_document)
+        path: migrate_leaf(path, family_document, registry_document)
         for path in leaf_paths()
     }
     return {
         WITHOUT_WHAT: root_document,
+        KEY_REGISTRY: registry_document,
         CALCULATOR_FAMILY: family_document,
         **leaves,
     }
@@ -129,6 +192,7 @@ def expected_documents():
 
 def apply_documents(documents):
     BASES.mkdir(parents=True, exist_ok=True)
+    REGISTRIES.mkdir(parents=True, exist_ok=True)
     changed = []
     for path, document in documents.items():
         content = pretty(document)

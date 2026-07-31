@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/seeds/calculator-family@1",
       "path": "../families/calculator.seed.json",
-      "sha256": "f38983c36297c1ac143168890eace87fd382f65110e51360bec84a35faf20a0b"
+      "sha256": "cf913831456fe4ff653639a4b7e4e9a7c25499d9d54c5be2abd5acba325856e2"
     }
   ],
   "format": "manual-what-seed-4",
@@ -47,165 +47,109 @@
       "version": 1
     },
     "presentation": {
-      "controls": [
+      "geometry": "390x360+1470+80",
+      "keys": [
         {
-          "action": "append",
           "column": 0,
-          "id": "seven",
-          "label": "7",
-          "row": 2,
-          "value": "7"
+          "key": "digit.7",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "eight",
-          "label": "8",
-          "row": 2,
-          "value": "8"
+          "key": "digit.8",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "nine",
-          "label": "9",
-          "row": 2,
-          "value": "9"
+          "key": "digit.9",
+          "row": 2
         },
         {
-          "action": "apply",
           "column": 3,
-          "id": "divide",
-          "label": "÷",
-          "row": 2,
-          "value": "/"
+          "key": "operator.stack.divide",
+          "row": 2
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "four",
-          "label": "4",
-          "row": 3,
-          "value": "4"
+          "key": "digit.4",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "five",
-          "label": "5",
-          "row": 3,
-          "value": "5"
+          "key": "digit.5",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "six",
-          "label": "6",
-          "row": 3,
-          "value": "6"
+          "key": "digit.6",
+          "row": 3
         },
         {
-          "action": "apply",
           "column": 3,
-          "id": "multiply",
-          "label": "×",
-          "row": 3,
-          "value": "*"
+          "key": "operator.stack.multiply",
+          "row": 3
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "one",
-          "label": "1",
-          "row": 4,
-          "value": "1"
+          "key": "digit.1",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 1,
-          "id": "two",
-          "label": "2",
-          "row": 4,
-          "value": "2"
+          "key": "digit.2",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 2,
-          "id": "three",
-          "label": "3",
-          "row": 4,
-          "value": "3"
+          "key": "digit.3",
+          "row": 4
         },
         {
-          "action": "apply",
           "column": 3,
-          "id": "subtract",
-          "label": "−",
-          "row": 4,
-          "value": "-"
+          "key": "operator.stack.subtract",
+          "row": 4
         },
         {
-          "action": "append",
           "column": 0,
-          "id": "zero",
-          "label": "0",
-          "row": 5,
-          "value": "0"
-        },
-        {
-          "action": "append",
-          "column": 1,
-          "id": "decimal",
-          "label": ".",
-          "row": 5,
-          "value": "."
-        },
-        {
-          "action": "push",
-          "column": 2,
-          "id": "enter",
-          "label": "ENTER",
+          "key": "digit.0",
           "row": 5
         },
         {
-          "action": "apply",
-          "column": 3,
-          "id": "add",
-          "label": "+",
-          "row": 5,
-          "value": "+"
-        },
-        {
-          "action": "apply",
-          "column": 0,
-          "id": "power",
-          "label": "xʸ",
-          "row": 6,
-          "value": "^"
-        },
-        {
-          "action": "backspace",
           "column": 1,
-          "id": "backspace",
-          "label": "⌫",
-          "row": 6
+          "key": "syntax.decimal",
+          "row": 5
         },
         {
-          "action": "clear",
           "column": 2,
-          "id": "clear",
-          "label": "CLEAR",
+          "key": "command.stack.enter",
+          "row": 5
+        },
+        {
+          "column": 3,
+          "key": "operator.stack.add",
+          "row": 5
+        },
+        {
+          "column": 0,
+          "key": "operator.stack.power",
           "row": 6
         },
         {
-          "action": "push",
+          "column": 1,
+          "key": "command.backspace",
+          "row": 6
+        },
+        {
+          "column": 2,
+          "key": "command.clear.stack",
+          "row": 6
+        },
+        {
           "column": 3,
-          "id": "enter2",
-          "label": "PUSH",
+          "key": "command.stack.push",
           "row": 6
         }
       ],
-      "geometry": "390x360+1470+80",
       "layout": {
         "columns": 4
       },
