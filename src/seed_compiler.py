@@ -12,7 +12,10 @@ import tempfile
 from pathlib import Path
 
 from declaration_compiler import LANGUAGE as DECLARATION_LANGUAGE
+from declaration_compiler import LANGUAGES as DECLARATION_LANGUAGES
 from declaration_compiler import compile_declaration
+from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
+from stateful_compiler import safe_name
 
 
 FORMAT = "manual-resolved-declaration-4"
@@ -359,6 +362,169 @@ def materialize(
     }
 
 
+def materialize_stateful(
+    what,
+    assembly,
+    control_registry,
+    control_registry_authority,
+    leaf_authority,
+):
+    identities = [item.get("identity") for item in control_registry]
+    if (
+        any(
+            not isinstance(item, dict)
+            or not {"identity", "label", "command"} <= set(item)
+            or set(item) - {"identity", "label", "command", "arguments"}
+            or not isinstance(item["identity"], str)
+            or not isinstance(item["label"], str)
+            or not isinstance(item["command"], str)
+            or not isinstance(item.get("arguments", {}), dict)
+            for item in control_registry
+        )
+        or len(identities) != len(set(identities))
+    ):
+        raise ValueError("invalid-control-registry")
+    definitions = {
+        item["identity"]: {
+            name: value
+            for name, value in item.items()
+            if name != "identity"
+        }
+        for item in control_registry
+    }
+    placements = what["presentation"]["keys"]
+    if any(
+        set(item) != {"key", "row", "column"}
+        or not isinstance(item["key"], str)
+        or not isinstance(item["row"], int)
+        or not isinstance(item["column"], int)
+        or item["row"] < 0
+        or item["column"] < 0
+        for item in placements
+    ):
+        raise ValueError("invalid-key-placement")
+    unknown = sorted(
+        {item["key"] for item in placements} - definitions.keys()
+    )
+    if unknown:
+        raise ValueError("unknown-key:" + ",".join(unknown))
+    command_definitions = what["semantics"]["commands"]
+    command_identities = [item.get("id") for item in command_definitions]
+    if (
+        any(
+            not isinstance(identity, str) or not identity
+            for identity in command_identities
+        )
+        or len(command_identities) != len(set(command_identities))
+        or len({safe_name(item) for item in command_identities})
+        != len(command_identities)
+    ):
+        raise ValueError("duplicate-command-identity")
+    commands = {item["id"]: item for item in command_definitions}
+    missing_commands = sorted(
+        {
+            definitions[item["key"]]["command"]
+            for item in placements
+        }
+        - commands.keys()
+    )
+    if missing_commands:
+        raise ValueError(
+            "control-command-missing:" + ",".join(missing_commands)
+        )
+    input_identities = {
+        item["identity"] for item in what["presentation"]["inputs"]
+    }
+    collection_identity = what["presentation"]["collection"]["identity"]
+    for placement in placements:
+        definition = definitions[placement["key"]]
+        declared_arguments = {
+            item["name"] for item in commands[definition["command"]]["arguments"]
+        }
+        if set(definition.get("arguments", {})) != declared_arguments:
+            raise ValueError(
+                "control-argument-mismatch:" + placement["key"]
+            )
+        for argument in definition.get("arguments", {}).values():
+            if argument.get("source") == "input":
+                if argument.get("identity") not in input_identities:
+                    raise ValueError("control-input-missing")
+            elif argument.get("source") == "selection":
+                if argument.get("identity") != collection_identity:
+                    raise ValueError("control-collection-missing")
+                if not isinstance(argument.get("field"), str):
+                    raise ValueError("control-selection-field")
+            elif argument.get("source") == "literal":
+                if "value" not in argument:
+                    raise ValueError("control-literal-missing")
+            else:
+                raise ValueError("control-argument-source")
+    definition_indexes = {
+        item["identity"]: index
+        for index, item in enumerate(control_registry)
+    }
+    selected = [
+        {
+            "identity": placement["key"],
+            "placement": {
+                "authority": leaf_authority["identity"],
+                "authority_sha256": leaf_authority["sha256"],
+                "path": f"/what/presentation/keys/{index}",
+            },
+            "registry": {
+                "authority": control_registry_authority["identity"],
+                "authority_sha256": control_registry_authority["sha256"],
+                "definition_path": (
+                    "/provides/control_registry/"
+                    f"{definition_indexes[placement['key']]}"
+                ),
+                "definition_sha256": document_digest(
+                    control_registry[definition_indexes[placement["key"]]]
+                ),
+            },
+        }
+        for index, placement in enumerate(placements)
+    ]
+    controls = [
+        {
+            "id": placement["key"],
+            **definitions[placement["key"]],
+            "row": placement["row"],
+            "column": placement["column"],
+        }
+        for placement in placements
+    ]
+    presentation = deep_merge(
+        {"rendering": assembly["gui_defaults"]},
+        {
+            **{
+                name: value
+                for name, value in what["presentation"].items()
+                if name != "keys"
+            },
+            "controls": controls,
+        },
+    )
+    transitions = [
+        {
+            "event": f"control.{control['id']}.pressed",
+            "route": "command_" + safe_name(control["command"]),
+        }
+        for control in controls
+    ]
+    return {
+        **what,
+        "presentation": presentation,
+        "transitions": transitions,
+        "boundaries": assembly["boundaries"],
+        "_assembly": {
+            "stamps": assembly["stamps"],
+            "registered_actions": ["dispatch"],
+            "selected_keys": selected,
+        },
+    }
+
+
 def canonical(value):
     return (
         json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -468,25 +634,43 @@ def load_seed(path):
         "program_language"
     ):
         raise ValueError("program-language-authority-mismatch")
-    key_registry_authority = next(
-        item
-        for item in authorities
-        if "key_registry" in item.get("provides", ())
-    )
     leaf_authority = {
         "identity": what["identity"]["canonical"],
         "kind": "what-authority",
         "sha256": document_digest(document),
     }
-    resolved = {
-        "format": FORMAT,
-        **materialize(
+    language = provisions.get("program_language")
+    if language == DECLARATION_LANGUAGE:
+        registry_authority = next(
+            item
+            for item in authorities
+            if "key_registry" in item.get("provides", ())
+        )
+        materialized = materialize(
             what,
             provisions["assembly"],
             provisions["key_registry"],
-            key_registry_authority,
+            registry_authority,
             leaf_authority,
-        ),
+        )
+    elif language == STATEFUL_LANGUAGE:
+        registry_authority = next(
+            item
+            for item in authorities
+            if "control_registry" in item.get("provides", ())
+        )
+        materialized = materialize_stateful(
+            what,
+            provisions["assembly"],
+            provisions["control_registry"],
+            registry_authority,
+            leaf_authority,
+        )
+    else:
+        raise ValueError("unknown-program-language")
+    resolved = {
+        "format": FORMAT,
+        **materialized,
     }
     authorities.append(leaf_authority)
     return resolved, authorities
@@ -506,10 +690,36 @@ def validate(seed):
         or not isinstance(identity.get("version"), int)
     ):
         errors.append("identity")
-    if not seed.get("semantics", {}).get("numeric_laws"):
-        errors.append("numeric-laws")
-    if not seed.get("semantics", {}).get("operations"):
-        errors.append("operations")
+    language = seed.get("program", {}).get("language")
+    if language == DECLARATION_LANGUAGE:
+        if not seed.get("semantics", {}).get("numeric_laws"):
+            errors.append("numeric-laws")
+        if not seed.get("semantics", {}).get("operations"):
+            errors.append("operations")
+    elif language == STATEFUL_LANGUAGE:
+        commands = seed.get("semantics", {}).get("commands", ())
+        command_ids = [item.get("id") for item in commands]
+        if (
+            not commands
+            or len(command_ids) != len(set(command_ids))
+            or any(
+                not item.get("id")
+                or not isinstance(item.get("arguments"), list)
+                for item in commands
+            )
+        ):
+            errors.append("commands")
+        if not seed.get("persistence", {}).get("environment"):
+            errors.append("persistence")
+        presentation = seed.get("presentation", {})
+        if (
+            not presentation.get("inputs")
+            or not presentation.get("collection")
+            or not presentation.get("self_tests")
+        ):
+            errors.append("stateful-presentation")
+    else:
+        errors.append("program-language")
     if not seed.get("transitions"):
         errors.append("transitions")
     controls = seed.get("presentation", {}).get("controls", ())
@@ -525,7 +735,7 @@ def validate(seed):
     if any(f"control.{item.get('id')}.pressed" not in events for item in controls):
         errors.append("control-routes")
     program = seed.get("program", {})
-    if program.get("language") != DECLARATION_LANGUAGE:
+    if program.get("language") not in DECLARATION_LANGUAGES:
         errors.append("program-language")
     if "ast" in program:
         errors.append("program")
@@ -573,21 +783,20 @@ def trace_program(seed, source, authorities):
         for node in rendered.body
         if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
     }
-    semantic_functions = seed["semantics"]["operations"].get("functions", ())
+    semantic_functions = seed["semantics"].get("operations", {}).get(
+        "functions", ()
+    )
     interface = functions["build_interface"]
-    buttons = [
+    buttons = sorted(
+        [
         node
-        for node in interface.body
-        if (
-            isinstance(node, ast.Expr)
-            and isinstance(node.value, ast.Call)
-            and isinstance(node.value.func, ast.Attribute)
-            and node.value.func.attr == "grid"
-            and isinstance(node.value.func.value, ast.Call)
-            and isinstance(node.value.func.value.func, ast.Name)
-            and node.value.func.value.func.id == "Button"
-        )
-    ]
+        for node in ast.walk(interface)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "Button"
+        ],
+        key=lambda node: node.lineno,
+    )
     if len(buttons) != len(seed["presentation"]["controls"]):
         raise ValueError("control-trace-mismatch")
     return {
@@ -652,7 +861,60 @@ def trace_program(seed, source, authorities):
     }
 
 
+def render_stateful_tests(seed):
+    cases = [
+        {
+            "id": case["id"],
+            "input": case["input"],
+            "expected": case["expected"],
+        }
+        for case in seed["acceptance"]
+    ]
+    controls = seed["presentation"]["controls"]
+    lines = [
+        '"""Generated stateful acceptance tests. Do not edit."""',
+        "import ast",
+        "import importlib.util",
+        "import json",
+        "from pathlib import Path",
+        "",
+        f"CASES = {cases!r}",
+        f"EXPECTED_CALLBACKS = {[f'control_{index}' for index in range(len(controls))]!r}",
+        "",
+        "def verify_callbacks(path):",
+        "    tree = ast.parse(path.read_text(encoding='utf-8'))",
+        "    functions = {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}",
+        "    interface = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'build_interface')",
+        "    buttons = sorted((node for node in ast.walk(interface) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == 'Button'), key=lambda node: node.lineno)",
+        "    callbacks = []",
+        "    for button in buttons:",
+        "        command = next((item.value for item in button.keywords if item.arg == 'command'), None)",
+        "        callbacks.append(command.id if isinstance(command, ast.Name) else None)",
+        "    results = [actual == expected and actual in functions for actual, expected in zip(callbacks, EXPECTED_CALLBACKS)]",
+        "    return {'passed': sum(results), 'total': len(EXPECTED_CALLBACKS), 'complete': len(callbacks) == len(EXPECTED_CALLBACKS) and all(results)}",
+        "",
+        "def run(*, emit=True):",
+        "    path = Path(__file__).with_name('main.py')",
+        "    specification = importlib.util.spec_from_file_location('generated_app', path)",
+        "    module = importlib.util.module_from_spec(specification)",
+        "    specification.loader.exec_module(module)",
+        "    results = [module.run_case(case['input']) == case['expected'] for case in CASES]",
+        "    callbacks = verify_callbacks(path)",
+        "    report = {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in CASES], 'editable': {'passed': 0, 'total': 0}, 'key_callbacks': {'passed': callbacks['passed'], 'total': callbacks['total']}}",
+        "    if emit:",
+        "        print(json.dumps(report, sort_keys=True))",
+        "    return 0 if all(results) and callbacks['complete'] else 1",
+        "",
+        "if __name__ == '__main__':",
+        "    raise SystemExit(run())",
+        "",
+    ]
+    return "\n".join(lines).encode()
+
+
 def render_tests(seed):
+    if seed["program"]["language"] == STATEFUL_LANGUAGE:
+        return render_stateful_tests(seed)
     entrypoint = seed["program"]["case_entrypoint"]
     transition_by_event = {
         item["event"]: item
@@ -791,7 +1053,7 @@ def render_tests(seed):
     return "\n".join(lines).encode()
 
 
-def verify_runtime_source(source):
+def verify_runtime_source(seed, source):
     tree = ast.parse(source)
     imported = {
         alias.name
@@ -807,7 +1069,11 @@ def verify_runtime_source(source):
         for node in ast.walk(tree)
         if isinstance(node, ast.Call)
         and isinstance(node.func, ast.Attribute)
-        and node.func.attr in {"read_bytes", "read_text"}
+        and node.func.attr in (
+            {"read_bytes", "read_text"}
+            if seed["program"]["language"] == DECLARATION_LANGUAGE
+            else set()
+        )
     }
     forbidden_calls.update(
         node.func.id
@@ -817,6 +1083,19 @@ def verify_runtime_source(source):
         and node.func.id in {"open", "exec", "compile"}
     )
     if forbidden_imports or forbidden_calls:
+        raise ValueError("runtime-authority-leak")
+    forbidden_authorities = {
+        value.value
+        for value in ast.walk(tree)
+        if isinstance(value, ast.Constant)
+        and isinstance(value.value, str)
+        and (
+            ".seed.json" in value.value
+            or "seed_compiler" in value.value
+            or "declaration_compiler" in value.value
+        )
+    }
+    if forbidden_authorities:
         raise ValueError("runtime-authority-leak")
 
 
@@ -861,7 +1140,7 @@ def generate(seed_path, output):
     if errors:
         raise ValueError(",".join(errors))
     source = render_program(seed)
-    verify_runtime_source(source)
+    verify_runtime_source(seed, source)
     verification = acceptance_result(seed, source)
     tests = render_tests(seed)
     trace = canonical(trace_program(seed, source, authorities))

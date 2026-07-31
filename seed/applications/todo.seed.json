@@ -1,0 +1,731 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/stateful-list-family@1",
+      "path": "../families/stateful-list.seed.json",
+      "sha256": "fe5536ba0e7d6a3f350823c986858e29a64d43f09e2cc95b94e5a745f3de8770"
+    }
+  ],
+  "format": "manual-what-seed-4",
+  "what": {
+    "acceptance": [
+      {
+        "expected": {
+          "results": [
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "title": "A"
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "title": "A"
+                  },
+                  {
+                    "completed": false,
+                    "id": 2,
+                    "title": "B"
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": true,
+                    "id": 1,
+                    "title": "A"
+                  },
+                  {
+                    "completed": false,
+                    "id": 2,
+                    "title": "B"
+                  }
+                ]
+              }
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 3,
+                "tasks": [
+                  {
+                    "completed": true,
+                    "id": 1,
+                    "title": "A"
+                  },
+                  {
+                    "completed": false,
+                    "id": 2,
+                    "title": "B"
+                  }
+                ]
+              }
+            }
+          ],
+          "state": {
+            "filter": "all",
+            "next_id": 3,
+            "tasks": [
+              {
+                "completed": true,
+                "id": 1,
+                "title": "A"
+              },
+              {
+                "completed": false,
+                "id": 2,
+                "title": "B"
+              }
+            ]
+          }
+        },
+        "id": "todo.persisted-lifecycle",
+        "input": {
+          "steps": [
+            {
+              "arguments": {
+                "title": "A"
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "title": "B"
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "id": 1
+              },
+              "command": "toggle"
+            },
+            {
+              "restart": true
+            }
+          ]
+        }
+      },
+      {
+        "expected": {
+          "results": [
+            {
+              "error": "invalid-title",
+              "result": null
+            },
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "title": "A"
+                  }
+                ]
+              }
+            },
+            {
+              "error": "duplicate-title",
+              "result": null
+            },
+            {
+              "error": "unknown-item",
+              "result": null
+            }
+          ],
+          "state": {
+            "filter": "all",
+            "next_id": 2,
+            "tasks": [
+              {
+                "completed": false,
+                "id": 1,
+                "title": "A"
+              }
+            ]
+          }
+        },
+        "id": "todo.validation",
+        "input": {
+          "steps": [
+            {
+              "arguments": {
+                "title": " "
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "title": "A"
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "title": "A"
+              },
+              "command": "create"
+            },
+            {
+              "arguments": {
+                "id": 99
+              },
+              "command": "remove"
+            }
+          ]
+        }
+      }
+    ],
+    "identity": {
+      "canonical": "uc://manual/applications/todo@1",
+      "family": "stateful-list",
+      "variation": "todo",
+      "version": 1
+    },
+    "persistence": {
+      "default_path": ".unified-code-manual/todo/state.json",
+      "environment": "UC_MANUAL_TODO_STATE"
+    },
+    "presentation": {
+      "collection": {
+        "column": 0,
+        "columnspan": 4,
+        "display_fields": [
+          "id",
+          "title",
+          "completed"
+        ],
+        "filter_field": "filter",
+        "filters": {
+          "all": null,
+          "completed": {
+            "equals": true,
+            "field": "completed"
+          },
+          "open": {
+            "equals": false,
+            "field": "completed"
+          }
+        },
+        "height": 12,
+        "identity": "collection.primary",
+        "identity_field": "id",
+        "row": 1,
+        "state_field": "tasks",
+        "width": 52
+      },
+      "geometry": "520x360+80+80",
+      "inputs": [
+        {
+          "column": 0,
+          "columnspan": 3,
+          "identity": "entry.primary",
+          "label": "Task",
+          "row": 0,
+          "width": 38
+        }
+      ],
+      "keys": [
+        {
+          "column": 0,
+          "key": "record.create",
+          "row": 2
+        },
+        {
+          "column": 1,
+          "key": "record.update",
+          "row": 2
+        },
+        {
+          "column": 2,
+          "key": "record.toggle",
+          "row": 2
+        },
+        {
+          "column": 3,
+          "key": "record.remove",
+          "row": 2
+        },
+        {
+          "column": 0,
+          "key": "filter.all",
+          "row": 3
+        },
+        {
+          "column": 1,
+          "key": "filter.open",
+          "row": 3
+        },
+        {
+          "column": 2,
+          "key": "filter.completed",
+          "row": 3
+        }
+      ],
+      "self_tests": [
+        {
+          "control": "record.create",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "title": "A"
+                  }
+                ]
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 2,
+              "tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "A"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "entry.primary": "A"
+          }
+        },
+        {
+          "control": "record.update",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": false,
+                    "id": 1,
+                    "title": "B"
+                  }
+                ]
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 2,
+              "tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "B"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "entry.primary": "B"
+          },
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "A"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "control": "record.toggle",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": [
+                  {
+                    "completed": true,
+                    "id": 1,
+                    "title": "A"
+                  }
+                ]
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 2,
+              "tasks": [
+                {
+                  "completed": true,
+                  "id": 1,
+                  "title": "A"
+                }
+              ]
+            }
+          },
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "A"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "control": "record.remove",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 2,
+                "tasks": []
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 2,
+              "tasks": []
+            }
+          },
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          },
+          "setup": [
+            {
+              "arguments": {
+                "title": "A"
+              },
+              "command": "create"
+            }
+          ]
+        },
+        {
+          "control": "filter.all",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 1,
+                "tasks": []
+              }
+            },
+            "state": {
+              "filter": "all",
+              "next_id": 1,
+              "tasks": []
+            }
+          }
+        },
+        {
+          "control": "filter.open",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "open",
+                "next_id": 1,
+                "tasks": []
+              }
+            },
+            "state": {
+              "filter": "open",
+              "next_id": 1,
+              "tasks": []
+            }
+          }
+        },
+        {
+          "control": "filter.completed",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "completed",
+                "next_id": 1,
+                "tasks": []
+              }
+            },
+            "state": {
+              "filter": "completed",
+              "next_id": 1,
+              "tasks": []
+            }
+          }
+        }
+      ],
+      "status": {
+        "column": 0,
+        "columnspan": 4,
+        "row": 4
+      },
+      "title": "Todo"
+    },
+    "program": {
+      "case_entrypoint": "run_case",
+      "language": "stateful-interface-declaration-1",
+      "launch_entrypoint": "launch"
+    },
+    "semantics": {
+      "application_vocabulary": [
+        "todo",
+        "tasks",
+        "completed",
+        "invalid-title",
+        "duplicate-title",
+        "unknown-item",
+        "UC_MANUAL_TODO_STATE"
+      ],
+      "commands": [
+        {
+          "arguments": [
+            {
+              "name": "title",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "tasks",
+              "op": "append",
+              "value": {
+                "object": {
+                  "completed": {
+                    "literal": false
+                  },
+                  "id": {
+                    "state": "next_id"
+                  },
+                  "title": {
+                    "argument": "title"
+                  }
+                }
+              }
+            },
+            {
+              "amount": {
+                "literal": 1
+              },
+              "field": "next_id",
+              "op": "increment"
+            }
+          ],
+          "guards": [
+            {
+              "error": "invalid-title",
+              "op": "non_empty",
+              "value": {
+                "argument": "title"
+              }
+            },
+            {
+              "collection": "tasks",
+              "error": "duplicate-title",
+              "field": "title",
+              "op": "unique",
+              "value": {
+                "argument": "title"
+              }
+            }
+          ],
+          "id": "create",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "title": {
+                  "argument": "title"
+                }
+              },
+              "collection": "tasks",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "error": "invalid-title",
+              "op": "non_empty",
+              "value": {
+                "argument": "title"
+              }
+            },
+            {
+              "collection": "tasks",
+              "error": "unknown-item",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "update",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "completed": {
+                  "not": {
+                    "matched_field": "completed"
+                  }
+                }
+              },
+              "collection": "tasks",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "tasks",
+              "error": "unknown-item",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "toggle",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "tasks",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "remove"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "tasks",
+              "error": "unknown-item",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "remove",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "mode",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "field": "filter",
+              "op": "set",
+              "value": {
+                "argument": "mode"
+              }
+            }
+          ],
+          "guards": [],
+          "id": "set_filter",
+          "persist": true
+        }
+      ]
+    },
+    "state": {
+      "authority": "declarations",
+      "fields": [
+        "tasks",
+        "next_id",
+        "filter"
+      ],
+      "initial": {
+        "filter": "all",
+        "next_id": 1,
+        "tasks": []
+      }
+    }
+  }
+}

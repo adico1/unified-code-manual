@@ -83,6 +83,13 @@
       "output": "build/quadratic-polynomial",
       "seed": "seed/applications/quadratic-polynomial.seed.json",
       "title": "Quadratic Polynomial Calculator"
+    },
+    {
+      "enabled": true,
+      "id": "todo",
+      "output": "build/todo",
+      "seed": "seed/applications/todo.seed.json",
+      "title": "Todo"
     }
   ],
   "format": "manual-seed-program-suite-3"

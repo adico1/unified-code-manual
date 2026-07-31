@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  calculator-seed-proof:
+  seed-application-proof:
     runs-on: macos-latest
     timeout-minutes: 2
     steps:

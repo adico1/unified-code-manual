@@ -5,8 +5,12 @@ from __future__ import annotations
 import ast
 import re
 
+from stateful_compiler import LANGUAGE as STATEFUL_LANGUAGE
+from stateful_compiler import compile_declaration as compile_stateful_declaration
+
 
 LANGUAGE = "calculator-declaration-1"
+LANGUAGES = (LANGUAGE, STATEFUL_LANGUAGE)
 NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 QUALIFIED = re.compile(r"^[A-Za-z_][A-Za-z0-9_.]*$")
 
@@ -762,7 +766,7 @@ STAMPS = (
 )
 
 
-def compile_declaration(seed):
+def compile_calculator_declaration(seed):
     if seed["program"].get("language") != LANGUAGE:
         raise ValueError("declaration-language")
     declared = tuple(item["stage"] for item in seed["_assembly"]["stamps"])
@@ -781,3 +785,15 @@ def compile_declaration(seed):
     tree = ast.parse(source)
     ast.fix_missing_locations(tree)
     return tree
+
+
+def compile_declaration(seed):
+    language = seed["program"].get("language")
+    compilers = {
+        LANGUAGE: compile_calculator_declaration,
+        STATEFUL_LANGUAGE: compile_stateful_declaration,
+    }
+    compiler = compilers.get(language)
+    if compiler is None:
+        raise ValueError("declaration-language")
+    return compiler(seed)
