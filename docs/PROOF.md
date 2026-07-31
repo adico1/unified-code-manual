@@ -92,9 +92,8 @@ catalogued = 0
 catalog snapshot =
 09d1673a2a08202ef1339d53a9cc1998034cb5f591d8911679a46b4e46b1c1d8
 complete tree =
-1c07f3e0f09e4135b414a531d6125fd4ee4247fa4095c39cf3d5dd5ae06e4253
-single API verification elapsed = 3.755591 seconds
-single API process elapsed = 3.90 seconds
+8ad9d70079a1b8c98967715fbe71bc4710ddadd4dfef2085dd1a1bda3237552e
+exact-head CI verification elapsed = 2.402419 seconds
 ```
 
 ## Honest boundary
