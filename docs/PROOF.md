@@ -93,7 +93,7 @@ catalog snapshot =
 09d1673a2a08202ef1339d53a9cc1998034cb5f591d8911679a46b4e46b1c1d8
 complete tree =
 8ad9d70079a1b8c98967715fbe71bc4710ddadd4dfef2085dd1a1bda3237552e
-exact-head CI verification elapsed = 2.402419 seconds
+exact-head CI verification budget = PASS (<5 seconds)
 ```
 
 ## Honest boundary
