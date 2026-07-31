@@ -45,6 +45,9 @@ class DevelopmentObservatoryTests(unittest.TestCase):
         self.assertIn("uc://manual/applications/development-observatory@1", source)
         self.assertIn("columnconfigure", source)
         self.assertIn("rowconfigure", source)
+        self.assertIn("Treeview", source)
+        self.assertIn("Development lifecycle — past, present and future", source)
+        self.assertIn("Select an observation", source)
         self.assertIn("webbrowser.open", source)
         self.assertIn("--case-json", source)
         self.assertNotIn("seed_compiler", source)
@@ -164,6 +167,32 @@ class DevelopmentObservatoryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             application.configure_state_path(Path(directory) / "state.json")
             application.launch()
+
+    def test_structured_dashboard_presents_summary_table_and_details(self):
+        specification = importlib.util.spec_from_file_location(
+            "generated_observatory_surface", self.generated / "main.py"
+        )
+        application = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(application)
+        with tempfile.TemporaryDirectory() as directory:
+            application.configure_state_path(Path(directory) / "state.json")
+            application.reset_state()
+            root = application.build_interface()
+            root.withdraw()
+            table = application._collections["collection.primary"]
+            self.assertEqual(
+                tuple(table["columns"]),
+                ("temporal", "observer", "phase", "progress", "title"),
+            )
+            self.assertEqual(len(table.get_children()), 4)
+            self.assertIn("4 shown / 4 total", application._summary.get())
+            detail = application._details["collection.primary"].get("1.0", "end")
+            self.assertIn("Milestone 1 seed-to-application proof", detail)
+            self.assertIn("מלך_עולם", detail)
+            application._buttons["filter.future"].invoke()
+            self.assertEqual(len(table.get_children()), 1)
+            self.assertIn("1 shown / 4 total", application._summary.get())
+            root.destroy()
 
 
 if __name__ == "__main__":

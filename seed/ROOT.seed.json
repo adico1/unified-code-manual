@@ -13,7 +13,7 @@
     {
       "identity": "uc://authorities/applications/development-observatory.seed.json",
       "path": "seed/applications/development-observatory.seed.json",
-      "sha256": "bfa16f8a7d70ecdf712e09ac9f4c6739d47dfbc8394e1379cee51e048d6a17c5"
+      "sha256": "4351577d814333be8f52a2a0e01cf10a01fb41329d894787696d18ccefce2398"
     },
     {
       "identity": "uc://authorities/applications/engineering-units.seed.json",
@@ -196,7 +196,7 @@
       "identity": "uc://manual/creator/src/stateful_compiler.py",
       "path": "src/stateful_compiler.py",
       "provenance": "trusted-manual",
-      "sha256": "048416894a233875729741e21a236e42f60f209f82c2c5da3b25dcc17644bec6"
+      "sha256": "e2d4cb21e8b36eaba0338d69dfa480660faa66052ba1526a3c50f460963c01cb"
     }
   ],
   "fixed_point": {

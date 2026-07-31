@@ -18,6 +18,11 @@ python3 build/dashboards/development-observatory@1/application/main.py
 ```
 
 The initial snapshot separates past, present and future development records.
+The generated responsive surface presents a concise SDLC table, a measured
+summary, and a separate read-only detail panel; records are not flattened into
+one presentation string. Table columns, headings, detail fields and their
+order are declared by the application seed and verified by generated GUI
+self-tests.
 Every record carries four observation verdicts:
 
 - `הבט` — physical presence;

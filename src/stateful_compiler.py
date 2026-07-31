@@ -311,6 +311,18 @@ def render_source(seed):
     if not projections <= {"API", "APP", "CLI"}:
         raise ValueError("unknown-stateful-projection")
     rendering = presentation.get("rendering", {})
+    table = collection.get("table")
+    if table is not None:
+        if set(table) != {"columns", "detail_fields", "heading"}:
+            raise ValueError("invalid-stateful-table")
+        if (
+            not table["columns"]
+            or not table["detail_fields"]
+            or any(set(column) != {"field", "label", "width"} for column in table["columns"])
+            or any(column["field"] not in collection["display_fields"] for column in table["columns"])
+            or any(field not in collection["display_fields"] for field in table["detail_fields"])
+        ):
+            raise ValueError("invalid-stateful-table")
     calculations = {
         identity: {
             "source": source,
@@ -330,7 +342,8 @@ def render_source(seed):
         "import sys",
         "import tempfile",
         *(("import webbrowser",) if outward_urls else ()),
-        "from tkinter import Button, Entry, Label, Listbox, StringVar, Tk",
+        "from tkinter import Button, Entry, Frame, Label, Listbox, StringVar, Text, Tk",
+        *(("from tkinter.ttk import Scrollbar, Treeview",) if table else ()),
         "",
         f"APPLICATION_ID = {seed['identity']['canonical']!r}",
         "THING_STATES = ('unknown', 'absent', 'false', 'formed', 'valid', 'invalid')",
@@ -339,6 +352,8 @@ def render_source(seed):
         f"COLLECTION_FIELD = {collection['state_field']!r}",
         f"IDENTITY_FIELD = {collection['identity_field']!r}",
         f"DISPLAY_FIELDS = {collection['display_fields']!r}",
+        *((f"TABLE_COLUMNS = {table['columns']!r}",) if table else ()),
+        *((f"DETAIL_FIELDS = {table['detail_fields']!r}",) if table else ()),
         f"FILTER_FIELD = {collection.get('filter_field')!r}",
         f"FILTERS = {filters!r}",
         f"DEFAULT_STATE_PATH = {persistence['default_path']!r}",
@@ -348,7 +363,10 @@ def render_source(seed):
         "_root = None",
         "_inputs = {}",
         "_collections = {}",
+        "_details = {}",
+        "_record_by_row = {}",
         "_buttons = {}",
+        "_summary = None",
         "_status = None",
         "_last_outcome = None",
         *(("_open_url = webbrowser.open",) if outward_urls else ()),
@@ -427,19 +445,55 @@ def render_source(seed):
             "def display_record(record):",
             "    return ' · '.join(f'{field}={record[field]}' for field in DISPLAY_FIELDS)",
             "",
-            "def present_state():",
-            "    for identity, widget in _collections.items():",
-            "        widget.delete(0, 'end')",
-            "        for record in visible_records():",
-            "            widget.insert('end', display_record(record))",
-            "",
-            "def selected_value(identity, field):",
-            "    widget = _collections[identity]",
-            "    selected = widget.curselection()",
-            "    if not selected:",
-            "        return None",
-            "    return visible_records()[selected[0]][field]",
-            "",
+            *(
+                (
+                    "def selected_record(identity):",
+                    "    selected = _collections[identity].selection()",
+                    "    return _record_by_row.get(selected[0]) if selected else None",
+                    "",
+                    "def present_detail(identity):",
+                    "    detail = _details[identity]",
+                    "    record = selected_record(identity)",
+                    "    detail.delete('1.0', 'end')",
+                    "    detail.insert('1.0', '\\n'.join(f'{field}\\n  {record[field]}' for field in DETAIL_FIELDS) if record else 'Select an observation')",
+                    "",
+                    "def present_state():",
+                    "    records = visible_records()",
+                    "    _record_by_row.clear()",
+                    "    for identity, widget in _collections.items():",
+                    "        widget.delete(*widget.get_children())",
+                    "        for record in records:",
+                    "            row = str(record[IDENTITY_FIELD])",
+                    "            _record_by_row[row] = record",
+                    "            widget.insert('', 'end', iid=row, values=tuple(record[column['field']] for column in TABLE_COLUMNS))",
+                    "        if records:",
+                    "            widget.selection_set(str(records[0][IDENTITY_FIELD]))",
+                    "        present_detail(identity)",
+                    "    if _summary is not None:",
+                    "        _summary.set(f'{len(records)} shown / {len(state[COLLECTION_FIELD])} total · filter={state.get(FILTER_FIELD, \"all\")}')",
+                    "",
+                    "def selected_value(identity, field):",
+                    "    record = selected_record(identity)",
+                    "    return record[field] if record else None",
+                    "",
+                )
+                if table
+                else (
+                    "def present_state():",
+                    "    for identity, widget in _collections.items():",
+                    "        widget.delete(0, 'end')",
+                    "        for record in visible_records():",
+                    "            widget.insert('end', display_record(record))",
+                    "",
+                    "def selected_value(identity, field):",
+                    "    widget = _collections[identity]",
+                    "    selected = widget.curselection()",
+                    "    if not selected:",
+                    "        return None",
+                    "    return visible_records()[selected[0]][field]",
+                    "",
+                )
+            ),
         ]
     )
     for index, control in enumerate(controls):
@@ -447,7 +501,11 @@ def render_source(seed):
     lines.extend(
         [
             "def build_interface():",
-            "    global _root, _status",
+            "    global _root, _status, _summary",
+            "    _inputs.clear()",
+            "    _collections.clear()",
+            "    _details.clear()",
+            "    _buttons.clear()",
             "    _root = Tk()",
             f"    _root.title({presentation['title']!r})",
             f"    _root.geometry({presentation['geometry']!r})",
@@ -470,12 +528,39 @@ def render_source(seed):
                 f"    _inputs[{identity!r}].grid(row={widget['row']!r}, column={widget['column'] + 1!r}, columnspan={widget.get('columnspan', 3)!r}, sticky='ew')",
             ]
         )
-    lines.extend(
-        [
-            f"    _collections[{collection['identity']!r}] = Listbox(_root, width={collection.get('width', 52)!r}, height={collection.get('height', 12)!r})",
-            f"    _collections[{collection['identity']!r}].grid(row={collection['row']!r}, column={collection['column']!r}, columnspan={collection.get('columnspan', 4)!r}, sticky='nsew')",
-        ]
-    )
+    if table:
+        lines.extend(
+            [
+                "    surface = Frame(_root, padx=12, pady=10)",
+                f"    surface.grid(row={collection['row']!r}, column={collection['column']!r}, columnspan={collection.get('columnspan', 4)!r}, sticky='nsew')",
+                "    surface.columnconfigure(0, weight=3)",
+                "    surface.columnconfigure(2, weight=2)",
+                "    surface.rowconfigure(2, weight=1)",
+                f"    Label(surface, text={table['heading']!r}, font=('Helvetica', 18, 'bold')).grid(row=0, column=0, columnspan=3, sticky='w', pady=(0, 4))",
+                "    _summary = StringVar(value='')",
+                "    Label(surface, textvariable=_summary, foreground='#4a5568').grid(row=1, column=0, columnspan=3, sticky='w', pady=(0, 8))",
+                f"    _collections[{collection['identity']!r}] = Treeview(surface, columns=tuple(column['field'] for column in TABLE_COLUMNS), show='headings', selectmode='browse')",
+                f"    table_widget = _collections[{collection['identity']!r}]",
+                "    for column in TABLE_COLUMNS:",
+                "        table_widget.heading(column['field'], text=column['label'])",
+                "        table_widget.column(column['field'], width=column['width'], minwidth=70, stretch=True)",
+                "    table_widget.grid(row=2, column=0, sticky='nsew')",
+                "    table_scroll = Scrollbar(surface, orient='vertical', command=table_widget.yview)",
+                "    table_scroll.grid(row=2, column=1, sticky='ns')",
+                "    table_widget.configure(yscrollcommand=table_scroll.set)",
+                f"    _details[{collection['identity']!r}] = Text(surface, width=46, wrap='word', padx=12, pady=10)",
+                f"    _details[{collection['identity']!r}].grid(row=2, column=2, sticky='nsew', padx=(12, 0))",
+                f"    _details[{collection['identity']!r}].bind('<Key>', lambda _event: 'break')",
+                f"    table_widget.bind('<<TreeviewSelect>>', lambda _event: present_detail({collection['identity']!r}))",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                f"    _collections[{collection['identity']!r}] = Listbox(_root, width={collection.get('width', 52)!r}, height={collection.get('height', 12)!r})",
+                f"    _collections[{collection['identity']!r}].grid(row={collection['row']!r}, column={collection['column']!r}, columnspan={collection.get('columnspan', 4)!r}, sticky='nsew')",
+            ]
+        )
     for index, control in enumerate(controls):
         lines.extend(
             [
@@ -519,6 +604,16 @@ def render_source(seed):
             "        configure_state_path(Path(directory) / 'state.json')",
             "        root = build_interface()",
             "        root.withdraw()",
+            *(
+                (
+                    f"        table_widget = _collections[{collection['identity']!r}]",
+                    "        checks.append(tuple(table_widget['columns']) == tuple(column['field'] for column in TABLE_COLUMNS))",
+                    "        checks.append(all(table_widget.heading(column['field'], 'text') == column['label'] for column in TABLE_COLUMNS))",
+                    f"        checks.append(bool(table_widget.get_children()) and bool(_details[{collection['identity']!r}].get('1.0', 'end').strip()))",
+                )
+                if table
+                else ()
+            ),
             f"        cases = {presentation['self_tests']!r}",
             "        for case in cases:",
             "            reset_state()",

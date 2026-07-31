@@ -258,15 +258,19 @@
         "columnspan": 4,
         "display_fields": [
           "temporal",
+          "observer",
           "phase",
           "title",
           "progress",
+          "kind",
+          "observed_ref",
           "הבט",
           "ראה",
           "חקור",
           "הבן",
           "מלך_עולם",
-          "אדון_הכל"
+          "אדון_הכל",
+          "link"
         ],
         "filter_field": "filter",
         "filters": {
@@ -297,6 +301,52 @@
         "identity_field": "id",
         "row": 1,
         "state_field": "observations",
+        "table": {
+          "columns": [
+            {
+              "field": "temporal",
+              "label": "Time",
+              "width": 90
+            },
+            {
+              "field": "observer",
+              "label": "Observer",
+              "width": 100
+            },
+            {
+              "field": "phase",
+              "label": "SDLC phase",
+              "width": 120
+            },
+            {
+              "field": "progress",
+              "label": "Progress %",
+              "width": 90
+            },
+            {
+              "field": "title",
+              "label": "Development item",
+              "width": 360
+            }
+          ],
+          "detail_fields": [
+            "title",
+            "temporal",
+            "observer",
+            "phase",
+            "progress",
+            "kind",
+            "observed_ref",
+            "הבט",
+            "ראה",
+            "חקור",
+            "הבן",
+            "מלך_עולם",
+            "אדון_הכל",
+            "link"
+          ],
+          "heading": "Development lifecycle — past, present and future"
+        },
         "width": 150
       },
       "geometry": "1400x720+40+40",
