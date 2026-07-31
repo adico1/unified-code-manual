@@ -1,0 +1,789 @@
+{
+  "bases": [
+    {
+      "identity": "uc://manual/seeds/stateful-list-family@1",
+      "path": "../families/stateful-list.seed.json",
+      "sha256": "4b2481643bb8cb9a9f7c11da58d25ada9a85944107787c78987b9af0fc2ac504"
+    }
+  ],
+  "format": "manual-what-seed-4",
+  "what": {
+    "acceptance": [
+      {
+        "expected": {
+          "results": [
+            {
+              "error": null,
+              "result": {
+                "filter": "all",
+                "next_id": 6,
+                "observations": [
+                  {
+                    "completed": true,
+                    "id": 1,
+                    "kind": "achievement",
+                    "link": "https://github.com/adico1/unified-code",
+                    "observed_ref": "8933e8456b67375ec2b567c0107a64d9afc3c060",
+                    "observer": "system",
+                    "passed": 13,
+                    "phase": "verified",
+                    "progress": 100,
+                    "temporal": "past",
+                    "title": "Milestone 1 seed-to-application proof",
+                    "total": 13,
+                    "אדון_הכל": "APP:verified API:verified CLI:verified",
+                    "הבט": "artifact-present",
+                    "הבן": "bounded-application-proof",
+                    "חקור": "L1-L13-pass",
+                    "מלך_עולם": "seed-authority-verified",
+                    "ראה": "identity-resolved"
+                  },
+                  {
+                    "completed": false,
+                    "id": 2,
+                    "kind": "review",
+                    "link": "https://github.com/adico1/unified-code-manual/blob/feature/development-observatory/src/stateful_compiler.py",
+                    "observed_ref": "uc://manual/applications/development-observatory@1",
+                    "observer": "architect",
+                    "passed": 292,
+                    "phase": "verification",
+                    "progress": 100,
+                    "temporal": "present",
+                    "title": "Manual compiler: 74 products in four groups",
+                    "total": 292,
+                    "אדון_הכל": "APP:verified API:verified GUI:verified",
+                    "הבט": "PR-present",
+                    "הבן": "stacked-PR-required",
+                    "חקור": "local-complete-proof-pass",
+                    "מלך_עולם": "ROOT-pinned",
+                    "ראה": "seed-derived-identity"
+                  },
+                  {
+                    "completed": false,
+                    "id": 3,
+                    "kind": "gap",
+                    "link": "https://github.com/adico1/unified-code/issues/10",
+                    "observed_ref": "4ee817a950e323614ff4215426391e6ebd2e5afc",
+                    "observer": "system",
+                    "passed": 0,
+                    "phase": "blocked",
+                    "progress": 0,
+                    "temporal": "present",
+                    "title": "ROOT creator is pinned but not root-generated",
+                    "total": 1,
+                    "אדון_הכל": "repository:partial",
+                    "הבט": "trusted-creator-present",
+                    "הבן": "gap.root-creator-not-generated",
+                    "חקור": "root-fixed-point-open",
+                    "מלך_עולם": "ROOT:engraved",
+                    "ראה": "authority-divided"
+                  },
+                  {
+                    "completed": false,
+                    "id": 4,
+                    "kind": "direction",
+                    "link": "https://github.com/adico1/unified-code/issues/9",
+                    "observed_ref": "issue-9",
+                    "observer": "ai",
+                    "passed": 0,
+                    "phase": "planned",
+                    "progress": 0,
+                    "temporal": "future",
+                    "title": "Clean-room whole-repository fixed point",
+                    "total": 1,
+                    "אדון_הכל": "repository:absent",
+                    "הבט": "issue-present",
+                    "הבן": "first-ready-after-provenance",
+                    "חקור": "acceptance-declared",
+                    "מלך_עולם": "contract:engraved",
+                    "ראה": "dependencies-open"
+                  },
+                  {
+                    "completed": false,
+                    "id": 5,
+                    "kind": "request",
+                    "link": "",
+                    "observed_ref": "local-request",
+                    "observer": "user",
+                    "passed": 0,
+                    "phase": "proposed",
+                    "progress": 0,
+                    "temporal": "future",
+                    "title": "Expose approved AI request",
+                    "total": 1,
+                    "אדון_הכל": "APP:absent API:absent",
+                    "הבט": "request-present",
+                    "הבן": "user-decision-required",
+                    "חקור": "unverified",
+                    "מלך_עולם": "seed:required",
+                    "ראה": "request-resolved"
+                  }
+                ]
+              }
+            }
+          ],
+          "state": {
+            "filter": "all",
+            "next_id": 6,
+            "observations": [
+              {
+                "completed": true,
+                "id": 1,
+                "kind": "achievement",
+                "link": "https://github.com/adico1/unified-code",
+                "observed_ref": "8933e8456b67375ec2b567c0107a64d9afc3c060",
+                "observer": "system",
+                "passed": 13,
+                "phase": "verified",
+                "progress": 100,
+                "temporal": "past",
+                "title": "Milestone 1 seed-to-application proof",
+                "total": 13,
+                "אדון_הכל": "APP:verified API:verified CLI:verified",
+                "הבט": "artifact-present",
+                "הבן": "bounded-application-proof",
+                "חקור": "L1-L13-pass",
+                "מלך_עולם": "seed-authority-verified",
+                "ראה": "identity-resolved"
+              },
+              {
+                "completed": false,
+                "id": 2,
+                "kind": "review",
+                "link": "https://github.com/adico1/unified-code-manual/blob/feature/development-observatory/src/stateful_compiler.py",
+                "observed_ref": "uc://manual/applications/development-observatory@1",
+                "observer": "architect",
+                "passed": 292,
+                "phase": "verification",
+                "progress": 100,
+                "temporal": "present",
+                "title": "Manual compiler: 74 products in four groups",
+                "total": 292,
+                "אדון_הכל": "APP:verified API:verified GUI:verified",
+                "הבט": "PR-present",
+                "הבן": "stacked-PR-required",
+                "חקור": "local-complete-proof-pass",
+                "מלך_עולם": "ROOT-pinned",
+                "ראה": "seed-derived-identity"
+              },
+              {
+                "completed": false,
+                "id": 3,
+                "kind": "gap",
+                "link": "https://github.com/adico1/unified-code/issues/10",
+                "observed_ref": "4ee817a950e323614ff4215426391e6ebd2e5afc",
+                "observer": "system",
+                "passed": 0,
+                "phase": "blocked",
+                "progress": 0,
+                "temporal": "present",
+                "title": "ROOT creator is pinned but not root-generated",
+                "total": 1,
+                "אדון_הכל": "repository:partial",
+                "הבט": "trusted-creator-present",
+                "הבן": "gap.root-creator-not-generated",
+                "חקור": "root-fixed-point-open",
+                "מלך_עולם": "ROOT:engraved",
+                "ראה": "authority-divided"
+              },
+              {
+                "completed": false,
+                "id": 4,
+                "kind": "direction",
+                "link": "https://github.com/adico1/unified-code/issues/9",
+                "observed_ref": "issue-9",
+                "observer": "ai",
+                "passed": 0,
+                "phase": "planned",
+                "progress": 0,
+                "temporal": "future",
+                "title": "Clean-room whole-repository fixed point",
+                "total": 1,
+                "אדון_הכל": "repository:absent",
+                "הבט": "issue-present",
+                "הבן": "first-ready-after-provenance",
+                "חקור": "acceptance-declared",
+                "מלך_עולם": "contract:engraved",
+                "ראה": "dependencies-open"
+              },
+              {
+                "completed": false,
+                "id": 5,
+                "kind": "request",
+                "link": "",
+                "observed_ref": "local-request",
+                "observer": "user",
+                "passed": 0,
+                "phase": "proposed",
+                "progress": 0,
+                "temporal": "future",
+                "title": "Expose approved AI request",
+                "total": 1,
+                "אדון_הכל": "APP:absent API:absent",
+                "הבט": "request-present",
+                "הבן": "user-decision-required",
+                "חקור": "unverified",
+                "מלך_עולם": "seed:required",
+                "ראה": "request-resolved"
+              }
+            ]
+          }
+        },
+        "id": "development-observatory.request-to-ai",
+        "input": {
+          "steps": [
+            {
+              "arguments": {
+                "title": "Expose approved AI request"
+              },
+              "command": "create"
+            }
+          ]
+        }
+      }
+    ],
+    "identity": {
+      "canonical": "uc://manual/applications/development-observatory@1",
+      "family": "stateful-list",
+      "variation": "development-observatory",
+      "version": 1
+    },
+    "persistence": {
+      "default_path": ".unified-code-manual/development-observatory/state.json",
+      "environment": "UC_MANUAL_DEVELOPMENT_OBSERVATORY_STATE"
+    },
+    "presentation": {
+      "collection": {
+        "column": 0,
+        "columnspan": 4,
+        "display_fields": [
+          "temporal",
+          "phase",
+          "title",
+          "progress",
+          "הבט",
+          "ראה",
+          "חקור",
+          "הבן",
+          "מלך_עולם",
+          "אדון_הכל"
+        ],
+        "filter_field": "filter",
+        "filters": {
+          "all": null,
+          "completed": {
+            "equals": true,
+            "field": "completed"
+          },
+          "future": {
+            "equals": "future",
+            "field": "temporal"
+          },
+          "open": {
+            "equals": false,
+            "field": "completed"
+          },
+          "past": {
+            "equals": "past",
+            "field": "temporal"
+          },
+          "present": {
+            "equals": "present",
+            "field": "temporal"
+          }
+        },
+        "height": 18,
+        "identity": "collection.primary",
+        "identity_field": "id",
+        "row": 1,
+        "state_field": "observations",
+        "width": 150
+      },
+      "geometry": "1400x720+40+40",
+      "inputs": [
+        {
+          "column": 0,
+          "columnspan": 3,
+          "identity": "entry.primary",
+          "label": "Request to AI",
+          "row": 0,
+          "width": 80
+        }
+      ],
+      "keys": [
+        {
+          "column": 0,
+          "key": "request.submit",
+          "row": 2
+        },
+        {
+          "column": 1,
+          "key": "record.toggle",
+          "row": 2
+        },
+        {
+          "column": 2,
+          "key": "link.open",
+          "row": 2
+        },
+        {
+          "column": 3,
+          "key": "record.remove",
+          "row": 2
+        },
+        {
+          "column": 0,
+          "key": "filter.all",
+          "row": 3
+        },
+        {
+          "column": 1,
+          "key": "filter.past",
+          "row": 3
+        },
+        {
+          "column": 2,
+          "key": "filter.present",
+          "row": 3
+        },
+        {
+          "column": 3,
+          "key": "filter.future",
+          "row": 3
+        }
+      ],
+      "self_tests": [
+        {
+          "control": "filter.future",
+          "expected": {
+            "outcome": {
+              "error": null,
+              "result": {
+                "filter": "future",
+                "next_id": 5,
+                "observations": []
+              }
+            },
+            "state": {
+              "filter": "future",
+              "next_id": 5,
+              "observations": []
+            }
+          },
+          "setup": [
+            {
+              "arguments": {
+                "id": 1
+              },
+              "command": "remove"
+            },
+            {
+              "arguments": {
+                "id": 2
+              },
+              "command": "remove"
+            },
+            {
+              "arguments": {
+                "id": 3
+              },
+              "command": "remove"
+            },
+            {
+              "arguments": {
+                "id": 4
+              },
+              "command": "remove"
+            }
+          ]
+        }
+      ],
+      "status": {
+        "column": 0,
+        "columnspan": 4,
+        "row": 4
+      },
+      "title": "Unified Development Observatory"
+    },
+    "program": {
+      "case_entrypoint": "run_case",
+      "language": "stateful-interface-declaration-1",
+      "launch_entrypoint": "launch",
+      "projections": [
+        "API",
+        "APP",
+        "CLI"
+      ]
+    },
+    "semantics": {
+      "application_vocabulary": [
+        "development-observatory",
+        "observations",
+        "architecture-status",
+        "root-fixed-point",
+        "invalid-request",
+        "duplicate-request",
+        "unknown-observation",
+        "link-absent",
+        "invalid-link",
+        "מלך_עולם",
+        "אדון_הכל",
+        "UC_MANUAL_DEVELOPMENT_OBSERVATORY_STATE"
+      ],
+      "commands": [
+        {
+          "arguments": [
+            {
+              "name": "title",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "observations",
+              "op": "append",
+              "value": {
+                "object": {
+                  "completed": {
+                    "literal": false
+                  },
+                  "id": {
+                    "state": "next_id"
+                  },
+                  "kind": {
+                    "literal": "request"
+                  },
+                  "link": {
+                    "literal": ""
+                  },
+                  "observed_ref": {
+                    "literal": "local-request"
+                  },
+                  "observer": {
+                    "literal": "user"
+                  },
+                  "passed": {
+                    "literal": 0
+                  },
+                  "phase": {
+                    "literal": "proposed"
+                  },
+                  "temporal": {
+                    "literal": "future"
+                  },
+                  "title": {
+                    "argument": "title"
+                  },
+                  "total": {
+                    "literal": 1
+                  },
+                  "אדון_הכל": {
+                    "literal": "APP:absent API:absent"
+                  },
+                  "הבט": {
+                    "literal": "request-present"
+                  },
+                  "הבן": {
+                    "literal": "user-decision-required"
+                  },
+                  "חקור": {
+                    "literal": "unverified"
+                  },
+                  "מלך_עולם": {
+                    "literal": "seed:required"
+                  },
+                  "ראה": {
+                    "literal": "request-resolved"
+                  }
+                }
+              }
+            },
+            {
+              "amount": {
+                "literal": 1
+              },
+              "field": "next_id",
+              "op": "increment"
+            }
+          ],
+          "guards": [
+            {
+              "error": "invalid-request",
+              "op": "non_empty",
+              "value": {
+                "argument": "title"
+              }
+            },
+            {
+              "collection": "observations",
+              "error": "duplicate-request",
+              "field": "title",
+              "op": "unique",
+              "value": {
+                "argument": "title"
+              }
+            }
+          ],
+          "id": "create",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "changes": {
+                "completed": {
+                  "not": {
+                    "matched_field": "completed"
+                  }
+                }
+              },
+              "collection": "observations",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "update"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "observations",
+              "error": "unknown-observation",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "toggle",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": "integer"
+            }
+          ],
+          "effects": [
+            {
+              "collection": "observations",
+              "match": {
+                "field": "id",
+                "value": {
+                  "argument": "id"
+                }
+              },
+              "op": "remove"
+            }
+          ],
+          "guards": [
+            {
+              "collection": "observations",
+              "error": "unknown-observation",
+              "field": "id",
+              "op": "exists",
+              "value": {
+                "argument": "id"
+              }
+            }
+          ],
+          "id": "remove",
+          "persist": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "mode",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "field": "filter",
+              "op": "set",
+              "value": {
+                "argument": "mode"
+              }
+            }
+          ],
+          "id": "set_filter",
+          "persist": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "link",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "op": "open_url",
+              "value": {
+                "argument": "link"
+              }
+            }
+          ],
+          "guards": [
+            {
+              "error": "link-absent",
+              "op": "non_empty",
+              "value": {
+                "argument": "link"
+              }
+            },
+            {
+              "error": "invalid-link",
+              "op": "https_url",
+              "value": {
+                "argument": "link"
+              }
+            }
+          ],
+          "id": "open_link",
+          "persist": false
+        }
+      ],
+      "record_contract": {
+        "collection": "observations",
+        "derived_fields": {
+          "progress": {
+            "denominator": "total",
+            "numerator": "passed",
+            "scale": 100
+          }
+        },
+        "required_fields": [
+          "id",
+          "title",
+          "completed",
+          "kind",
+          "temporal",
+          "phase",
+          "observer",
+          "observed_ref",
+          "passed",
+          "total",
+          "progress",
+          "הבט",
+          "ראה",
+          "חקור",
+          "הבן",
+          "מלך_עולם",
+          "אדון_הכל",
+          "link"
+        ],
+        "signs": [
+          "מלך_עולם",
+          "אדון_הכל"
+        ],
+        "watchers": [
+          "הבט",
+          "ראה",
+          "חקור",
+          "הבן"
+        ]
+      }
+    },
+    "state": {
+      "authority": "declarations",
+      "fields": [
+        "filter",
+        "next_id",
+        "observations"
+      ],
+      "initial": {
+        "filter": "all",
+        "next_id": 5,
+        "observations": [
+          {
+            "completed": true,
+            "id": 1,
+            "kind": "achievement",
+            "link": "https://github.com/adico1/unified-code",
+            "observed_ref": "8933e8456b67375ec2b567c0107a64d9afc3c060",
+            "observer": "system",
+            "passed": 13,
+            "phase": "verified",
+            "temporal": "past",
+            "title": "Milestone 1 seed-to-application proof",
+            "total": 13,
+            "אדון_הכל": "APP:verified API:verified CLI:verified",
+            "הבט": "artifact-present",
+            "הבן": "bounded-application-proof",
+            "חקור": "L1-L13-pass",
+            "מלך_עולם": "seed-authority-verified",
+            "ראה": "identity-resolved"
+          },
+          {
+            "completed": false,
+            "id": 2,
+            "kind": "review",
+            "link": "https://github.com/adico1/unified-code-manual/blob/feature/development-observatory/src/stateful_compiler.py",
+            "observed_ref": "uc://manual/applications/development-observatory@1",
+            "observer": "architect",
+            "passed": 292,
+            "phase": "verification",
+            "temporal": "present",
+            "title": "Manual compiler: 74 products in four groups",
+            "total": 292,
+            "אדון_הכל": "APP:verified API:verified GUI:verified",
+            "הבט": "PR-present",
+            "הבן": "stacked-PR-required",
+            "חקור": "local-complete-proof-pass",
+            "מלך_עולם": "ROOT-pinned",
+            "ראה": "seed-derived-identity"
+          },
+          {
+            "completed": false,
+            "id": 3,
+            "kind": "gap",
+            "link": "https://github.com/adico1/unified-code/issues/10",
+            "observed_ref": "4ee817a950e323614ff4215426391e6ebd2e5afc",
+            "observer": "system",
+            "passed": 0,
+            "phase": "blocked",
+            "temporal": "present",
+            "title": "ROOT creator is pinned but not root-generated",
+            "total": 1,
+            "אדון_הכל": "repository:partial",
+            "הבט": "trusted-creator-present",
+            "הבן": "gap.root-creator-not-generated",
+            "חקור": "root-fixed-point-open",
+            "מלך_עולם": "ROOT:engraved",
+            "ראה": "authority-divided"
+          },
+          {
+            "completed": false,
+            "id": 4,
+            "kind": "direction",
+            "link": "https://github.com/adico1/unified-code/issues/9",
+            "observed_ref": "issue-9",
+            "observer": "ai",
+            "passed": 0,
+            "phase": "planned",
+            "temporal": "future",
+            "title": "Clean-room whole-repository fixed point",
+            "total": 1,
+            "אדון_הכל": "repository:absent",
+            "הבט": "issue-present",
+            "הבן": "first-ready-after-provenance",
+            "חקור": "acceptance-declared",
+            "מלך_עולם": "contract:engraved",
+            "ראה": "dependencies-open"
+          }
+        ]
+      }
+    }
+  }
+}

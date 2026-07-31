@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/registries/stateful-interface-controls@1",
       "path": "../registries/stateful-interface-controls.seed.json",
-      "sha256": "f4b4f30506ba3eef04951a74d56fafdf605a5c0ff018ae579ea17864ac6ee852"
+      "sha256": "fc2f783361f57102fc78c0b129fe517b7252f9c70c9cc35ba689b95ce729bb20"
     }
   ],
   "format": "manual-seed-base-1",
@@ -40,6 +40,15 @@
       ],
       "gui_defaults": {
         "grid_sticky": "nsew",
+        "responsive_columns": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "responsive_rows": [
+          1
+        ],
         "status_ready": "ready"
       },
       "stamps": [

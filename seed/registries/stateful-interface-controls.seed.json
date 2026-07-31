@@ -94,6 +94,62 @@
         "command": "set_filter",
         "identity": "filter.completed",
         "label": "Completed"
+      },
+      {
+        "arguments": {
+          "title": {
+            "identity": "entry.primary",
+            "source": "input"
+          }
+        },
+        "command": "create",
+        "identity": "request.submit",
+        "label": "Ask AI"
+      },
+      {
+        "arguments": {
+          "link": {
+            "field": "link",
+            "identity": "collection.primary",
+            "source": "selection"
+          }
+        },
+        "command": "open_link",
+        "identity": "link.open",
+        "label": "Open Code"
+      },
+      {
+        "arguments": {
+          "mode": {
+            "source": "literal",
+            "value": "past"
+          }
+        },
+        "command": "set_filter",
+        "identity": "filter.past",
+        "label": "Past"
+      },
+      {
+        "arguments": {
+          "mode": {
+            "source": "literal",
+            "value": "present"
+          }
+        },
+        "command": "set_filter",
+        "identity": "filter.present",
+        "label": "Present"
+      },
+      {
+        "arguments": {
+          "mode": {
+            "source": "literal",
+            "value": "future"
+          }
+        },
+        "command": "set_filter",
+        "identity": "filter.future",
+        "label": "Future"
       }
     ]
   }

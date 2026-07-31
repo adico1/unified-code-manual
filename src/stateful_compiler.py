@@ -11,6 +11,50 @@ from semantic_expression import function_source
 LANGUAGE = "stateful-interface-declaration-1"
 
 
+def verify_record_contract(seed):
+    contract = seed["semantics"].get("record_contract")
+    if contract is None:
+        return
+    if set(contract) != {
+        "collection",
+        "derived_fields",
+        "required_fields",
+        "watchers",
+        "signs",
+    }:
+        raise ValueError("invalid-record-contract")
+    required = contract["required_fields"]
+    watchers = contract["watchers"]
+    signs = contract["signs"]
+    if (
+        not required
+        or len(required) != len(set(required))
+        or len(watchers) != len(set(watchers))
+        or len(signs) != len(set(signs))
+        or not set((*watchers, *signs)) <= set(required)
+        or contract["collection"]
+        != seed["presentation"]["collection"]["state_field"]
+    ):
+        raise ValueError("invalid-record-contract")
+    records = seed["state"]["initial"].get(contract["collection"])
+    if not isinstance(records, list) or any(
+        set(record) != set(required) for record in records
+    ):
+        raise ValueError("record-contract-field-missing")
+    append_records = [
+        effect.get("value", {}).get("object")
+        for command in seed["semantics"]["commands"]
+        for effect in command.get("effects", ())
+        if effect.get("op") == "append"
+        and effect.get("collection") == contract["collection"]
+    ]
+    if not append_records or any(
+        not isinstance(record, dict) or set(record) != set(required)
+        for record in append_records
+    ):
+        raise ValueError("record-contract-append-missing")
+
+
 def safe_name(value):
     return re.sub(r"[^a-zA-Z0-9_]", "_", value)
 
@@ -42,6 +86,23 @@ def value_source(
             f"({value_source(left, arguments=arguments, record=record, calculations=calculations)} + "
             f"{value_source(right, arguments=arguments, record=record, calculations=calculations)})"
         )
+    if set(node) == {"derived_percentage"}:
+        payload = node["derived_percentage"]
+        if set(payload) != {"numerator", "denominator", "scale"}:
+            raise ValueError("invalid-stateful-derived-percentage")
+        numerator = value_source(
+            payload["numerator"],
+            arguments=arguments,
+            record=record,
+            calculations=calculations,
+        )
+        denominator = value_source(
+            payload["denominator"],
+            arguments=arguments,
+            record=record,
+            calculations=calculations,
+        )
+        return f"(({numerator} * {payload['scale']!r}) // {denominator})"
     if set(node) == {"calculate"}:
         calculation = node["calculate"]
         definition = (
@@ -85,6 +146,8 @@ def guard_source(guard, calculations):
     value = value_source(guard["value"], calculations=calculations)
     if operation == "non_empty":
         return f"(isinstance({value}, str) and bool({value}.strip()))"
+    if operation == "https_url":
+        return f"(isinstance({value}, str) and {value}.startswith('https://'))"
     if operation == "integer_range":
         if set(guard) != {"op", "value", "minimum", "maximum", "error"}:
             raise ValueError("invalid-stateful-range")
@@ -118,6 +181,12 @@ def effect_lines(effect, calculations):
         return [
             f"    state[{effect['field']!r}] = "
             f"{value_source(effect['value'], calculations=calculations)}"
+        ]
+    if operation == "open_url":
+        return [
+            "    _open_url("
+            + value_source(effect["value"], calculations=calculations)
+            + ")"
         ]
     if operation == "remove":
         match = effect["match"]
@@ -219,6 +288,7 @@ def control_source(control, index):
 
 
 def render_source(seed):
+    verify_record_contract(seed)
     presentation = seed["presentation"]
     collection = presentation["collection"]
     persistence = seed["persistence"]
@@ -232,6 +302,15 @@ def render_source(seed):
         calculation_definitions,
         prefix="_calculation",
     )
+    outward_urls = any(
+        effect.get("op") == "open_url"
+        for command in seed["semantics"]["commands"]
+        for effect in command.get("effects", ())
+    )
+    projections = set(seed["program"].get("projections", ("API", "APP")))
+    if not projections <= {"API", "APP", "CLI"}:
+        raise ValueError("unknown-stateful-projection")
+    rendering = presentation.get("rendering", {})
     calculations = {
         identity: {
             "source": source,
@@ -250,6 +329,7 @@ def render_source(seed):
         "from pathlib import Path",
         "import sys",
         "import tempfile",
+        *(("import webbrowser",) if outward_urls else ()),
         "from tkinter import Button, Entry, Label, Listbox, StringVar, Tk",
         "",
         f"APPLICATION_ID = {seed['identity']['canonical']!r}",
@@ -271,6 +351,7 @@ def render_source(seed):
         "_buttons = {}",
         "_status = None",
         "_last_outcome = None",
+        *(("_open_url = webbrowser.open",) if outward_urls else ()),
         "",
         "def state_path():",
         "    selected = os.environ.get(STATE_ENVIRONMENT)",
@@ -370,6 +451,14 @@ def render_source(seed):
             "    _root = Tk()",
             f"    _root.title({presentation['title']!r})",
             f"    _root.geometry({presentation['geometry']!r})",
+            *(
+                f"    _root.columnconfigure({column!r}, weight=1)"
+                for column in rendering.get("responsive_columns", ())
+            ),
+            *(
+                f"    _root.rowconfigure({row!r}, weight=1)"
+                for row in rendering.get("responsive_rows", ())
+            ),
         ]
     )
     for widget in presentation["inputs"]:
@@ -459,6 +548,16 @@ def render_source(seed):
             "    root.mainloop()",
             "",
             "def main():",
+            *(
+                (
+                    "    if '--case-json' in sys.argv:",
+                    "        position = sys.argv.index('--case-json')",
+                    "        print(json.dumps(run_case(json.loads(sys.argv[position + 1])), sort_keys=True))",
+                    "        return 0",
+                )
+                if "CLI" in projections
+                else ()
+            ),
             "    if '--self-test' in sys.argv:",
             "        report = self_test_interface()",
             "        print(json.dumps(report, sort_keys=True))",

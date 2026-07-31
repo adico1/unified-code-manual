@@ -1,12 +1,13 @@
 # Application Profile Catalog
 
-This catalog maps 79 bounded application variations and currently proves 73.
+This catalog maps 80 bounded application variations and currently proves 74.
 
 ```text
-79 named profiles
+80 named profiles
 ├── 32 calculator profiles
 ├── 33 Todo profiles
-└── 14 paddle-simulation profiles
+├── 14 paddle-simulation profiles
+└── 1 development-observatory profile
 ```
 
 Each entry in [`seed/catalog.seed.json`](../seed/catalog.seed.json) has one of
@@ -24,7 +25,8 @@ The current counts are:
 | Calculator | 32 | 32 | 0 |
 | Todo | 33 | 33 | 0 |
 | Paddle simulation | 14 | 8 | 6 |
-| Total | 79 | 73 | 6 |
+| Development observatory | 1 | 1 | 0 |
+| Total | 80 | 74 | 6 |
 
 ## What the catalog measures
 
@@ -47,7 +49,7 @@ Catalog verification rejects duplicate canonical identities, false `proven`
 claims, missing seeds, mismatched generated-product identities, and empty or
 duplicate capability declarations.
 
-Fifteen programs are direct leaf seeds. Another 58 applications carry
+Sixteen programs are direct leaf seeds. Another 58 applications carry
 content-addressed prototype identities and complete semantic merge
 declarations. Generic build-time materialization produces their complete leaf
 seeds; generated applications never read the catalog, prototype, seed,

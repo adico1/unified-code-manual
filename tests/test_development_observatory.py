@@ -1,0 +1,151 @@
+import importlib.util
+import json
+import shutil
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+import sys
+from copy import deepcopy
+
+
+ROOT = Path(__file__).resolve().parents[1]
+COMPILER_PATH = ROOT / "src" / "seed_compiler.py"
+sys.path.insert(0, str(ROOT / "src"))
+
+
+def load_compiler():
+    specification = importlib.util.spec_from_file_location(
+        "observatory_seed_compiler", COMPILER_PATH
+    )
+    module = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(module)
+    return module
+
+
+class DevelopmentObservatoryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.compiler = load_compiler()
+        cls.seed_path = ROOT / "seed/applications/development-observatory.seed.json"
+        cls.generated_directory = tempfile.TemporaryDirectory()
+        cls.generated = Path(cls.generated_directory.name)
+        cls.manifest = cls.compiler.generate(cls.seed_path, cls.generated)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.generated_directory.cleanup()
+
+    def test_seed_is_complete_and_compiles_without_runtime_authority(self):
+        resolved, authorities = self.compiler.load_seed(self.seed_path)
+        self.assertEqual(self.compiler.validate(resolved), [])
+        self.assertGreater(len(authorities), 2)
+        source = (self.generated / "main.py").read_text(encoding="utf-8")
+        self.assertEqual(self.manifest["runtime_seed_files"], 0)
+        self.assertIn("uc://manual/applications/development-observatory@1", source)
+        self.assertIn("columnconfigure", source)
+        self.assertIn("rowconfigure", source)
+        self.assertIn("webbrowser.open", source)
+        self.assertIn("--case-json", source)
+        self.assertNotIn("seed_compiler", source)
+
+    def test_generated_api_and_acceptance_are_functional(self):
+        specification = importlib.util.spec_from_file_location(
+            "generated_observatory", self.generated / "main.py"
+        )
+        application = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(application)
+        report = application.run_acceptance()
+        self.assertEqual(report["passed"], report["total"])
+        opened = []
+        application._open_url = opened.append
+        outcome = application.run_command(
+            "open_link", {"link": "https://example.test/code"}
+        )
+        self.assertIsNone(outcome["error"])
+        self.assertEqual(opened, ["https://example.test/code"])
+        rejected = application.run_command("open_link", {"link": "file:///tmp/code"})
+        self.assertEqual(rejected["error"], "invalid-link")
+        self.assertEqual(opened, ["https://example.test/code"])
+        case = json.loads(self.seed_path.read_text(encoding="utf-8"))["what"][
+            "acceptance"
+        ][0]["input"]
+        thing = application.part(
+            {"value": case, "state": "formed", "evidence": ()}
+        )
+        self.assertEqual(thing["state"], "valid")
+        self.assertEqual(len(thing["depths"]), 10)
+        cli = subprocess.run(
+            [
+                sys.executable,
+                str(self.generated / "main.py"),
+                "--case-json",
+                json.dumps(case),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(json.loads(cli.stdout), thing["value"])
+
+    def test_dashboard_vocabulary_is_absent_from_generic_creators(self):
+        vocabulary = {
+            "development-observatory",
+            "מלך_עולם",
+            "אדון_הכל",
+            "architecture-status",
+            "root-fixed-point",
+        }
+        creators = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in sorted((ROOT / "src").glob("*.py"))
+        )
+        self.assertEqual({term for term in vocabulary if term in creators}, set())
+
+    def test_every_watcher_and_sign_is_required_for_every_record(self):
+        resolved, _authorities = self.compiler.load_seed(self.seed_path)
+        required = ("הבט", "ראה", "חקור", "הבן", "מלך_עולם", "אדון_הכל")
+        for identity in required:
+            mutated = deepcopy(resolved)
+            mutated["state"]["initial"]["observations"][0].pop(identity)
+            with self.subTest(identity=identity):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "record-contract-field-missing",
+                ):
+                    self.compiler.render_program(mutated)
+
+    def test_progress_is_derived_before_compilation(self):
+        leaf = json.loads(self.seed_path.read_text(encoding="utf-8"))["what"]
+        self.assertTrue(
+            all("progress" not in record for record in leaf["state"]["initial"]["observations"])
+        )
+        resolved, _authorities = self.compiler.load_seed(self.seed_path)
+        for record in resolved["state"]["initial"]["observations"]:
+            self.assertEqual(
+                record["progress"],
+                record["passed"] * 100 // record["total"],
+            )
+
+    def test_generated_test_runs_from_published_verification_layer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            application = root / "product" / "application"
+            verification = root / "product" / "verification"
+            application.mkdir(parents=True)
+            verification.mkdir(parents=True)
+            shutil.copy2(self.generated / "main.py", application / "main.py")
+            shutil.copy2(
+                self.generated / "test_generated.py",
+                verification / "test_generated.py",
+            )
+            result = subprocess.run(
+                [sys.executable, str(verification / "test_generated.py")],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+
+
+if __name__ == "__main__":
+    unittest.main()
