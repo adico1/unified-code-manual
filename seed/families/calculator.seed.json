@@ -3,7 +3,7 @@
     {
       "identity": "uc://manual/registries/calculator-keys@1",
       "path": "../registries/calculator-keys.seed.json",
-      "sha256": "7be0ca81d1a4006e5c95e9bd9c03f089e5418018b6dc35b25b558df3b6101c3d"
+      "sha256": "4bbdd7292e82927bf143bda27c7a61cccefdba84fe835252facf1db3cfafb8af"
     }
   ],
   "format": "manual-seed-base-1",

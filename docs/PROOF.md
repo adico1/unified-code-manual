@@ -9,11 +9,11 @@ pinned recursive seed graph
 ```
 
 Application meaning is represented by each leaf seed's semantic contract,
-state, interface, operations, and acceptance cases. Pinned Key-registry
-authority supplies reusable labels, actions and emitted values. Family authority
-supplies shared boundaries, rendering defaults, registered routes, error rules,
-negative vectors, and six ordered build-time stamp identities. The compiler
-resolves and specializes those declarations into exact applications.
+state, interface, operations, and acceptance cases. Pinned interface registries
+supply reusable controls and argument contracts. Family authorities supply
+shared boundaries, rendering defaults, routes, errors, persistence laws, and
+six ordered build-time stamp identities. The compiler resolves and specializes
+calculator and stateful-interface declarations into exact applications.
 
 ## Reproduce
 
@@ -23,9 +23,9 @@ python3 tools/single_api.py
 
 The operation requires:
 
-1. exactly one pinned בלי_מה root, one Key registry, one family base and twelve
-   leaf מה seeds;
-2. twelve distinct generated application sources;
+1. exactly one pinned בלי_מה root, two interface registries, two family bases
+   and thirteen leaf מה seeds;
+2. thirteen distinct generated application sources;
 3. all seed-declared and derived negative acceptance cases to pass;
 4. generated tests for every application;
 5. copied execution without seed, compiler, or repository access;
@@ -36,7 +36,7 @@ The operation requires:
 10. declaration-section and event-route to generated-source traceability;
 11. rejection of altered, floating, cyclic, conflicting, and escaping base
     authority;
-12. zero stored leaf ASTs and twelve build-time-generated ASTs.
+12. zero stored leaf ASTs and thirteen build-time-generated ASTs.
 13. exactly six registered build-time stampers;
 14. leaf transition tables, boundaries, reachable errors, and duplicated
     numeric-law indexes are absent and deterministically derived.
@@ -50,36 +50,39 @@ The operation requires:
     capability as separate authorities.
 19. each generated application invokes its own real Tk Keys once before lazy
     execution, verifies observable effects, and destroys its proof window.
+20. the Todo application proves exact state after atomic persistence and
+    restart.
+21. Todo application vocabulary has zero hits in compiler sources.
 
 Current measured result:
 
 ```text
-applications = 12
-acceptance = 57/57
-isolated copied applications = 12/12
+applications = 13
+acceptance = 59/59
+isolated copied applications = 13/13
 deterministic = PASS
 runtime seed access = 0
 manual application code = 0
 manual application tests = 0
-compiler application-vocabulary hits = 0/128
+compiler application-vocabulary hits = 0/135
 seed-graph rejection proofs = 5/5
 canonical Key definitions = 79
 selected/resolved Key identities = 79/79
 unknown/duplicate/invalid/missing-capability Key rejection = PASS
 callback-contract mutations = 3/3
-generated Key callback wiring checks = 287/287
-application-owned self-tested Keys = 287/287
-self-test applications closed = 12/12
+generated Key callback wiring checks = 294/294
+application-owned self-tested Keys = 294/294
+self-test applications closed = 13/13
 runtime Key-registry access = 0
 stored leaf ASTs = 0
-build-time-generated ASTs = 12/12
+build-time-generated ASTs = 13/13
 registered build-time stampers = 6
-derived transitions = 287
-derived reachable errors = 25
+derived transitions = 294
+derived reachable errors = 28
 generated editable-input checks = 3 per application
 complete tree =
-14bca5577e6d125d21b2ef754a15c3dd2f8d8b0cca0792e498f50aac1d051559
-single API elapsed = 4.25 seconds
+21e369f99867cd2488603298948dad1cb15a166d01d4b178117d44f41dbe754b
+single API elapsed = 3.68 seconds
 ```
 
 ## Honest boundary
@@ -98,5 +101,7 @@ single API elapsed = 4.25 seconds
   only a seed change.
 - A genuinely new semantic primitive requires a generic language extension.
 - A new target language requires a generic compiler projection.
+- The Todo result proves one persistent stateful-list application, not every
+  possible CRUD or workflow application.
 - This does not prove every possible calculator, every GUI toolkit, full
   Standard Ten conformance, generated parallelism, or root-seed self-hosting.

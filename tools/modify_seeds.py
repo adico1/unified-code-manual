@@ -172,20 +172,52 @@ def expected_documents():
         or family_document.get("format") != BASE_FORMAT
     ):
         raise ValueError("invalid-base-authority")
-    registry_document["bases"] = [
-        base_reference(KEY_REGISTRY, WITHOUT_WHAT, root_document)
-    ]
-    family_document["bases"] = [
-        base_reference(CALCULATOR_FAMILY, KEY_REGISTRY, registry_document)
-    ]
-    leaves = {
-        path: migrate_leaf(path, family_document, registry_document)
-        for path in leaf_paths()
+    registry_documents = {
+        path: load(path)
+        for path in sorted(REGISTRIES.glob("*.seed.json"))
     }
+    for path, document in registry_documents.items():
+        document["bases"] = [
+            base_reference(path, WITHOUT_WHAT, root_document)
+        ]
+    family_documents = {
+        path: load(path)
+        for path in sorted((SEED_ROOT / "families").glob("*.seed.json"))
+    }
+    for path, document in family_documents.items():
+        reference = document["bases"][0]
+        registry_path = (path.parent / reference["path"]).resolve()
+        registry = registry_documents[registry_path]
+        document["bases"] = [
+            base_reference(path, registry_path, registry)
+        ]
+    registry_document = registry_documents[KEY_REGISTRY.resolve()]
+    family_document = family_documents[CALCULATOR_FAMILY.resolve()]
+    leaves = {}
+    for path in leaf_paths():
+        document = load(path)
+        language = document["what"]["program"]["language"]
+        if language == "calculator-declaration-1":
+            leaves[path] = migrate_leaf(
+                path,
+                family_document,
+                registry_document,
+            )
+            continue
+        reference = document["bases"][0]
+        family_path = (path.parent / reference["path"]).resolve()
+        document["bases"] = [
+            base_reference(
+                path,
+                family_path,
+                family_documents[family_path],
+            )
+        ]
+        leaves[path] = document
     return {
         WITHOUT_WHAT: root_document,
-        KEY_REGISTRY: registry_document,
-        CALCULATOR_FAMILY: family_document,
+        **registry_documents,
+        **family_documents,
         **leaves,
     }
 

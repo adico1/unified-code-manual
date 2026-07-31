@@ -1,4 +1,4 @@
-"""One operation from calculator seeds to self-tested lazy applications."""
+"""One operation from independent seeds to self-tested lazy applications."""
 
 from __future__ import annotations
 

@@ -184,6 +184,9 @@ def verify_determinism(compiler, applications, generated):
 
 def seed_vocabulary(seed):
     identity = seed["identity"]
+    declared = seed["semantics"].get("application_vocabulary")
+    if declared:
+        return set(declared)
     operations = seed["semantics"]["operations"]
     return {
         identity["variation"],
@@ -292,13 +295,24 @@ def verify_concise_declarations(applications, compiler):
         forbidden_derived = {"transitions", "boundaries"} & what.keys()
         if forbidden_derived:
             raise ValueError("leaf-derived-meaning:" + ",".join(forbidden_derived))
-        if what["semantics"].get("validation", {}).get("errors"):
+        language = what["program"]["language"]
+        if (
+            language == "calculator-declaration-1"
+            and what["semantics"].get("validation", {}).get("errors")
+        ):
             raise ValueError("leaf-reachable-errors")
         seed = compiler.load_seed(path)[0]
         tree = compiler.compile_declaration(seed)
         if tuple(
             item["stage"] for item in seed["_assembly"]["stamps"]
-        ) != compiler.compile_declaration.__globals__["STAMPS"]:
+        ) != (
+            "01_outer_to_inner",
+            "02_inner_to_core",
+            "03_core_prepare",
+            "04_core_collect",
+            "05_core_to_inner",
+            "06_inner_to_outer",
+        ):
             raise ValueError("six-stamper-contract")
         if type(tree).__name__ != "Module":
             raise ValueError("declaration-ast-not-generated")
@@ -327,10 +341,17 @@ def verify_concise_declarations(applications, compiler):
             for item in applications
         ),
         "derived_reachable_errors": sum(
-            len(
-                compiler.load_seed(ROOT / item["seed"])[0]["semantics"][
-                    "validation"
-                ]["errors"]
+            len({
+                guard["error"]
+                for command in compiler.load_seed(
+                    ROOT / item["seed"]
+                )[0]["semantics"].get("commands", ())
+                for guard in command.get("guards", ())
+            })
+            + len(
+                compiler.load_seed(ROOT / item["seed"])[0]["semantics"]
+                .get("validation", {})
+                .get("errors", ())
             )
             for item in applications
         ),
@@ -347,6 +368,7 @@ def write_report(
     compiler,
     seed_graph,
     key_registry,
+    control_registry,
     key_callbacks,
     self_tests,
     declarations,
@@ -400,6 +422,7 @@ def write_report(
         "runtime_seed_access": 0,
         "seed_graph": seed_graph,
         "key_registry": key_registry,
+        "control_registry": control_registry,
         "key_callbacks": key_callbacks,
         "application_self_tests": self_tests,
         "concise_declarations": declarations,
@@ -432,8 +455,8 @@ def verify_specialization(generated):
         b"seed.json",
         b"universal_generator",
         b"calculator_suite",
-        b"read_text(",
-        b"read_bytes(",
+        b"seed_compiler",
+        b"declaration_compiler",
     )
     if any(
         token in files["main.py"]
@@ -737,8 +760,121 @@ def verify_key_registry(applications, compiler):
     }
 
 
+def verify_control_registry(applications, compiler):
+    if not applications:
+        raise ValueError("stateful-proof-absent")
+    application = applications[0]
+    leaf_path = ROOT / application["seed"]
+    document = json.loads(leaf_path.read_text(encoding="utf-8"))
+    family_reference = document["bases"][0]
+    family_path = (leaf_path.parent / family_reference["path"]).resolve()
+    family_document = json.loads(family_path.read_text(encoding="utf-8"))
+    inherited, authorities = compiler.resolve_base(
+        family_path,
+        family_document,
+    )
+    registry = inherited["control_registry"]
+    registry_authority = next(
+        item
+        for item in authorities
+        if "control_registry" in item.get("provides", ())
+    )
+    what = document["what"]
+    leaf_authority = {
+        "identity": what["identity"]["canonical"],
+        "kind": "what-authority",
+        "sha256": compiler.document_digest(document),
+    }
+    resolved, _ = compiler.load_seed(leaf_path)
+    selected = [item["key"] for item in what["presentation"]["keys"]]
+    if selected != [
+        item["id"] for item in resolved["presentation"]["controls"]
+    ]:
+        raise ValueError("control-resolution-order")
+
+    unknown_what = json.loads(json.dumps(what))
+    unknown_what["presentation"]["keys"][0]["key"] = "control.unknown"
+    unknown = expect_error(
+        lambda: compiler.materialize_stateful(
+            unknown_what,
+            inherited["assembly"],
+            registry,
+            registry_authority,
+            leaf_authority,
+        ),
+        "unknown-key:control.unknown",
+    )
+
+    missing_what = json.loads(json.dumps(what))
+    missing_what["semantics"]["commands"] = [
+        item
+        for item in missing_what["semantics"]["commands"]
+        if item["id"] != registry[0]["command"]
+    ]
+    missing = expect_error(
+        lambda: compiler.materialize_stateful(
+            missing_what,
+            inherited["assembly"],
+            registry,
+            registry_authority,
+            leaf_authority,
+        ),
+        "control-command-missing:" + registry[0]["command"],
+    )
+
+    arguments_registry = json.loads(json.dumps(registry))
+    arguments_registry[0]["arguments"] = {}
+    arguments = expect_error(
+        lambda: compiler.materialize_stateful(
+            what,
+            inherited["assembly"],
+            arguments_registry,
+            registry_authority,
+            leaf_authority,
+        ),
+        "control-argument-mismatch:" + registry[0]["identity"],
+    )
+
+    duplicate = expect_error(
+        lambda: compiler.materialize_stateful(
+            what,
+            inherited["assembly"],
+            [*registry, registry[0]],
+            registry_authority,
+            leaf_authority,
+        ),
+        "invalid-control-registry",
+    )
+    return {
+        "registry_identity": registry_authority["identity"],
+        "definitions": len(registry),
+        "selected_identities": len(selected),
+        "resolved_identities": len(
+            resolved["presentation"]["controls"]
+        ),
+        "unknown": unknown,
+        "missing_command": missing,
+        "argument_mismatch": arguments,
+        "duplicate": duplicate,
+        "runtime_registry_access": 0,
+    }
+
+
 def generate_all_from_seeds(*, self_test):
     applications = load_suite()
+    calculator_applications = [
+        item
+        for item in applications
+        if json.loads(
+            (ROOT / item["seed"]).read_text(encoding="utf-8")
+        )["what"]["program"]["language"]
+        == "calculator-declaration-1"
+    ]
+    stateful_applications = [
+        item
+        for item in applications
+        if item not in calculator_applications
+    ]
     compiler = load_compiler()
     with ThreadPoolExecutor(max_workers=len(applications)) as workers:
         generated = list(
@@ -748,16 +884,59 @@ def generate_all_from_seeds(*, self_test):
             )
         )
     verify_specialization(generated)
-    isolated = verify_isolated(generated)
+    with ThreadPoolExecutor(max_workers=8) as workers:
+        futures = {
+            "isolated": workers.submit(verify_isolated, generated),
+            "self_tests": workers.submit(
+                verify_application_self_tests,
+                generated,
+            )
+            if self_test
+            else None,
+            "hashes": workers.submit(
+                verify_determinism,
+                compiler,
+                applications,
+                generated,
+            ),
+            "separation": workers.submit(
+                verify_compiler_separation,
+                applications,
+                compiler,
+            ),
+            "seed_graph": workers.submit(verify_seed_graph, compiler),
+            "key_registry": workers.submit(
+                verify_key_registry,
+                calculator_applications,
+                compiler,
+            ),
+            "control_registry": workers.submit(
+                verify_control_registry,
+                stateful_applications,
+                compiler,
+            ),
+            "declarations": workers.submit(
+                verify_concise_declarations,
+                applications,
+                compiler,
+            ),
+        }
+        isolated = futures["isolated"].result()
+        self_test_reports = (
+            futures["self_tests"].result() if self_test else []
+        )
+        hashes = futures["hashes"].result()
+        separation = futures["separation"].result()
+        seed_graph = futures["seed_graph"].result()
+        key_registry = futures["key_registry"].result()
+        control_registry = futures["control_registry"].result()
+        declarations = futures["declarations"].result()
     key_callbacks = {
         "passed": sum(item["key_callbacks"]["passed"] for item in isolated),
         "total": sum(item["key_callbacks"]["total"] for item in isolated),
     }
     if key_callbacks["passed"] != key_callbacks["total"]:
         raise ValueError("key-callback-verification")
-    self_test_reports = (
-        verify_application_self_tests(generated) if self_test else []
-    )
     self_test_verification = {
         "applications": len(self_test_reports),
         "passed": sum(
@@ -768,11 +947,6 @@ def generate_all_from_seeds(*, self_test):
         ),
         "closed": all(item["closed"] for item in self_test_reports),
     }
-    hashes = verify_determinism(compiler, applications, generated)
-    separation = verify_compiler_separation(applications, compiler)
-    seed_graph = verify_seed_graph(compiler)
-    key_registry = verify_key_registry(applications, compiler)
-    declarations = verify_concise_declarations(applications, compiler)
     passed = sum(
         item["evidence"]["verification"]["passed"]
         for item in generated
@@ -801,6 +975,7 @@ def generate_all_from_seeds(*, self_test):
         compiler,
         seed_graph,
         key_registry,
+        control_registry,
         key_callbacks,
         self_test_verification,
         declarations,
@@ -818,6 +993,8 @@ def generate_all_from_seeds(*, self_test):
         f"seed-graph={seed_graph['passed']}/{seed_graph['total']} "
         f"key-registry={key_registry['definitions']}/"
         f"{key_registry['selected_identities']} "
+        f"control-registry={control_registry['definitions']}/"
+        f"{control_registry['selected_identities']} "
         f"key-callbacks={key_callbacks['passed']}/"
         f"{key_callbacks['total']} "
         f"application-self-tests={self_test_verification['passed']}/"

@@ -261,9 +261,13 @@ seed/applications/engineering-units.seed.json
 seed/applications/rpn.seed.json
 seed/applications/ohms-law.seed.json
 seed/applications/quadratic-polynomial.seed.json
+
+seed/registries/stateful-interface-controls.seed.json
+→ seed/families/stateful-list.seed.json
+→ seed/applications/todo.seed.json
 ```
 
-The twelve leaves are application-specific מה seeds. Every base reference pins an
+The thirteen leaves are application-specific מה seeds. Every base reference pins an
 exact identity, relative path and SHA-256. `tools/modify_seeds.py` migrates and
 re-pins the graph deterministically; the compiler rejects cycles, conflicts,
 floating references and tampering.
@@ -282,3 +286,36 @@ reads `seed/suite.seed.json`, regenerates every enabled seed, runs generated
 acceptance tests in isolation, invokes every real Tk Key, destroys every
 window, performs a second independent build, and checks seed ancestry plus
 compiler/application vocabulary separation.
+
+## Stateful-interface declaration
+
+The Todo proof adds a second declaration projection without placing Todo
+vocabulary in the compiler:
+
+```text
+state fields
++ typed command arguments
++ declarative guards
++ collection effects
++ persistence identity
++ registered controls and argument sources
++ acceptance sequences
+= one specialized persistent application
+```
+
+The registered generic operations currently include:
+
+```text
+guards: non_empty, exists, unique
+effects: append, update, remove, increment, set
+values: literal, argument, state, matched_field, not, add, object
+sources: input, selection, literal
+```
+
+Generated command functions contain only the selected guards and effects. The
+runtime carries no seed and no universal stateful-declaration interpreter.
+
+This proves that one assembly operation crosses an application-family
+boundary. It does not prove arbitrary applications. A behavior outside the
+registered declaration languages still requires a generic, domain-neutral
+language extension.

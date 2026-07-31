@@ -158,6 +158,32 @@ Read:
 The single API should orchestrate the established stages. It must not become a
 second application generator or a source of calculator behavior.
 
+### 11. Cross the application-family boundary
+
+After understanding one calculator, read:
+
+- [`seed/registries/stateful-interface-controls.seed.json`](../seed/registries/stateful-interface-controls.seed.json)
+- [`seed/families/stateful-list.seed.json`](../seed/families/stateful-list.seed.json)
+- [`seed/applications/todo.seed.json`](../seed/applications/todo.seed.json)
+- [`src/stateful_compiler.py`](../src/stateful_compiler.py)
+
+Trace one persisted sequence:
+
+```text
+create A
+→ create B
+→ toggle A
+→ atomic persistence
+→ restart
+→ exact recovered state
+```
+
+Then search compiler sources for the Todo seed's declared application
+vocabulary. The expected intersection is empty. Generic words such as
+`collection`, `record`, `guard`, `append`, and `update` belong to the
+declaration language; product words and error identities belong to the leaf
+seed.
+
 ## Trace one Key end to end
 
 Start with `digit.7`:
