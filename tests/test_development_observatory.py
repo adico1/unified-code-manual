@@ -156,6 +156,8 @@ class DevelopmentObservatoryTests(unittest.TestCase):
         application = importlib.util.module_from_spec(specification)
         specification.loader.exec_module(application)
         original = application.build_interface
+        original_self_test = application.self_test_interface
+        reports = []
 
         def build_and_close():
             root = original()
@@ -164,9 +166,31 @@ class DevelopmentObservatoryTests(unittest.TestCase):
             return root
 
         application.build_interface = build_and_close
+
+        def observed_self_test():
+            report = original_self_test()
+            reports.append(report)
+            return report
+
+        application.self_test_interface = observed_self_test
         with tempfile.TemporaryDirectory() as directory:
             application.configure_state_path(Path(directory) / "state.json")
             application.launch()
+        self.assertEqual(reports[0]["self_test"], {"passed": 15, "total": 15})
+        self.assertEqual(
+            reports[0]["interactions"],
+            [
+                "ask-ai",
+                "complete-reopen",
+                "reopen",
+                "open-code",
+                "delete",
+                "filter-all",
+                "filter-past",
+                "filter-present",
+                "filter-future",
+            ],
+        )
 
     def test_structured_dashboard_presents_summary_table_and_details(self):
         specification = importlib.util.spec_from_file_location(

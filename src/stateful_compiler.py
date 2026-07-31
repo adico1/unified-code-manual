@@ -333,6 +333,17 @@ def render_source(seed):
             or any(field["field"] not in collection["display_fields"] for field in table["detail_fields"])
         ):
             raise ValueError("invalid-stateful-table")
+    for interface_case in presentation["self_tests"]:
+        assertions = interface_case.get("assertions")
+        if assertions is not None and set(assertions) != {
+            "collection_count",
+            "error",
+            "outward",
+            "record",
+            "state_fields",
+            "visible_count",
+        }:
+            raise ValueError("invalid-interface-assertions")
     calculations = {
         identity: {
             "source": source,
@@ -644,9 +655,28 @@ def render_source(seed):
             "    results = [run_case(case['input']) == case['expected'] for case in cases]",
             "    return {'passed': sum(results), 'total': len(results), 'cases': [case['id'] for case in cases]}",
             "",
+            "def verify_interface_assertions(assertions, outward):",
+            "    checks = [",
+            "        _last_outcome['error'] == assertions['error'],",
+            "        len(state[COLLECTION_FIELD]) == assertions['collection_count'],",
+            "        len(visible_records()) == assertions['visible_count'],",
+            "        all(state.get(field) == value for field, value in assertions['state_fields'].items()),",
+            "        outward == assertions['outward'],",
+            "    ]",
+            "    rule = assertions['record']",
+            "    if rule is not None:",
+            "        matches = [record for record in state[COLLECTION_FIELD] if record.get(rule['match']['field']) == rule['match']['equals']]",
+            "        checks.append(bool(matches) == rule['present'])",
+            "        if rule['present'] and matches:",
+            "            checks.append(all(matches[0].get(field) == value for field, value in rule['fields'].items()))",
+            "    return all(checks)",
+            "",
             "def self_test_interface():",
+            *(("    global _open_url",) if outward_urls else ()),
             "    checks = []",
             "    closed = False",
+            "    outward = []",
+            *(("    previous_open_url = _open_url", "    _open_url = outward.append") if outward_urls else ()),
             "    with tempfile.TemporaryDirectory(prefix='generated-stateful-gui-') as directory:",
             "        configure_state_path(Path(directory) / 'state.json')",
             "        root = build_interface()",
@@ -668,6 +698,7 @@ def render_source(seed):
             ),
             f"        cases = {presentation['self_tests']!r}",
             "        for case in cases:",
+            "            outward.clear()",
             "            reset_state()",
             "            for setup in case.get('setup', ()):",
             "                run_command(setup['command'], setup.get('arguments', {}))",
@@ -677,13 +708,26 @@ def render_source(seed):
             "            present_state()",
             "            if 'selection' in case:",
             "                widget = _collections[case['selection']['identity']]",
-            "                widget.selection_clear(0, 'end')",
-            "                widget.selection_set(case['selection']['index'])",
+            *(
+                (
+                    "                widget.selection_remove(*widget.selection())",
+                    "                widget.selection_set(widget.get_children()[case['selection']['index']])",
+                )
+                if table
+                else (
+                    "                widget.selection_clear(0, 'end')",
+                    "                widget.selection_set(case['selection']['index'])",
+                )
+            ),
             "            _buttons[case['control']].invoke()",
-            "            checks.append(_last_outcome == case['expected']['outcome'] and snapshot() == case['expected']['state'])",
+            "            if case.get('restart'):",
+            "                state.clear()",
+            "                load_state()",
+            "            checks.append(verify_interface_assertions(case['assertions'], outward) if 'assertions' in case else _last_outcome == case['expected']['outcome'] and snapshot() == case['expected']['state'])",
             "        root.destroy()",
+            *(("        _open_url = previous_open_url",) if outward_urls else ()),
             "        closed = True",
-            "    return {'self_test': {'passed': sum(checks), 'total': len(checks)}, 'closed': closed}",
+            "    return {'self_test': {'passed': sum(checks), 'total': len(checks)}, 'interactions': [case.get('id', case['control']) for case in cases], 'closed': closed}",
             "",
             "def launch():",
             "    proof = self_test_interface()",

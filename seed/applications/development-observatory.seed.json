@@ -938,48 +938,216 @@
       ],
       "self_tests": [
         {
-          "control": "filter.future",
-          "expected": {
-            "outcome": {
-              "error": null,
-              "result": {
-                "filter": "future",
-                "next_id": 5,
-                "observations": []
-              }
+          "assertions": {
+            "collection_count": 5,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "completed": false,
+                "observer": "user",
+                "temporal": "future"
+              },
+              "match": {
+                "equals": "Review all generated product evidence",
+                "field": "title"
+              },
+              "present": true
             },
-            "state": {
-              "filter": "future",
-              "next_id": 5,
-              "observations": []
-            }
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 5
+          },
+          "control": "request.submit",
+          "id": "ask-ai",
+          "inputs": {
+            "entry.primary": "Review all generated product evidence"
+          },
+          "restart": true
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "completed": true
+              },
+              "match": {
+                "equals": 2,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "record.toggle",
+          "id": "complete-reopen",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 1
+          }
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {
+                "completed": false
+              },
+              "match": {
+                "equals": 2,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "record.toggle",
+          "id": "reopen",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 1
           },
           "setup": [
             {
               "arguments": {
-                "id": 1
-              },
-              "command": "remove"
-            },
-            {
-              "arguments": {
                 "id": 2
               },
-              "command": "remove"
-            },
-            {
-              "arguments": {
-                "id": 3
-              },
-              "command": "remove"
-            },
-            {
-              "arguments": {
-                "id": 4
-              },
-              "command": "remove"
+              "command": "toggle"
             }
           ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [
+              "https://github.com/adico1/unified-code"
+            ],
+            "record": {
+              "fields": {
+                "completed": true
+              },
+              "match": {
+                "equals": 1,
+                "field": "id"
+              },
+              "present": true
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "link.open",
+          "id": "open-code",
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          }
+        },
+        {
+          "assertions": {
+            "collection_count": 3,
+            "error": null,
+            "outward": [],
+            "record": {
+              "fields": {},
+              "match": {
+                "equals": 1,
+                "field": "id"
+              },
+              "present": false
+            },
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 3
+          },
+          "control": "record.remove",
+          "id": "delete",
+          "restart": true,
+          "selection": {
+            "identity": "collection.primary",
+            "index": 0
+          }
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "all"
+            },
+            "visible_count": 4
+          },
+          "control": "filter.all",
+          "id": "filter-all",
+          "setup": [
+            {
+              "arguments": {
+                "mode": "future"
+              },
+              "command": "set_filter"
+            }
+          ]
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "past"
+            },
+            "visible_count": 1
+          },
+          "control": "filter.past",
+          "id": "filter-past"
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "present"
+            },
+            "visible_count": 2
+          },
+          "control": "filter.present",
+          "id": "filter-present"
+        },
+        {
+          "assertions": {
+            "collection_count": 4,
+            "error": null,
+            "outward": [],
+            "record": null,
+            "state_fields": {
+              "filter": "future"
+            },
+            "visible_count": 1
+          },
+          "control": "filter.future",
+          "id": "filter-future"
         }
       ],
       "status": {

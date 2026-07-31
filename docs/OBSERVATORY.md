@@ -26,6 +26,11 @@ self-tests.
 Its second generated tab enumerates all 74 proven products with product group,
 variation, canonical identity and proof status. The portfolio is declared in
 the application seed; the generic compiler contains none of those identities.
+All eight controls are exercised through nine generated Tk interaction paths:
+request, both complete and reopen directions, open-code OUTWARD routing,
+delete, and all four temporal filters. The proof asserts selected-record
+effects, visible counts, restart persistence, error outcome and captured
+outward calls rather than counting coverage.
 Every record carries four observation verdicts:
 
 - `הבט` — physical presence;
